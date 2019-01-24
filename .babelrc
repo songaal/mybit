@@ -1,0 +1,19 @@
+{
+  "plugins": [
+    [ "import",
+      {
+        "libraryName": "antd-mobile-rn"
+      }
+    ],
+    [ "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "~": "./src",
+          "@components": "./src/components",
+          "@screens": "./src/screens"
+        }
+      }
+    ]
+  ]
+}
