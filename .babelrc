@@ -11,7 +11,8 @@
         "alias": {
           "~": "./src",
           "@components": "./src/components",
-          "@screens": "./src/screens"
+          "@screens": "./src/screens",
+          "@WebSocket": "./src/webScokets"
         }
       }
     ]

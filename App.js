@@ -1,16 +1,11 @@
 import React from 'react'
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  Image 
+import {
+  SafeAreaView 
 } from 'react-native'
 import {
-  TabBar
+  TabBar,
+  Flex
 } from 'antd-mobile-rn'
-import { 
-  SafeAreaView 
-} from 'react-navigation'
 import Exchange from '@screens/Exchange'
 import Assets from '@screens/Assets'
 import Chart from '@screens/Chart'
@@ -31,8 +26,7 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <SafeAreaView style={{flex: 1}} 
-                    forceInset={{bottom: 'never'}}>
+      <SafeAreaView style={{flex: 1}}>
         <TabBar unselectedTintColor="#949494"
                 tintColor="#33A3F4"
                 barTintColor="#f5f5f5">
@@ -61,22 +55,3 @@ export default class App extends React.Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-})
-
-
-// {
-//   "navTheme": "dark",
-//   "primaryColor": "#1890FF",
-//   "layout": "sidemenu",
-//   "contentWidth": "Fluid",
-//   "fixedHeader": false,
-//   "autoHideHeader": false,
-//   "fixSiderbar": false,
-//   "title": "Ant Design Pro",
-//   "collapse": true
-// }
