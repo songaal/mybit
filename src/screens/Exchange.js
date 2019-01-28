@@ -1,73 +1,59 @@
 import React from 'react'
-import { config } from '~/Config'
-import MarketSummary from '@components/MarketSummary'
 import {
-  View,
-  Text,
-  ScrollView
+  SafeAreaView 
 } from 'react-native'
 import {
-  Tabs,
-  List
+  TabBar,
+  Flex
 } from 'antd-mobile-rn'
-const ccxt = require('ccxt')
+import Exchange from '@screens/Exchange'
+import Assets from '@screens/Assets'
+import Chart from '@screens/Chart'
+import Account from '@screens/Account'
+import Upbit from '~/api/Upbit'
 
-const getExchangeMarkets = async (exchangeId) => {
-  let exchange = new ccxt[exchangeId]()
-  return await exchange.fetchMarkets()
-}
-
-export default class Exchange extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      baseCoinTabs: null,
-      selectedBaseInfo: null
+      selectedTab: 'Exchange'
     }
-    this._chagneExchange = this._chagneExchange.bind(this)
-    this._chagneBaseCoins = this._chagneBaseCoins.bind(this)
-    this._chagneExchange({id: 'upbit'})
+    this.onChangeTab = this.onChangeTab.bind(this)
   }
-  _chagneExchange = async(exchangeInfo) => {
-    let exchange = new ccxt[exchangeInfo.id]()
-    let markets = await exchange.fetchMarkets()
-    let baseCoins = {}
-    markets.forEach(market => {
-      baseCoins[market.quote] = {
-        title: market.quote, 
-        exchangeId: exchangeInfo.id,
-        base: market.quote
-      }
-    })
+  onChangeTab(tabName) {
     this.setState({
-      selectedBaseInfo: Object.values(baseCoins)[0],
-      baseCoinTabs: Object.values(baseCoins)
-    })
-  }
-  _chagneBaseCoins(baseInfo) {
-    this.setState({
-      selectedBaseInfo: baseInfo
+      selectedTab: tabName,
     })
   }
   render() {
-    let BaseCoinTabs = null
-    if (this.state.baseCoinTabs != null) {
-      BaseCoinTabs = (
-        <Tabs tabs={this.state.baseCoinTabs}
-              tabBarPosition="top"
-              initialPage={0}
-              onChange={this._chagneBaseCoins}>
-          <MarketSummary baseInfo={this.state.selectedBaseInfo} />
-        </Tabs>
-      )
-    }
     return (
-      <Tabs tabs={Object.values(config.exchanges).map(exchange => ({id: exchange.id, title: exchange.korName}))}
-            tabBarPosition="top"
-            initialPage={0}
-            onChange={this._chagneExchange}>
-        { BaseCoinTabs }
-      </Tabs>
+      <SafeAreaView style={{flex: 1}}>
+        <TabBar unselectedTintColor="#949494"
+                tintColor="#33A3F4"
+                barTintColor="#f5f5f5">
+          <TabBar.Item title="거래소"
+                       selected={this.state.selectedTab === 'Exchange'}
+                       onPress={() => this.onChangeTab('Exchange')}>
+            <Exchange />
+          </TabBar.Item>
+          <TabBar.Item title="차트"
+                       selected={this.state.selectedTab === 'Chart'}
+                       onPress={() => this.onChangeTab('Chart')}>
+            <Chart />
+          </TabBar.Item>
+          <TabBar.Item title="자산관리"
+                       selected={this.state.selectedTab === 'Assets'}
+                       onPress={() => this.onChangeTab('Assets')}>
+            <Assets />
+          </TabBar.Item>
+          <TabBar.Item title="마이페이지"
+                       selected={this.state.selectedTab === 'Account'}
+                       onPress={() => this.onChangeTab('Account')}>
+            <Account />
+          </TabBar.Item>
+        </TabBar>
+      </SafeAreaView>
     )
   }
 }
+

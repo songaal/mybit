@@ -4,25 +4,35 @@ export const config = {
       id: 'upbit',
       engName: 'Upbit',
       korName: '업비트',
-      currencyUnit: 'KRW'
+      currencyUnit: 'KRW',
+      ws: {
+        url: 'wss://api.upbit.com/websocket/v1'
+      }
     },
     bithumb: {
       id: 'bithumb',
       engName: 'Bithumb',
       korName: '빗썸',
-      displayCurrencyUnit: 'KRW'
+      displayCurrencyUnit: 'KRW',
+      ws: null
     },
     binance: {
       id: 'binance',
       engName: 'Binance',
       korName: '바이낸스',
-      displayCurrencyUnit: 'USDT'
+      displayCurrencyUnit: 'USDT',
+      ws: {
+        url: ''
+      }
     },
     bitmex: {
       id: 'bitmex',
       engName: 'Bitmex',
       korName: '비트맥스',
-      displayCurrencyUnit: 'USD'
+      displayCurrencyUnit: 'USD',
+      ws: {
+        url: ''
+      }
     }
   }
 }

@@ -12,7 +12,8 @@
           "~": "./src",
           "@components": "./src/components",
           "@screens": "./src/screens",
-          "@WebSocket": "./src/webScokets"
+          "@redux": "./src/redux",
+          "@api": "./src/api"
         }
       }
     ]

@@ -1,0 +1,17 @@
+
+<script>
+  let ws = new WebSocket("wss://api.upbit.com/websocket/v1")
+  ws.onopen = () => { console.log('연결')
+  ws.send(JSON.stringify([{"ticket":"test"},{"type":"ticker","codes":["KRW-BTC"]}]))
+}
+  ws.onclose = (event) => { console.log('종료') }
+  ws.onerror = (error) => { console.log('에러', error) }
+  ws.onmessage = (event) => {
+    (async () => {
+      const text = await new Response(event.data).text()
+      console.log(text)
+    })()
+
+
+  }
+  </script>
