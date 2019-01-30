@@ -18,7 +18,7 @@ class UpbitWS extends Base {
       { ticket: 'ticker' },
       { type: 'ticker', codes: symbols}
     ])
-    console.log('업비트 메시지 전송.')
+    console.log('업비트 메시지 전송. 마켓 수: ', symbols.length)
   }
   convert = async (message) => {
     /*
@@ -41,9 +41,16 @@ class UpbitWS extends Base {
       let symbol = data['code'].split('-')
       let base = symbol[0]
       let coin = symbol[1]
+      // acc_trade_volume_24h: 24시간 누적 거래대금
+      // change: EVEN : 보합, RISE : 상승, FALL : 하락
+      // change_rate: 변화율의 절대값
+      // market: 종복
       convertTicker.push({
         [base]: {
-          [coin]: data
+          [coin]: {
+            change: data['change'],
+            changeRate: data['signed_change_price']
+          }
         }
       })
     }

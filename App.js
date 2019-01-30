@@ -1,5 +1,9 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView
+} from 'react-native'
 import { config } from '~/Config'
 import '@api/index'
 import Home from '@screens/Home'
@@ -11,9 +15,7 @@ import store from '@redux/store'
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-
     this.updateState = this.updateState.bind(this)
-
     this.state = {
       subscribe: store.getState(),
       unsubscribe: store.subscribe(this.updateState),
@@ -32,15 +34,18 @@ export default class App extends React.Component {
     let runCount = Object.keys(this.state.subscribe.exchanges).length
     if (this.state.runTotal != runCount) {
       return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center'}}>
           <Text>로딩 중...</Text>
         </View>
       )
     }
+    this.state.unsubscribe()
     return (
-      <View>
+      <SafeAreaView style={{flex: 1}}>
         <Home />
-      </View>
+      </SafeAreaView>
     )
   }
 }

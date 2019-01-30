@@ -23,9 +23,9 @@ export default class Base {
     Object.values(await exchange.fetchMarkets()).forEach(market => {
       // 기초 데이터.
       let data = {
+        symbol: market['symbol'],
         base: market['quote'],
         coin: market['base'],
-        symbol: market['symbol'],
         marketSymbol: market['id']
       }
       if (dataSheets[data.base] === undefined) {
@@ -66,8 +66,10 @@ export default class Base {
   }
   _onMessage(message) {
     // 웹소켓 데이터 받음
-    this.convert(message)
-        .then(data => this._fetch(data))
+    (async () => {
+      let data = await this.convert(message)
+      this._fetch(data)
+    })()
   }
   _onError(error) {
     // 웹소켓 에러
@@ -108,8 +110,5 @@ export default class Base {
       })
     }
     return data
-  }
-  _extractBase(dataSheets) {
-
   }
 }
