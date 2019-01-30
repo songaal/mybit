@@ -1,6 +1,6 @@
 const ccxt = require('ccxt')
 import store from '@redux/store'
-import { initAction } from '@redux/actions/exchangeAction'
+import { initAction, fetchTickerAction } from '@redux/actions/exchangeAction'
 /*
  * 웹소켓 로직임. 상속받아서 개발하면됨.
 */
@@ -23,6 +23,8 @@ export default class Base {
     Object.values(await exchange.fetchMarkets()).forEach(market => {
       // 기초 데이터.
       let data = {
+        base: market['quote'],
+        coin: market['base'],
         symbol: market['symbol'],
         marketSymbol: market['id']
       }
@@ -81,22 +83,33 @@ export default class Base {
     return message
   }
   _fetch(data) {
-    // TODO store save
-    // console.log(data)
-    // ticker 데이터 스토어 저장하기
     /*
     - data structure
-    exchange: {
-      ticker: [{ ID: {} }, { ID: {} }],
-      trade: [{ ID: {} }, { ID: {} }]
-      ...
+    {
+      tickers: [
+        base: {
+          coin: {tickerData}
+        },
+        base: {
+          coin: {tickerData}
+        }
+        ...
+      ]
     }
     */
     let ticker = data['ticker']
     if (ticker !== undefined) {
-      store.dispatch(fetchTickerAction(this.config.id, ticke))
+      ticker.forEach(tic => {
+        Object.keys(tic).forEach(base => {
+          Object.keys(tic[base]).forEach(coin => {
+            store.dispatch(fetchTickerAction(this.config.id, base, coin, tic[base][coin]))
+          })
+        })
+      })
     }
-
     return data
+  }
+  _extractBase(dataSheets) {
+
   }
 }
