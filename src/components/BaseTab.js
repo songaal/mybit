@@ -25,7 +25,7 @@ export default class BaseTab extends Component {
   }
   render() {
     return (
-      <ScrollView style={{flex: 1}}>
+      <ScrollView>
         <Tabs tabs={this.state.baseList}
               tabBarPosition="top"
               initialPage={0}

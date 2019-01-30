@@ -5,58 +5,44 @@ class UpbitWS extends Base {
   constructor() {
     super(config.exchanges.upbit)
   }
-  onOpen(dataSheets) {
+  onOpen(symbols) {
+    /*
+     * 업비트는 웹소켓 연결 후 메시지는 전송하면 실시간으로 데이터를 구독해볼수있다.
+     * symbolMap은 ccxt와 거래소의 심볼명의 차이를 맵핑해준 데이터이며, convert시 키값은 [base][coin]
+     * symbolMap data structure
+     * {KRW-BCH: {
+     *    base: KRW,
+     *    coin: BCC,
+     *    symbol: BCC/KRW
+     *    ...
+     * }}
+    */
 
-    // 업비트는 웹소켓 연결 후 메시지는 전송하면 실시간으로 데이터를 구독해볼수있다.
-    let symbols = []
-    Object.values(dataSheets).forEach(dataSheet => {
-      Object.values(dataSheet).forEach(data => {
-        symbols.push(data.marketSymbol)
-      })
-    })
     this.send([
       { ticket: 'ticker' },
       { type: 'ticker', codes: symbols}
     ])
+    // this.send([
+    //   { ticket: 'ticker' },
+    //   { type: 'ticker', codes: ['KRW-WAVES', 'USDT-XMR', 'ETH-TUSD']}
+    // ])
     console.log('업비트 메시지 전송. 마켓 수: ', symbols.length)
   }
-  convert = async (message) => {
-    /*
-    - return data structure
-    {
-      tickers: [
-        base: {
-          coin: {tickerData}
-        },
-        base: {
-          coin: {tickerData}
-        }
-        ...
-      ]
-    }
-    */
+  convert = async (state, message) => {
+    // 업비트는 심볼하나씩 데이터옴.
     let data = JSON.parse(await new Response(message).text())
-    let convertTicker = []
+    let base = this.symbolMap[data['code']]['base']
+    let coin = this.symbolMap[data['code']]['coin']
+
     if (data['type'] === 'ticker') {
-      let symbol = data['code'].split('-')
-      let base = symbol[0]
-      let coin = symbol[1]
-      // acc_trade_volume_24h: 24시간 누적 거래대금
-      // change: EVEN : 보합, RISE : 상승, FALL : 하락
-      // change_rate: 변화율의 절대값
-      // market: 종복
-      convertTicker.push({
-        [base]: {
-          [coin]: {
-            change: data['change'],
-            changeRate: data['signed_change_price']
-          }
+      state[base][coin] = Object.assign(state[base][coin], {
+        ticker: {
+          change: data['change'],
+          changeRate: data['signed_change_price']
         }
       })
     }
-    return {
-      ticker: convertTicker
-    }
+    return state
   }
 }
 export default new UpbitWS()

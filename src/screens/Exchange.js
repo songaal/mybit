@@ -28,7 +28,7 @@ export default class Exchange extends React.Component {
               tabBarPosition="top"
               initialPage={0}
               onChange={(tab) => {this.setState({exchange: tab.exchange})}}>
-            <BaseTab exchange={this.state.exchange} />
+          <BaseTab exchange={this.state.exchange} />
         </Tabs>
       </ScrollView>
     )

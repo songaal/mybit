@@ -9,4 +9,4 @@ const reducer = combineReducers({
 
 const middleware = applyMiddleware(promise)
 
-export default store = createStore(reducer)
+export default store = createStore(reducer, middleware)

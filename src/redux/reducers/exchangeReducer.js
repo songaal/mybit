@@ -10,11 +10,11 @@ export default exchangeReducer = (state = {}, action) => {
       // 거래소 데이터 프레임 초기화.
       state[action.exchange] = action.dataSheets
       return state
-    case 'FETCH_TICKER':
-      state[action.exchange][action.base][action.coin]['ticker'] = action.ticker
-      return state
+    case 'FETCH_STATE':
+      return action.newState
     default:
       // 잘못된 액션은 이전 상태 유지.
+      console.log('[잘못된 액션!]', action)
       return state
   }
 }

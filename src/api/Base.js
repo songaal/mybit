@@ -1,6 +1,6 @@
 const ccxt = require('ccxt')
 import store from '@redux/store'
-import { initAction, fetchTickerAction } from '@redux/actions/exchangeAction'
+import { initAction, fetchState } from '@redux/actions/exchangeAction'
 /*
  * 웹소켓 로직임. 상속받아서 개발하면됨.
 */
@@ -8,6 +8,9 @@ export default class Base {
   constructor(config) {
     this.id = config.id
     this.config = config
+    this.symbolMap = {}
+    this.tmpState = null
+    this.fetchEventCode = null
 
     if (this.config.ws) {
       // websocket 통신
@@ -18,8 +21,9 @@ export default class Base {
     }
   }
   loadMarkets = async () => {
-    let exchange = new ccxt[this.config.id]()
+    let exchange = new ccxt[this.id]()
     let dataSheets = {}
+    let symbolMap = {}
     Object.values(await exchange.fetchMarkets()).forEach(market => {
       // 기초 데이터.
       let data = {
@@ -31,10 +35,13 @@ export default class Base {
       if (dataSheets[data.base] === undefined) {
         dataSheets[data.base] = {}
       }
+      symbolMap[data.marketSymbol] = data
       dataSheets[data.base][data.coin] = data
     })
-    store.dispatch(initAction(this.config.id, dataSheets))
-    return dataSheets
+    this.symbolMap = symbolMap
+    this.tmpState = dataSheets
+    store.dispatch(initAction(this.id, dataSheets))
+    return Object.keys(symbolMap)
   }
   wsWaitConnection() {
     let ws = new WebSocket(this.config.ws.url)
@@ -49,17 +56,17 @@ export default class Base {
     this.ws.send(JSON.stringify(obj))
   }
   _onOpen() {
-    // 웹소켓 연결
-    console.log('[웹소켓 연결]', this.config.id)
-    this.loadMarkets().then((markets) => {
+    // 웹소켓 연결 async error..
+    console.log('[웹소켓 연결]', this.id)
+    this.loadMarkets().then((symbols) => {
       if(typeof this.onOpen === 'function') {
-        this.onOpen(markets)
+        this.onOpen(symbols)
       }
     })
   }
   _onClose(event) {
     // 웹소켓 종료
-    console.log('[웹소켓 종료]', this.config.id)
+    console.log('[웹소켓 종료]', this.id)
     if(typeof this.onClose === 'function') {
       this.onClose()
     }
@@ -67,13 +74,20 @@ export default class Base {
   _onMessage(message) {
     // 웹소켓 데이터 받음
     (async () => {
-      let data = await this.convert(message)
-      this._fetch(data)
+      const newState = await this.convert(this.tmpState, message)
+      this.tmpState = newState
+      // 너무빠른 상태 변경으로 딜레이 추가.
+      if (this.fetchEventCode === null) {
+        this.fetchEventCode = setTimeout(() => {
+          this._fetch(newState)
+          fetchEventCode = null
+        }, 500)
+      }
     })()
   }
   _onError(error) {
     // 웹소켓 에러
-    console.log('[웹소켓 에러]', this.config.id, JSON.stringify(error))
+    console.log('[웹소켓 에러]', this.id, JSON.stringify(error))
     if(typeof this.onError === 'function') {
       this.onError()
     }
@@ -84,31 +98,9 @@ export default class Base {
   convert(message) {
     return message
   }
-  _fetch(data) {
-    /*
-    - data structure
-    {
-      tickers: [
-        base: {
-          coin: {tickerData}
-        },
-        base: {
-          coin: {tickerData}
-        }
-        ...
-      ]
+  _fetch(newState) {
+    if (newState !== undefined && newState !== null) {
+      store.dispatch(fetchState({[this.id]: newState}))
     }
-    */
-    let ticker = data['ticker']
-    if (ticker !== undefined) {
-      ticker.forEach(tic => {
-        Object.keys(tic).forEach(base => {
-          Object.keys(tic[base]).forEach(coin => {
-            store.dispatch(fetchTickerAction(this.config.id, base, coin, tic[base][coin]))
-          })
-        })
-      })
-    }
-    return data
   }
 }

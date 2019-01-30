@@ -10,13 +10,10 @@ export const initAction = (exchange, dataSheets) => {
   return action
 }
 
-export const fetchTickerAction = (exchange, base, coin, ticker) => {
+export const fetchState = (newState) => {
   const action = {
-    type: 'FETCH_TICKER',
-    exchange: exchange,
-    base: base,
-    coin: coin,
-    ticker: ticker
+    type: 'FETCH_STATE',
+    newState: newState
   }
   return action
 }

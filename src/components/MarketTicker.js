@@ -7,7 +7,6 @@ import {
   TouchableOpacity
 } from 'react-native'
 import {
-  Flex,
   Progress,
   Button,
   WhiteSpace,
@@ -81,11 +80,12 @@ export default class MarketTicker extends Component {
     })
   }
   render() {
-    console.log(this.props.exchange, this.props.base, this.state.subscribe.exchanges[this.props.exchange][this.props.base])
+    // console.log(this.props.exchange, this.props.base, this.state.subscribe.exchanges[this.props.exchange][this.props.base])
+    console.log(Object.keys(this.state.subscribe.exchanges.upbit.KRW).length)
     return (
       <View style={{marginBottom: 85}}>
         <Header/>
-        <ScrollView>
+        <ScrollView style={{flex: 1}}>
           <List>
             <List.Item>
               <Coin />
@@ -93,6 +93,145 @@ export default class MarketTicker extends Component {
             <List.Item>
               <Coin />
             </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+            <List.Item>
+              <Coin />
+            </List.Item>
+
 
           </List>
         </ScrollView>
