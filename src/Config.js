@@ -9,30 +9,35 @@ export const config = {
         url: 'wss://api.upbit.com/websocket/v1'
       }
     },
-    bithumb: {
-      id: 'bithumb',
-      engName: 'Bithumb',
-      korName: '빗썸',
-      displayCurrencyUnit: 'KRW',
-      ws: null
-    },
-    binance: {
-      id: 'binance',
-      engName: 'Binance',
-      korName: '바이낸스',
-      displayCurrencyUnit: 'USDT',
-      ws: {
-        url: ''
-      }
-    },
-    bitmex: {
-      id: 'bitmex',
-      engName: 'Bitmex',
-      korName: '비트맥스',
-      displayCurrencyUnit: 'USD',
-      ws: {
-        url: ''
-      }
-    }
   }
 }
+
+
+/*
+bithumb: {
+  id: 'bithumb',
+  engName: 'Bithumb',
+  korName: '빗썸',
+  displayCurrencyUnit: 'KRW',
+  ws: null
+},
+binance: {
+  id: 'binance',
+  engName: 'Binance',
+  korName: '바이낸스',
+  displayCurrencyUnit: 'USDT',
+  ws: {
+    url: ''
+  }
+},
+bitmex: {
+  id: 'bitmex',
+  engName: 'Bitmex',
+  korName: '비트맥스',
+  displayCurrencyUnit: 'USD',
+  ws: {
+    url: ''
+  }
+}
+
+*/

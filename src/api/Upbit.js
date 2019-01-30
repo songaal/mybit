@@ -4,7 +4,6 @@ import Base from '~/api/Base'
 class UpbitWS extends Base {
   constructor() {
     super(config.exchanges.upbit)
-    this.isFirest = true
   }
   onOpen(dataSheets) {
 
@@ -37,10 +36,6 @@ class UpbitWS extends Base {
     }
     */
     let data = JSON.parse(await new Response(message).text())
-    if (this.isFirest) {
-      console.log('데이터 전달받음. ', data)
-    }
-    this.isFirest = false
     let convertTicker = []
     if (data['type'] === 'ticker') {
       let symbol = data['code'].split('-')
