@@ -9,3 +9,14 @@ export const initAction = (exchange, dataSheets) => {
   }
   return action
 }
+
+export const fetchTickerAction = (exchange, base, coin, ticker) => {
+  const action = {
+    type: 'FETCH_TICKER',
+    exchange: exchange,
+    base: base,
+    coin: coin,
+    ticker: ticker
+  }
+  return action
+}

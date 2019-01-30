@@ -21,16 +21,15 @@ export default class Base {
     let exchange = new ccxt[this.config.id]()
     let dataSheets = {}
     Object.values(await exchange.fetchMarkets()).forEach(market => {
+      // 기초 데이터.
       let data = {
-        coin: market['base'],
-        base: market['quote'],
         symbol: market['symbol'],
         marketSymbol: market['id']
       }
       if (dataSheets[data.base] === undefined) {
-        dataSheets[data.base] = []
+        dataSheets[data.base] = {}
       }
-      dataSheets[data.base].push(data)
+      dataSheets[data.base][data.coin] = data
     })
     store.dispatch(initAction(this.config.id, dataSheets))
     return dataSheets
@@ -93,7 +92,11 @@ export default class Base {
       ...
     }
     */
-    // store.dispatch(fetchTickerAction(this.config.id, data))
+    let ticker = data['ticker']
+    if (ticker !== undefined) {
+      store.dispatch(fetchTickerAction(this.config.id, ticke))
+    }
+
     return data
   }
 }
