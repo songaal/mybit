@@ -1,5 +1,6 @@
 const ccxt = require('ccxt')
-import { fetchMarkets } from '@redux/actions/MarketAction'
+import store from '@redux/store'
+import { initAction } from '@redux/actions/exchangeAction'
 /*
  * 웹소켓 로직임. 상속받아서 개발하면됨.
 */
@@ -7,25 +8,32 @@ export default class Base {
   constructor(config) {
     this.id = config.id
     this.config = config
-    this.ticker = {}
 
     if (this.config.ws) {
       // websocket 통신
       this.wsWaitConnection()
     } else {
-      // rest 폴링 통신
+      // TODO rest 폴링 통신으로 주기적 데이터 조회
       this.restPolling()
     }
   }
   loadMarkets = async () => {
     let exchange = new ccxt[this.config.id]()
-    let markets = (await exchange.fetchMarkets()).map(market => {
-      this.ticker[market['symbol']] = {}
-      return market
+    let dataSheets = {}
+    Object.values(await exchange.fetchMarkets()).forEach(market => {
+      let data = {
+        coin: market['base'],
+        base: market['quote'],
+        symbol: market['symbol'],
+        marketSymbol: market['id']
+      }
+      if (dataSheets[data.base] === undefined) {
+        dataSheets[data.base] = []
+      }
+      dataSheets[data.base].push(data)
     })
-    // TODO markets -> store 저장 시키기.
-    // fetchMarkets()
-
+    store.dispatch(initAction(this.config.id, dataSheets))
+    return dataSheets
   }
   wsWaitConnection() {
     let ws = new WebSocket(this.config.ws.url)
@@ -36,7 +44,7 @@ export default class Base {
     this.ws = ws
   }
   send(obj) {
-    console.log('[웹소켓 메시지 전송] ', obj)
+    // console.log('[웹소켓 메시지 전송] ', obj)
     this.ws.send(JSON.stringify(obj))
   }
   _onOpen() {
@@ -74,16 +82,18 @@ export default class Base {
     return message
   }
   _fetch(data) {
-    console.log('스토어 저장.')
+    // TODO store save
+    // console.log(data)
     // ticker 데이터 스토어 저장하기
     /*
     - data structure
     exchange: {
-      ticker: [{ BTC/USD: {} }, { ETH/USD: {} }],
-      trade: [{ BTC/USD: {} }, { ETH/USD: {} }]
+      ticker: [{ ID: {} }, { ID: {} }],
+      trade: [{ ID: {} }, { ID: {} }]
       ...
     }
     */
-    return null
+    // store.dispatch(fetchTickerAction(this.config.id, data))
+    return data
   }
 }
