@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import MarketTicker from '@components/MarketTicker'
 import store from '@redux/store'
 import {
-  View,
-  Text,
-  ScrollView
+  View
 } from 'react-native'
 import {
-  Tabs,
-  List
+  Tabs
 } from 'antd-mobile-rn'
 
 export default class BaseTab extends Component {
@@ -25,15 +22,13 @@ export default class BaseTab extends Component {
   }
   render() {
     return (
-      <ScrollView>
-        <Tabs tabs={this.state.baseList}
-              tabBarPosition="top"
-              initialPage={0}
-              onChange={(tab) => {this.setState({base: tab.title})}}>
-          <MarketTicker exchange={this.props.exchange}
-                        base={this.state.base} />
-        </Tabs>
-      </ScrollView>
+      <Tabs tabs={this.state.baseList}
+            tabBarPosition="top"
+            initialPage={0}
+            onChange={(tab) => {this.setState({base: tab.title})}}>
+        <MarketTicker exchange={this.props.exchange}
+                      base={this.state.base} />
+      </Tabs>
     )
   }
 }

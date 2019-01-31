@@ -23,14 +23,12 @@ export default class Exchange extends React.Component {
   }
   render() {
     return (
-      <ScrollView style={{flex: 1}}>
-        <Tabs tabs={this.state.exchangeTabs}
-              tabBarPosition="top"
-              initialPage={0}
-              onChange={(tab) => {this.setState({exchange: tab.exchange})}}>
-          <BaseTab exchange={this.state.exchange} />
-        </Tabs>
-      </ScrollView>
+      <Tabs tabs={this.state.exchangeTabs}
+            tabBarPosition="top"
+            initialPage={0}
+            onChange={(tab) => {this.setState({exchange: tab.exchange})}}>
+        <BaseTab exchange={this.state.exchange} />
+      </Tabs>
     )
   }
 }

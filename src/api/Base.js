@@ -9,7 +9,7 @@ export default class Base {
     this.id = config.id
     this.config = config
     this.symbolMap = {}
-    this.tmpState = null
+    this.dirtyState = null
     this.fetchEventCode = null
 
     if (this.config.ws) {
@@ -39,7 +39,7 @@ export default class Base {
       dataSheets[data.base][data.coin] = data
     })
     this.symbolMap = symbolMap
-    this.tmpState = dataSheets
+    this.dirtyState = dataSheets
     store.dispatch(initAction(this.id, dataSheets))
     return Object.keys(symbolMap)
   }
@@ -74,12 +74,11 @@ export default class Base {
   _onMessage(message) {
     // 웹소켓 데이터 받음
     (async () => {
-      const newState = await this.convert(this.tmpState, message)
-      this.tmpState = newState
+      this.dirtyState = await this.convert(this.dirtyState, message)
       // 너무빠른 상태 변경으로 딜레이 추가.
       if (this.fetchEventCode === null) {
         this.fetchEventCode = setTimeout(() => {
-          this._fetch(newState)
+          this._fetch()
           fetchEventCode = null
         }, 500)
       }
@@ -98,9 +97,7 @@ export default class Base {
   convert(message) {
     return message
   }
-  _fetch(newState) {
-    if (newState !== undefined && newState !== null) {
-      store.dispatch(fetchState({[this.id]: newState}))
-    }
+  _fetch() {
+    store.dispatch(fetchState({[this.id]: this.dirtyState}))
   }
 }

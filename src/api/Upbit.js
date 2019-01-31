@@ -4,6 +4,7 @@ import Base from '~/api/Base'
 class UpbitWS extends Base {
   constructor() {
     super(config.exchanges.upbit)
+    this.isDev = true
   }
   onOpen(symbols) {
     /*
@@ -30,6 +31,11 @@ class UpbitWS extends Base {
   }
   convert = async (state, message) => {
     // 업비트는 심볼하나씩 데이터옴.
+    let textData = await new Response(message).text()
+    if (this.isDev) {
+      console.log(textData)
+      this.isDev = false
+    }
     let data = JSON.parse(await new Response(message).text())
     let base = this.symbolMap[data['code']]['base']
     let coin = this.symbolMap[data['code']]['coin']
@@ -38,9 +44,12 @@ class UpbitWS extends Base {
       state[base][coin] = Object.assign(state[base][coin], {
         ticker: {
           change: data['change'],
-          changeRate: data['signed_change_price']
+          signedChangeRate: data['signed_change_rate'],
+          tradePrice: data['trade_price'],
+          accTradeVolume: data['acc_trade_price']
         }
       })
+      // console.log('volume', data['acc_trade_price'])
     }
     return state
   }
