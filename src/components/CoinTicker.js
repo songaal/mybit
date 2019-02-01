@@ -10,21 +10,6 @@ import {
   List
 } from 'antd-mobile-rn'
 const { width, height } = Dimensions.get('window')
-console.log(Navigation)
-const goHome = () => Navigation.setRoot({
-  root: {
-    stack: {
-      id: 'App',
-      children: [
-        {
-          component: {
-            name: 'Home',
-          }
-        }
-    ],
-    }
-  }
-})
 
 export default class CoinTicker extends Component {
   constructor(props) {
@@ -51,10 +36,9 @@ export default class CoinTicker extends Component {
     } else {
       changeRateText['color'] = 'red'
     }
-
     return (
       <View>
-        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {goHome()}}>
+        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {goHOme()}}>
           <View style={{width: (width / 4) - 15}}>
               <Text style={{fontSize: 20}}>{coin.coin}</Text>
           </View>

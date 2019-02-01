@@ -3,7 +3,7 @@ import {
   Button
 } from 'react-native'
 
-export default class Order extends Component {
+export default class OrderBook extends Component {
   render() {
     return (
       <View>

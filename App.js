@@ -10,23 +10,10 @@ import { config } from '~/Config'
 import '@api/index'
 import Home from '@screens/Home'
 import store from '@redux/store'
-import { Navigation } from 'react-native-navigation'
-import { registerScreens } from '~/registerScreens'
+
 /* app은 앱 준비 단계로 사용.
  * 거래소, 마켓 로딩 완료시 화면 표시.
 */
-
-registerScreens()
-
-Navigation.events().registerAppLaunchedListener(() => {
-Navigation.setRoot({
-  root: {
-    component: {
-      name: 'App'
-    }
-  }
-})
-})
 
 console.log('----------------------------')
 console.log('Device OS: ', Platform.OS)
@@ -67,7 +54,7 @@ export default class App extends React.Component {
 
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Home/>
+        <Home />
       </SafeAreaView>
     )
   }

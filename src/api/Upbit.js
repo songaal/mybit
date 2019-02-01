@@ -59,8 +59,8 @@ class UpbitWS extends Base {
           tradeVolume: data['tv']
         }
       })
-    }else {
-      // console.log(1)
+    } else {
+      // console.log(data)
     }
 
     return state
