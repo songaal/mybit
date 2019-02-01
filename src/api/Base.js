@@ -14,7 +14,7 @@ export default class Base {
 
     if (this.config.ws) {
       // websocket 통신
-      this.wsWaitConnection()
+      this.wsConnection()
     } else {
       // TODO rest 폴링 통신으로 주기적 데이터 조회
       this.restPolling()
@@ -24,8 +24,9 @@ export default class Base {
     let exchange = new ccxt[this.id]()
     let dataSheets = {}
     let symbolMap = {}
-    Object.values(await exchange.fetchMarkets()).forEach(market => {
-      // 기초 데이터.
+    Object.values(await exchange.fetchMarkets())
+          .forEach(market => {
+      // store에 생성될 데이터 구조.
       let data = {
         symbol: market['symbol'],
         base: market['quote'],
@@ -43,7 +44,7 @@ export default class Base {
     store.dispatch(initAction(this.id, dataSheets))
     return Object.keys(symbolMap)
   }
-  wsWaitConnection() {
+  wsConnection() {
     let ws = new WebSocket(this.config.ws.url)
     ws.onopen = () => { this._onOpen() }
     ws.onclose = (event) => { this._onClose(event) }
@@ -52,7 +53,6 @@ export default class Base {
     this.ws = ws
   }
   send(obj) {
-    // console.log('[웹소켓 메시지 전송] ', obj)
     this.ws.send(JSON.stringify(obj))
   }
   _onOpen() {
@@ -79,7 +79,7 @@ export default class Base {
       if (this.fetchEventCode === null) {
         this.fetchEventCode = setTimeout(() => {
           this._fetch()
-          fetchEventCode = null
+          this.fetchEventCode = null
         }, 500)
       }
     })()

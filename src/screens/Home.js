@@ -7,8 +7,8 @@ import {
   TabBar
 } from 'antd-mobile-rn'
 import Exchange from '@screens/Exchange'
-import Assets from '@screens/Assets'
-import Chart from '@screens/Chart'
+import Strategy from '@screens/Strategy'
+import InvestHistory from '@screens/InvestHistory'
 import Account from '@screens/Account'
 
 export default class Home extends Component {
@@ -34,15 +34,15 @@ export default class Home extends Component {
                      onPress={() => this.onChangeTab('Exchange')}>
           <Exchange />
         </TabBar.Item>
-        <TabBar.Item title="차트"
-                     selected={this.state.selectedTab === 'Chart'}
-                     onPress={() => this.onChangeTab('Chart')}>
-          <Chart />
+        <TabBar.Item title="전략"
+                     selected={this.state.selectedTab === 'Strategy'}
+                     onPress={() => this.onChangeTab('Strategy')}>
+          <Strategy />
         </TabBar.Item>
-        <TabBar.Item title="자산관리"
-                     selected={this.state.selectedTab === 'Assets'}
-                     onPress={() => this.onChangeTab('Assets')}>
-          <Assets />
+        <TabBar.Item title="투자내역"
+                     selected={this.state.selectedTab === 'InvestHistory'}
+                     onPress={() => this.onChangeTab('InvestHistory')}>
+          <InvestHistory />
         </TabBar.Item>
         <TabBar.Item title="마이페이지"
                      selected={this.state.selectedTab === 'Account'}

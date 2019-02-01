@@ -3,11 +3,11 @@ import {
   View, Text
 } from 'react-native'
 
-export default class Chart extends React.Component {
+export default class InvestHistory extends React.Component {
   render() {
     return (
       <View>
-        <Text>Chart</Text>
+        <Text>개발중입니다.</Text>
       </View>
     )
   }

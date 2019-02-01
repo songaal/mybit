@@ -3,11 +3,11 @@ import {
   View, Text
 } from 'react-native'
 
-export default class Assets extends React.Component {
+export default class Strategy extends React.Component {
   render() {
     return (
       <View>
-        <Text>Assets</Text>
+        <Text>개발 중입니다.</Text>
       </View>
     )
   }

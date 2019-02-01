@@ -4,7 +4,6 @@ import Base from '~/api/Base'
 class UpbitWS extends Base {
   constructor() {
     super(config.exchanges.upbit)
-    this.isDev = true
   }
   onOpen(symbols) {
     /*
@@ -20,37 +19,50 @@ class UpbitWS extends Base {
     */
 
     this.send([
-      { ticket: 'ticker' },
-      { type: 'ticker', codes: symbols}
+      { ticket: 'ticket' },
+      { type: 'ticker',
+        codes: symbols
+      },
+      { type: 'orderbook',
+        codes: symbols
+      },
+      { type: 'trade',
+        codes: symbols
+      },
     ])
-    // this.send([
-    //   { ticket: 'ticker' },
-    //   { type: 'ticker', codes: ['KRW-WAVES', 'USDT-XMR', 'ETH-TUSD']}
-    // ])
-    console.log('업비트 메시지 전송. 마켓 수: ', symbols.length)
+
+    console.log('업비트 메시지 전송. 심볼 수: ', symbols.length)
   }
   convert = async (state, message) => {
     // 업비트는 심볼하나씩 데이터옴.
-    let textData = await new Response(message).text()
-    if (this.isDev) {
-      console.log(textData)
-      this.isDev = false
-    }
     let data = JSON.parse(await new Response(message).text())
-    let base = this.symbolMap[data['code']]['base']
-    let coin = this.symbolMap[data['code']]['coin']
-
     if (data['type'] === 'ticker') {
+      let base = this.symbolMap[data['code']]['base']
+      let coin = this.symbolMap[data['code']]['coin']
       state[base][coin] = Object.assign(state[base][coin], {
         ticker: {
           change: data['change'],
-          signedChangeRate: data['signed_change_rate'],
+          changeRate: data['signed_change_rate'],
           tradePrice: data['trade_price'],
-          accTradeVolume: data['acc_trade_price']
+          tradeVolume: data['acc_trade_price']
         }
       })
-      // console.log('volume', data['acc_trade_price'])
+    } else if (data['ty'] === 'trade') {
+      let base = this.symbolMap[data['cd']]['base']
+      let coin = this.symbolMap[data['cd']]['coin']
+      // console.log(base, coin, data['ab'], data['c'], data['tp'], data['tv'])
+      state[base][coin] = Object.assign(state[base][coin], {
+        trade: {
+          ab: data['ab'],
+          change: data['c'],
+          tradePrice: data['tp'],
+          tradeVolume: data['tv']
+        }
+      })
+    }else {
+      // console.log(1)
     }
+
     return state
   }
 }
