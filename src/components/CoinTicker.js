@@ -5,11 +5,11 @@ import {
   Dimensions,
   TouchableOpacity
 } from 'react-native'
-import { Navigation } from 'react-native-navigation'
 import {
   List
 } from 'antd-mobile-rn'
 const { width, height } = Dimensions.get('window')
+import { StackActions, NavigationActions } from 'react-navigation'
 
 export default class CoinTicker extends Component {
   constructor(props) {
@@ -17,6 +17,16 @@ export default class CoinTicker extends Component {
     this.state = {
 
     }
+  }
+  goOrderBook() {
+    // this.props.navigation.push('OrderBook')
+    this.props.navigation.navigate('OrderBook')
+    // this.props.navigation.dispatch(StackActions.reset({
+    //   index: 0,
+    //   actions: [
+    //     NavigationActions.navigate({ routeName: 'OrderBook' })
+    //   ]
+    // }))
   }
   render() {
     // console.log(this.props.coin)
@@ -38,7 +48,7 @@ export default class CoinTicker extends Component {
     }
     return (
       <View>
-        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {goHOme()}}>
+        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {this.goOrderBook()}}>
           <View style={{width: (width / 4) - 15}}>
               <Text style={{fontSize: 20}}>{coin.coin}</Text>
           </View>
