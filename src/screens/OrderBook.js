@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import {
-  Button
+  Button,
+  View,
+  Text
 } from 'react-native'
 
 export default class OrderBook extends Component {
   render() {
     return (
       <View>
-      Order
+        <Text>오더북, 주문 UI</Text>
       </View>
     )
   }

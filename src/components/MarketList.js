@@ -38,43 +38,27 @@ const Header = () => {
     </View>
   )
 }
-//
-// const Coin = (coin, base, tradePrice=0, signedChangeRate=0, accTradeVolume=0) => {
-//   return (
-//     <List.Item key={coin}>
-//     <View style={{}}>
-//       <TouchableOpacity style={{flexDirection: 'row'}}>
-//         <View style={{width: (width / 4) - 15}}>
-//             <Text style={{fontSize: 20}}>{coin}</Text>
-//         </View>
-//         <View style={{width: (width / 4)}}>
-//           <Text style={{textAlign:'right'}}>{tradePrice.toFixed(2)}</Text>
-//         </View>
-//         <View style={{width: (width / 4)}}>
-//           <Text style={{textAlign:'right'}}>{(signedChangeRate * 100).toFixed(2)}%</Text>
-//         </View>
-//         <View style={{width: (width / 4) - 15}}>
-//           <Text style={{textAlign:'right'}}>{(accTradeVolume / 1000000).toFixed(2)}백만</Text>
-//         </View>
-//       </TouchableOpacity>
-//     </View>
-//     </List.Item>
-//   )
-// }
 
 export default class MarketList extends Component {
   constructor(props) {
     super(props)
     this.updateState = this.updateState.bind(this)
+    const subscribe = store.getState()
     this.state = {
-      subscribe: store.getState(),
-      unsubscribe: store.subscribe(this.updateState)
+      subscribe: subscribe,
+      unsubscribe: store.subscribe(this.updateState),
+      exchange: props.exchange,
+      base: props.base
     }
   }
   componentWillUnmount() {
     this.state.unsubscribe()
   }
   updateState() {
+    const exchange = this.state.exchange
+    const base = this.state.base
+    const cleanState = store.getState().exchanges[exchange][base]
+    const dirtyState = this.state.subscribe.exchanges[exchange][base]
     this.setState({
       subscribe: store.getState()
     })
@@ -83,17 +67,17 @@ export default class MarketList extends Component {
     return Object.values(this.state.subscribe.exchanges[exchange][base])
   }
   render() {
-    const coinTickers = this.getCoinList(this.props.exchange, this.props.base)
+    const coinTickers = this.getCoinList(this.state.exchange, this.state.base)
                             .sort((c1, c2) => c1.coin >= c2.coin)
                             .map((coin, index) => {
       return (
         <List.Item key={index}>
-          <CoinTicker coin={coin}/>
+          <CoinTicker coin={coin} {...this.props}/>
         </List.Item>
       )
     })
     return (
-      <View style={{marginBottom: 100}}>
+      <View style={{marginBottom: 50}}>
         <Header/>
         <ScrollView>
           <List>

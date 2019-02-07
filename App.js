@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import store from '@redux/store'
 import { config } from '~/Config'
 import {
+  View,
+  Text,
   SafeAreaView,
   Platform,
   Dimensions
@@ -21,7 +23,35 @@ console.log('Device Height: ', height)
 console.log('----------------------------')
 
 export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.updateState = this.updateState.bind(this)
+    this.state = {
+      subscribe: store.getState(),
+      unsubscribe: store.subscribe(this.updateState)
+    }
+  }
+  componentWillUnmount() {
+    this.state.unsubscribe()
+  }
+  updateState() {
+    this.setState({
+      subscribe: store.getState()
+    })
+  }
   render() {
+    let totalCont = Object.keys(config.exchanges).length
+    let runCount = Object.keys(this.state.subscribe.exchanges).length
+    if (totalCont != runCount) {
+      return (
+        <View style={{flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center'}}>
+          <Text>로딩 중...</Text>
+        </View>
+      )
+    }
+    this.state.unsubscribe()
     return (
       <SafeAreaView style={{flex: 1}}>
         <Container />

@@ -16,11 +16,20 @@ import Strategy from '@screens/Strategy'
 
 import OrderBook from '@screens/OrderBook'
 
+import BaseTab from '@components/BaseTab'
+import MarketList from '@components/MarketList'
+import CoinTicker from '@components/CoinTicker'
+
 const exchangeStackNavigator = createStackNavigator({
-  exchange: { screen: Exchange, navigationOptions: {
-    header: null
-  } },
-  orderBook: { screen: OrderBook }
+  exchange: {
+    screen: Exchange,
+    navigationOptions: {
+      header: null
+    }
+  },
+  orderBook: {
+    screen: OrderBook
+  }
 })
 
 const AppContainer = createAppContainer(
@@ -65,7 +74,7 @@ const AppContainer = createAppContainer(
             size={24}
             color="gray" />)
         }
-      },
+      }
     }
   )
 )

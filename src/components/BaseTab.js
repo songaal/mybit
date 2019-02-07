@@ -12,23 +12,25 @@ export default class BaseTab extends Component {
   constructor(props) {
     super(props)
     // 스토어에서 한번만 조회해서 베이스코인들을 나열한다.
-    const baseList = Object.keys(store.getState().exchanges[this.props.exchange])
-                           .map(base => {
-      return { title: base }
-    })
+    const baseList = store.getState().exchanges[this.props.exchange]
+    const baseNames = Object.keys(baseList).map(base => ({ title: base }))
     this.state = {
-      baseList: baseList,
-      base: baseList[0].title // 기본값은 리스트 처음 베이스로 선택.
+      baseList: baseNames,
+      base: baseNames[0].title,
+      markets: {}
     }
   }
   render() {
     return (
-      <Tabs tabs={this.state.baseList}
-            tabBarPosition="top"
-            initialPage={0}
-            onChange={(tab) => {this.setState({base: tab.title})}}>
-        <MarketList exchange={this.props.exchange}
-                    base={this.state.base} />
+      <Tabs
+        tabs={this.state.baseList}
+        tabBarPosition="top"
+        initialPage={0}
+        onChange={(tab) => {this.setState({base: tab.title})}}>
+          <MarketList
+            exchange={this.props.exchange}
+            base={this.state.base}
+            navigation={this.props.navigation}/>
       </Tabs>
     )
   }
