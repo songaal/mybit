@@ -1,6 +1,7 @@
 const ccxt = require('ccxt')
 import store from '@redux/store'
 import { initAction, fetchState } from '@redux/actions/exchangeAction'
+import Upbit2 from '@api/Upbit2'
 /*
  * 웹소켓 로직임. 상속받아서 개발하면됨.
 */
@@ -10,7 +11,6 @@ export default class Base {
     this.config = config
     this.symbolMap = {}
     this.dirtyState = null
-    this.fetchEventCode = null
 
     if (this.config.ws) {
       // websocket 통신
@@ -28,6 +28,7 @@ export default class Base {
           .forEach(market => {
       // store에 생성될 데이터 구조.
       let data = {
+        exchange: this.id,
         symbol: market['symbol'],
         base: market['quote'],
         coin: market['base'],
@@ -42,6 +43,7 @@ export default class Base {
     this.symbolMap = symbolMap
     this.dirtyState = dataSheets
     store.dispatch(initAction(this.id, dataSheets))
+    this._fetch()
     return Object.keys(symbolMap)
   }
   wsConnection() {
@@ -56,7 +58,6 @@ export default class Base {
     this.ws.send(JSON.stringify(obj))
   }
   _onOpen() {
-    // 웹소켓 연결 async error..
     console.log('[웹소켓 연결]', this.id)
     this.loadMarkets().then((symbols) => {
       if(typeof this.onOpen === 'function') {
@@ -74,14 +75,7 @@ export default class Base {
   _onMessage(message) {
     // 웹소켓 데이터 받음
     (async () => {
-      this.dirtyState = await this.convert(this.dirtyState, message)
-      // 너무빠른 상태 변경으로 딜레이 추가.
-      if (this.fetchEventCode === null) {
-        this.fetchEventCode = setTimeout(() => {
-          this._fetch()
-          this.fetchEventCode = null
-        }, 500)
-      }
+      this.dirtyState = await this.convert(Object.assign({}, this.dirtyState), message)
     })()
   }
   _onError(error) {
@@ -98,6 +92,11 @@ export default class Base {
     return message
   }
   _fetch() {
+    // 너무빠른 상태 변경으로 딜레이 추가.
+    if (this.dirtyState == null) {
+      return
+    }
     store.dispatch(fetchState({[this.id]: this.dirtyState}))
+    setTimeout(() => this._fetch(), 500)
   }
 }

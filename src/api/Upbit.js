@@ -4,6 +4,7 @@ import Base from '~/api/Base'
 class UpbitWS extends Base {
   constructor() {
     super(config.exchanges.upbit)
+    this.is_frist = true
   }
   onOpen(symbols) {
     /*
@@ -17,20 +18,18 @@ class UpbitWS extends Base {
      *    ...
      * }}
     */
-
     this.send([
       { ticket: 'ticket' },
       { type: 'ticker',
         codes: symbols
       },
-      { type: 'orderbook',
-        codes: symbols
-      },
       { type: 'trade',
         codes: symbols
       },
+      { type: 'orderbook',
+        codes: symbols
+      }
     ])
-
     console.log('업비트 메시지 전송. 심볼 수: ', symbols.length)
   }
   convert = async (state, message) => {
@@ -39,30 +38,26 @@ class UpbitWS extends Base {
     if (data['type'] === 'ticker') {
       let base = this.symbolMap[data['code']]['base']
       let coin = this.symbolMap[data['code']]['coin']
-      state[base][coin] = Object.assign(state[base][coin], {
-        ticker: {
-          change: data['change'],
-          changeRate: data['signed_change_rate'],
-          tradePrice: data['trade_price'],
-          tradeVolume: data['acc_trade_price']
-        }
-      })
+      state[base][coin]['ticker'] = {
+        change: data['change'],
+        changeRate: data['signed_change_rate'],
+        tradePrice: data['trade_price'],
+        tradeVolume: data['acc_trade_price']
+      }
+    } else if (data['type'] === 'orderbook') {
+      let base = this.symbolMap[data['code']]['base']
+      let coin = this.symbolMap[data['code']]['coin']
+      state[base][coin]['orderbook'] = data['orderbook_units']
     } else if (data['ty'] === 'trade') {
       let base = this.symbolMap[data['cd']]['base']
       let coin = this.symbolMap[data['cd']]['coin']
-      // console.log(base, coin, data['ab'], data['c'], data['tp'], data['tv'])
-      state[base][coin] = Object.assign(state[base][coin], {
-        trade: {
-          ab: data['ab'],
-          change: data['c'],
-          tradePrice: data['tp'],
-          tradeVolume: data['tv']
-        }
-      })
-    } else {
-      // console.log(data)
+      state[base][coin]['trade'] = {
+        ab: data['ab'],
+        change: data['c'],
+        tradePrice: data['tp'],
+        tradeVolume: data['tv']
+      }
     }
-
     return state
   }
 }

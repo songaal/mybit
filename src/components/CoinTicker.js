@@ -15,19 +15,15 @@ export default class CoinTicker extends Component {
     super(props)
     this.state = {}
   }
-  goOrderBook(navigation) {
-    // this.props.navigation.push('OrderBook')
-    console.log(navigation)
-    navigation.navigate('orderBook')
-    // this.props.navigation.dispatch(StackActions.reset({
-    //   index: 0,
-    //   actions: [
-    //     NavigationActions.navigate({ routeName: 'OrderBook' })
-    //   ]
-    // }))
+  goOrderBook(navigation, coin) {
+    let params = {
+      exchange: coin.exchange,
+      base: coin.base,
+      coin: coin.coin
+    }
+    navigation.navigate('coinDetail', params)
   }
   render() {
-    // console.log(this.props.coin)
     const coin = this.props.coin
     if (coin.ticker === undefined) {
       return (
@@ -46,7 +42,7 @@ export default class CoinTicker extends Component {
     }
     return (
       <View>
-        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {this.goOrderBook(this.props.navigation)}}>
+        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {this.goOrderBook(this.props.navigation, coin)}}>
           <View style={{width: (width / 4) - 15}}>
               <Text style={{fontSize: 20}}>{coin.coin}</Text>
           </View>

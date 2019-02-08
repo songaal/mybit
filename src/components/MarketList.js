@@ -4,7 +4,6 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   Dimensions
 } from 'react-native'
 import {
@@ -43,9 +42,8 @@ export default class MarketList extends Component {
   constructor(props) {
     super(props)
     this.updateState = this.updateState.bind(this)
-    const subscribe = store.getState()
     this.state = {
-      subscribe: subscribe,
+      subscribe: store.getState(),
       unsubscribe: store.subscribe(this.updateState),
       exchange: props.exchange,
       base: props.base
@@ -55,10 +53,6 @@ export default class MarketList extends Component {
     this.state.unsubscribe()
   }
   updateState() {
-    const exchange = this.state.exchange
-    const base = this.state.base
-    const cleanState = store.getState().exchanges[exchange][base]
-    const dirtyState = this.state.subscribe.exchanges[exchange][base]
     this.setState({
       subscribe: store.getState()
     })

@@ -13,12 +13,7 @@ import Account from '@screens/Account'
 import Exchange from '@screens/Exchange'
 import InvestHistory from '@screens/InvestHistory'
 import Strategy from '@screens/Strategy'
-
-import OrderBook from '@screens/OrderBook'
-
-import BaseTab from '@components/BaseTab'
-import MarketList from '@components/MarketList'
-import CoinTicker from '@components/CoinTicker'
+import CoinDetail from '@screens/CoinDetail'
 
 const exchangeStackNavigator = createStackNavigator({
   exchange: {
@@ -27,8 +22,11 @@ const exchangeStackNavigator = createStackNavigator({
       header: null
     }
   },
-  orderBook: {
-    screen: OrderBook
+  coinDetail: {
+    screen: CoinDetail,
+    navigationOptions: {
+      title: null
+    }
   }
 })
 
