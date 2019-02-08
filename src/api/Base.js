@@ -1,102 +1,98 @@
 const ccxt = require('ccxt')
-import store from '@redux/store'
-import { initAction, fetchState } from '@redux/actions/exchangeAction'
-import Upbit2 from '@api/Upbit2'
-/*
- * 웹소켓 로직임. 상속받아서 개발하면됨.
-*/
+// import store from '@redux/store'
+// import { addExchange } from '@redux/actions/exchangeAction'
+
+/**
+ * 거래소 API 인터페이스
+ */
+ 
 export default class Base {
   constructor(config) {
-    this.id = config.id
     this.config = config
-    this.symbolMap = {}
-    this.dirtyState = null
-
-    if (this.config.ws) {
-      // websocket 통신
-      this.wsConnection()
-    } else {
-      // TODO rest 폴링 통신으로 주기적 데이터 조회
-      this.restPolling()
-    }
+    this.markets = {}
+    this.isMarketReady = false
+    this._loadMarkets(config.id)
+    this.ws = {}
   }
-  loadMarkets = async () => {
-    let exchange = new ccxt[this.id]()
-    let dataSheets = {}
-    let symbolMap = {}
-    Object.values(await exchange.fetchMarkets())
-          .forEach(market => {
-      // store에 생성될 데이터 구조.
-      let data = {
-        exchange: this.id,
-        symbol: market['symbol'],
+  _loadMarkets = async (id) => {
+    let exchagne = new ccxt[id]()
+    Object.values(await exchagne.fetchMarkets())
+    .forEach(market => {
+      this.markets[market['id']] = {
         base: market['quote'],
-        coin: market['base'],
-        marketSymbol: market['id']
-      }
-      if (dataSheets[data.base] === undefined) {
-        dataSheets[data.base] = {}
-      }
-      symbolMap[data.marketSymbol] = data
-      dataSheets[data.base][data.coin] = data
-    })
-    this.symbolMap = symbolMap
-    this.dirtyState = dataSheets
-    store.dispatch(initAction(this.id, dataSheets))
-    this._fetch()
-    return Object.keys(symbolMap)
-  }
-  wsConnection() {
-    let ws = new WebSocket(this.config.ws.url)
-    ws.onopen = () => { this._onOpen() }
-    ws.onclose = (event) => { this._onClose(event) }
-    ws.onerror = (error) => { this._onError(error) }
-    ws.onmessage = (event) => { this._onMessage(event.data) }
-    this.ws = ws
-  }
-  send(obj) {
-    this.ws.send(JSON.stringify(obj))
-  }
-  _onOpen() {
-    console.log('[웹소켓 연결]', this.id)
-    this.loadMarkets().then((symbols) => {
-      if(typeof this.onOpen === 'function') {
-        this.onOpen(symbols)
+        coin: market['base']
       }
     })
+    console.log('[마켓 조회 완료]', id)
+    this.isMarketReady = true
   }
-  _onClose(event) {
-    // 웹소켓 종료
-    console.log('[웹소켓 종료]', this.id)
-    if(typeof this.onClose === 'function') {
-      this.onClose()
+  getMarketList() {
+    return Object.keys(this.markets)
+  }
+  getBaseList() {
+    let baseSet = new Set()
+    Object.values(this.markets).forEach(market => {
+      baseSet.add(market.base)
+    })
+    return Array.from(baseSet)
+  }
+  getCoinList(base) {
+    return Object.values(this.markets)
+    .filter(market => market.base == base)
+    .map(market => market.coin)
+  }
+  newWebsocket(type, qs='', initSend=null, onMessage=null, onClose=null, onError=null, onOpen=null) {
+    if (type === undefined || type === null) {
+      return false
+    }
+    qs = typeof qs === 'string' ? qs : ''
+    let ws = new WebSocket(this.config.ws.url + qs)
+    ws.onopen = () => { 
+      console.log(this.config.id, 'websocket opened')
+      if (initSend !== null) { 
+        console.log('initSend>>', initSend)
+        ws.send(initSend)
+      }
+      if (typeof onOpen === 'function') { this.onOpen() }
+    }
+    ws.onclose = (event) => { 
+      console.log(this.config.id, 'websocket closed')
+      if (typeof onClose === 'function') { onClose(event) }
+    }
+    ws.onerror = (error) => { 
+      console.log(this.config.id, 'websocket error')
+      if (typeof onError === 'function') { onError(error) }
+    }
+    ws.onmessage = (event) => { 
+      if (typeof onMessage === 'function') { onMessage(event.data) }
+    }
+    this.ws[type] = ws
+    return ws
+  }
+  wsClose(type) {
+    if (this.ws[type]) {
+      this.ws[type].close()
+      delete this.ws[type]
+      return true
+    } else {
+      return false
     }
   }
-  _onMessage(message) {
-    // 웹소켓 데이터 받음
-    (async () => {
-      this.dirtyState = await this.convert(Object.assign({}, this.dirtyState), message)
-    })()
+  wsCloseAll() {
+    // 연결된 웹소켓 종료.
+    Object.values(this.ws).forEach(ws => {
+      try {
+        ws.close()
+      } catch (error) {
+        // 종료 에러 무시.
+      }
+    })
+    this.ws = {}
+    return true
   }
-  _onError(error) {
-    // 웹소켓 에러
-    console.log('[웹소켓 에러]', this.id, JSON.stringify(error))
-    if(typeof this.onError === 'function') {
-      this.onError()
-    }
-  }
-  restPolling() {
-    // ws, rest 데이터를 가공하여 fetchTicker 넘기기 빗썸꺼
-  }
-  convert(message) {
-    return message
-  }
-  _fetch() {
-    // 너무빠른 상태 변경으로 딜레이 추가.
-    if (this.dirtyState == null) {
-      return
-    }
-    store.dispatch(fetchState({[this.id]: this.dirtyState}))
-    setTimeout(() => this._fetch(), 500)
-  }
+
+  ticker(base, callback) {}
+  orderbook(base, coin, callback) {}
+  trade(base, coin, callback) {}
+
 }

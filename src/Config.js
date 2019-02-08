@@ -6,7 +6,8 @@ export const config = {
       korName: '업비트',
       currencyUnit: 'KRW',
       ws: {
-        url: 'wss://api.upbit.com/websocket/v1'
+        url: 'wss://api.upbit.com/websocket/v1',
+        ticker: ''
       }
     },
   }

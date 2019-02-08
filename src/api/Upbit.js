@@ -1,64 +1,43 @@
 import { config } from '~/Config'
-import Base from '~/api/Base'
-
-class UpbitWS extends Base {
+import Base from '@api/Base'
+/**
+ * upbit api
+ */
+class Upbit extends Base {
   constructor() {
-    super(config.exchanges.upbit)
-    this.is_frist = true
+    super(config['exchanges']['upbit']) // base에서 거래소의 마켓 정보를 store에 저장.
   }
-  onOpen(symbols) {
-    /*
-     * 업비트는 웹소켓 연결 후 메시지는 전송하면 실시간으로 데이터를 구독해볼수있다.
-     * symbolMap은 ccxt와 거래소의 심볼명의 차이를 맵핑해준 데이터이며, convert시 키값은 [base][coin]
-     * symbolMap data structure
-     * {KRW-BCH: {
-     *    base: KRW,
-     *    coin: BCC,
-     *    symbol: BCC/KRW
-     *    ...
-     * }}
-    */
-    this.send([
-      { ticket: 'ticket' },
-      { type: 'ticker',
-        codes: symbols
-      },
-      { type: 'trade',
-        codes: symbols
-      },
-      { type: 'orderbook',
-        codes: symbols
-      }
-    ])
-    console.log('업비트 메시지 전송. 심볼 수: ', symbols.length)
-  }
-  convert = async (state, message) => {
-    // 업비트는 심볼하나씩 데이터옴.
-    let data = JSON.parse(await new Response(message).text())
-    if (data['type'] === 'ticker') {
-      let base = this.symbolMap[data['code']]['base']
-      let coin = this.symbolMap[data['code']]['coin']
-      state[base][coin]['ticker'] = {
-        change: data['change'],
+  ticker(base, callback, retry=10) {
+    const codes = Object.keys(this.markets).filter(key => this.markets[key].base === base)
+    const initSend = JSON.stringify([ { ticket: 'ticker' }, { type: 'ticker', codes: codes } ])
+    const convert = async (message) => {
+      let data = JSON.parse(await new Response(message).text())
+      let { base, coin } = this.markets[data['code']]
+      callback({
+        base: base,
+        coin: coin,
         changeRate: data['signed_change_rate'],
         tradePrice: data['trade_price'],
         tradeVolume: data['acc_trade_price']
-      }
-    } else if (data['type'] === 'orderbook') {
-      let base = this.symbolMap[data['code']]['base']
-      let coin = this.symbolMap[data['code']]['coin']
-      state[base][coin]['orderbook'] = data['orderbook_units']
-    } else if (data['ty'] === 'trade') {
-      let base = this.symbolMap[data['cd']]['base']
-      let coin = this.symbolMap[data['cd']]['coin']
-      state[base][coin]['trade'] = {
-        ab: data['ab'],
-        change: data['c'],
-        tradePrice: data['tp'],
-        tradeVolume: data['tv']
-      }
+      })
     }
-    return state
+    this.newWebsocket('ticker', null, initSend, convert)
+  }
+  orderbook(base, coin, callback, retry=10) {
+    const initSend = JSON.stringify([ { ticket: 'orderbook' }, { type: 'orderbook', codes: [`${base}-${coin}`] } ])
+    const convert = async (message) => {
+      let data = JSON.parse(await new Response(message).text())
+      callback(JSON.stringify(data))
+    }
+    this.newWebsocket('orderbook', null, initSend, convert)
+  }
+  trade(base, coin, callback, retry=10) {
+    const initSend = JSON.stringify([ { ticket: 'trade' }, { type: 'trade', codes: [`${base}-${coin}`] } ])
+    const convert = async (message) => {
+      let data = JSON.parse(await new Response(message).text())
+      callback(JSON.stringify(data))
+    }
+    this.newWebsocket('trade', null, initSend, convert)
   }
 }
-export default new UpbitWS()
+export default new Upbit()

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import store from '@redux/store'
 import {
   View,
   Text,
   ScrollView,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native'
 import {
   Progress,
@@ -12,7 +12,7 @@ import {
   WhiteSpace,
   List
 } from 'antd-mobile-rn'
-import CoinTicker from '@components/CoinTicker'
+import Nexus from '@api/Nexus'
 
 const { width, height } = Dimensions.get('window')
 
@@ -41,41 +41,67 @@ const Header = () => {
 export default class MarketList extends Component {
   constructor(props) {
     super(props)
-    this.updateState = this.updateState.bind(this)
+    // let coinList = {}
+    // Nexus.getCoinList(this.props.exchange, this.props.base)
+    // .forEach(coin => { coinList[coin] = {} })
     this.state = {
-      subscribe: store.getState(),
-      unsubscribe: store.subscribe(this.updateState),
-      exchange: props.exchange,
-      base: props.base
+      tickers: {}
     }
+    Nexus.wsCloseAll()
+    this.cleanTickers = {}
+    Nexus.subscribeTicker(props.exchange, props.base, ticker => {
+      this.cleanTickers[ticker.coin] = ticker
+    })
+    this.updateState = this.updateState.bind(this)
+    this.updateState()
   }
-  componentWillUnmount() {
-    this.state.unsubscribe()
-  }
-  updateState() {
-    this.setState({
-      subscribe: store.getState()
+  componentWillReceiveProps(props) {
+    Nexus.wsCloseAll()
+    this.setState({tickers: {}})
+    this.cleanTickers = {}
+    Nexus.subscribeTicker(props.exchange, props.base, ticker => {
+      this.cleanTickers[ticker.coin] = ticker
     })
   }
-  getCoinList(exchange, base) {
-    return Object.values(this.state.subscribe.exchanges[exchange][base])
+  updateState() {
+    setTimeout(() => {
+      const tickers = Object.assign(this.state.tickers, this.cleanTickers)
+      this.setState({ tickers: tickers })
+      this.updateState()
+    }, 2000)
   }
   render() {
-    const coinTickers = this.getCoinList(this.state.exchange, this.state.base)
-                            .sort((c1, c2) => c1.coin >= c2.coin)
-                            .map((coin, index) => {
+    console.log('r', this.props.base)
+    const tickers = Object.keys(this.state.tickers)
+    .map((coin, index) => {
       return (
         <List.Item key={index}>
-          <CoinTicker coin={coin} {...this.props}/>
+          <View>
+            <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {}}>
+              <View style={{width: (width / 4) - 15}}>
+                  <Text style={{fontSize: 20}}>{coin}/{this.state.tickers[coin].base}</Text>
+              </View>
+              <View style={{width: (width / 4)}}>
+                <Text style={{textAlign:'right'}}>{'--'}</Text>
+              </View>
+              <View style={{width: (width / 4)}}>
+                <Text style={[{textAlign:'right'}]}>{1}%</Text>
+              </View>
+              <View style={{width: (width / 4) - 15}}>
+                <Text style={{textAlign:'right'}}>{1}백만</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </List.Item>
       )
     })
+    
     return (
       <View style={{marginBottom: 50}}>
         <Header/>
         <ScrollView>
           <List>
-            {coinTickers}
+            {tickers}
           </List>
         </ScrollView>
       </View>

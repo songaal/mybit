@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
-import store from '@redux/store'
-import { config } from '~/Config'
 import {
-  View,
-  Text,
   SafeAreaView,
   Platform,
-  Dimensions
+  Dimensions,
+  View,
+  Text
 } from 'react-native'
-import '@api/index'
+import Nexus from '@api/Nexus'
 import Container from '~/containers/Container'
 
 ////////////////////////////////////////////////
@@ -25,33 +23,23 @@ console.log('----------------------------')
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.updateState = this.updateState.bind(this)
     this.state = {
-      subscribe: store.getState(),
-      unsubscribe: store.subscribe(this.updateState)
+      isReadyAPI: false
     }
-  }
-  componentWillUnmount() {
-    this.state.unsubscribe()
-  }
-  updateState() {
-    this.setState({
-      subscribe: store.getState()
+    Nexus.checkMarket((isReady) => {
+      this.setState({
+        isReadyAPI: isReady
+      })
     })
   }
   render() {
-    let totalCont = Object.keys(config.exchanges).length
-    let runCount = Object.keys(this.state.subscribe.exchanges).length
-    if (totalCont != runCount) {
+    if (!this.state.isReadyAPI) {
       return (
-        <View style={{flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center'}}>
-          <Text>로딩 중...</Text>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>Loading...</Text>
         </View>
       )
     }
-    this.state.unsubscribe()
     return (
       <SafeAreaView style={{flex: 1}}>
         <Container />
