@@ -6,110 +6,48 @@ import {
   Dimensions,
   ScrollView
 } from 'react-native'
-import {
-  Tabs,
-  List
-} from 'antd-mobile-rn'
+
 import Nexus from '@api/Nexus'
+import Utils from '~/Utils'
 
 const { width, height } = Dimensions.get('window')
-
-const Header = () => {
-  return (
-    <View style={{flexDirection: 'row',
-                  marginVertical: 15,
-                  marginHorizontal: 15
-                }}>
-      <View style={{width: (width / 4) - 15}}>
-        <Text style={{textAlign: 'left'}}>코인명</Text>
-      </View>
-      <View style={{width: (width / 4)}}>
-        <Text style={{textAlign: 'right'}}>가격</Text>
-      </View>
-      <View style={{width: (width / 4)}}>
-        <Text style={{textAlign: 'right'}}>전일대비</Text>
-      </View>
-      <View style={{width: (width / 4) - 15}}>
-        <Text style={{textAlign: 'right'}}>금일거래량</Text>
-      </View>
-    </View>
-  )
-}
 
 export default class BaseTab extends Component {
   constructor(props) {
     super(props)
-    const options = Nexus.getBaseList(props.exchange)
     this.cleanTickers = {}
-    options.forEach(option => this.cleanTickers[option] = {})
     this.state = {
-      options: options.map(base => ({id: base, title: base})),
+      selected: null,
       tickers: Object.assign({}, this.cleanTickers),
-      selected: options[0]
+      doExpensiveRender: false
     }
-    this.updateState()
-    Nexus.subscribeTicker(props.exchange, options[0], (ticker) => {
-      this.cleanTickers[ticker.base][ticker.coin] = ticker
-    })
+    this.updateTicker = this.updateTicker.bind(this)
+    this.handleSelected = this.handleSelected.bind(this)
+    this.goCoinDetail = this.goCoinDetail.bind(this)
   }
-  updateState() {
-    setTimeout(() => {
-      const tickers = Object.assign(this.state.tickers, this.cleanTickers)
-      this.setState({ tickers: tickers })
-      this.updateState()
-    }, 500)
+  updateTicker(ticker) {
+    if (this.cleanTickers[ticker.base] === undefined) {
+      this.cleanTickers[ticker.base] = {}
+    }
+    this.cleanTickers[ticker.base][ticker.coin] = ticker
   }
   handleSelected(id) {
-    if (this.state.selected != id) {
-      (async () => {
-        Nexus.wsCloseAll()
-        Nexus.subscribeTicker(this.props.exchange, id, (ticker) => {
-          this.cleanTickers[ticker.base][ticker.coin] = ticker
-        })
-      })()
-      this.setState({selected: id})
+    Nexus.wsCloseAll()
+    this.setState({selected: id})
+    Nexus.subscribeTicker(this.props.exchange, id, this.updateTicker)
+  }
+  goCoinDetail(exchange, base, coin) {
+    Nexus.wsCloseAll()
+    let params = {
+      exchange: exchange,
+      base: base,
+      coin: coin
     }
+    this.props.navigation.navigate('coinDetail', params)
   }
   render() {
-    const tickers = Object.keys(this.state.tickers[this.state.selected])
-    .map((coin, index) => {
-      return (
-        <List.Item key={index}>
-          <View>
-            <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {}}>
-              <View style={{width: (width / 4) - 15}}>
-                  <Text style={{fontSize: 20}}>{coin}/{this.state.tickers[this.state.selected][coin].base}</Text>
-              </View>
-              <View style={{width: (width / 4)}}>
-                <Text style={{textAlign:'right'}}>{'--'}</Text>
-              </View>
-              <View style={{width: (width / 4)}}>
-                <Text style={[{textAlign:'right'}]}>{1}%</Text>
-              </View>
-              <View style={{width: (width / 4) - 15}}>
-                <Text style={{textAlign:'right'}}>{1}백만</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </List.Item>
-      )
-    })
-
     return (
-      <Tabs
-        tabs={this.state.options}
-        onChange={(tab) => this.handleSelected(tab.id)}>
-        
-        <View style={{marginBottom: 50}}>
-          <Header/>
-          <ScrollView>
-            <List>
-              {tickers}
-            </List>
-          </ScrollView>
-        </View>
-
-      </Tabs>
+      <View></View>
     )
   }
 }

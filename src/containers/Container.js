@@ -14,27 +14,18 @@ import Exchange from '@screens/Exchange'
 import InvestHistory from '@screens/InvestHistory'
 import Strategy from '@screens/Strategy'
 import CoinDetail from '@screens/CoinDetail'
-import Nexus from '@api/Nexus'
 
-// const exchangeStackNavigator = createStackNavigator({
-//   exchange: {
-//     screen: Exchange,
-//     navigationOptions: {
-//       header: null
-//     }
-//   },
-//   coinDetail: {
-//     screen: CoinDetail,
-//     navigationOptions: {
-//       title: null
-//     }
-//   }
-// })
 const exchangeStackNavigator = createStackNavigator({
   exchange: {
     screen: Exchange,
     navigationOptions: {
       header: null
+    }
+  },
+  coinDetail: {
+    screen: CoinDetail,
+    navigationOptions: {
+      title: null
     }
   }
 })

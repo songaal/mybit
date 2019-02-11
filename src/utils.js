@@ -1,14 +1,11 @@
-export default utils = {
-  formatPrice: (price, length) => {
-    return price
-  },
-  getExchangeList: (store) => {
-    return Object.keys(store.exchanges)
-  },
-  getBaseList: (store, exchange) => {
-    return Object.keys(store.exchanges[exchange])
-  },
-  getCoinList: (store, exchange, base) => {
-    return Object.keys(store.exchanges[exchange][base])
+class Utils {
+  formatPrice(price, currency) {
+    if (currency === 'KRW') {
+      return String(Number(price).toFixed(2)).replace(/(.)(?=(\d{3})+$)/g,'$1,')
+    } else {
+      return price
+    } 
   }
 }
+
+export default new Utils()

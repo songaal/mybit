@@ -1,6 +1,4 @@
 const ccxt = require('ccxt')
-// import store from '@redux/store'
-// import { addExchange } from '@redux/actions/exchangeAction'
 
 /**
  * 거래소 API 인터페이스
@@ -10,36 +8,28 @@ export default class Base {
   constructor(config) {
     this.config = config
     this.markets = {}
+    this.baseSet = []
+    this.coins = {}
+    this.ws = {}
     this.isMarketReady = false
     this._loadMarkets(config.id)
-    this.ws = {}
   }
   _loadMarkets = async (id) => {
     let exchagne = new ccxt[id]()
     Object.values(await exchagne.fetchMarkets())
     .forEach(market => {
-      this.markets[market['id']] = {
-        base: market['quote'],
-        coin: market['base']
+      let id = market['id']
+      let base = market['quote']
+      let coin = market['base']
+      if (this.coins[base] === undefined) {
+        this.coins[base] = []
       }
+      this.coins[base].push(coin)
+      this.baseSet[base].push(base)
+      this.markets[id] = { base: base, coin: coin }
     })
     console.log('[마켓 조회 완료]', id)
     this.isMarketReady = true
-  }
-  getMarketList() {
-    return Object.keys(this.markets)
-  }
-  getBaseList() {
-    let baseSet = new Set()
-    Object.values(this.markets).forEach(market => {
-      baseSet.add(market.base)
-    })
-    return Array.from(baseSet)
-  }
-  getCoinList(base) {
-    return Object.values(this.markets)
-    .filter(market => market.base == base)
-    .map(market => market.coin)
   }
   newWebsocket(type, qs='', initSend=null, onMessage=null, onClose=null, onError=null, onOpen=null) {
     if (type === undefined || type === null) {
@@ -50,7 +40,7 @@ export default class Base {
     ws.onopen = () => { 
       console.log(this.config.id, 'websocket opened')
       if (initSend !== null) { 
-        console.log('initSend>>', initSend)
+        // console.log('initSend>>', initSend)
         ws.send(initSend)
       }
       if (typeof onOpen === 'function') { this.onOpen() }
@@ -70,17 +60,16 @@ export default class Base {
     return ws
   }
   wsClose(type) {
-    if (this.ws[type]) {
+    try {
       this.ws[type].close()
       delete this.ws[type]
-      return true
-    } else {
-      return false
+    } catch(error) {
+      // 종료 에러 무시.
     }
   }
   wsCloseAll() {
-    // 연결된 웹소켓 종료.
-    Object.values(this.ws).forEach(ws => {
+    Object.values(this.ws)
+    .forEach(ws => {
       try {
         ws.close()
       } catch (error) {
@@ -88,7 +77,6 @@ export default class Base {
       }
     })
     this.ws = {}
-    return true
   }
 
   ticker(base, callback) {}
