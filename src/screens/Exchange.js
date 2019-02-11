@@ -10,8 +10,7 @@ import BaseTab from '@components/BaseTab'
 export default class Exchange extends React.Component {
   constructor(props) {
     super(props)
-    const options = Object.values(config.getExchanges)
-    .map(exchange => {
+    const options = Object.values(config.exchanges).map(exchange => {
       return { id: exchange.id, title: exchange.korName }
     })
     this.state = {
@@ -25,9 +24,6 @@ export default class Exchange extends React.Component {
   render() {
     return (
       <View>
-        <BaseTab
-          exchange={this.state.selected}
-          navigation={this.props.navigation}/>
       </View>
     )
   }

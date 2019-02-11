@@ -23,9 +23,9 @@ export default class Base {
       let coin = market['base']
       if (this.coins[base] === undefined) {
         this.coins[base] = []
+        this.baseSet.push(base)
       }
       this.coins[base].push(coin)
-      this.baseSet[base].push(base)
       this.markets[id] = { base: base, coin: coin }
     })
     console.log('[마켓 조회 완료]', id)

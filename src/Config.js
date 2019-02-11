@@ -11,9 +11,6 @@ export const config = {
         ticker: ''
       }
     },
-  },
-  getExchanges: () => {
-    return ['upbit']
   }
 }
 

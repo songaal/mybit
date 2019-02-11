@@ -5,13 +5,6 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import {
-  Progress,
-  Button,
-  WhiteSpace,
-  List,
-  Tabs
-} from 'antd-mobile-rn'
  
 const tabs = [
   {id: 'order', title: '주문'},
@@ -31,12 +24,7 @@ export default class CoinDetail extends Component {
   }
   render() {
     return (
-      <Tabs
-        tabs={ tabs }
-        tabBarPosition="top"
-        onChange={(tab) => {this.handleChange(tab.id)}}>
-
-      </Tabs>
+      <View></View>
     )
   }
 }
