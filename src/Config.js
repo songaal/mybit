@@ -1,4 +1,3 @@
-
 export const config = {
   exchanges: {
     upbit: {
@@ -7,10 +6,14 @@ export const config = {
       korName: '업비트',
       currencyUnit: 'KRW',
       ws: {
-        url: 'wss://api.upbit.com/websocket/v1',
-        ticker: ''
+        url: 'wss://api.upbit.com/websocket/v1'
       }
-    },
+    }
+  },
+  getExchangeLabels: () => {
+    return Object.values(config.exchanges).map(exchange => {
+      return { key: exchange.id, title: exchange.korName }
+    })
   }
 }
 
@@ -41,5 +44,4 @@ bitmex: {
     url: ''
   }
 }
-
 */

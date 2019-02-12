@@ -8,7 +8,7 @@ export default class Base {
   constructor(config) {
     this.config = config
     this.markets = {}
-    this.baseSet = []
+    this.baseList = []
     this.coins = {}
     this.ws = {}
     this.isMarketReady = false
@@ -23,7 +23,7 @@ export default class Base {
       let coin = market['base']
       if (this.coins[base] === undefined) {
         this.coins[base] = []
-        this.baseSet.push(base)
+        this.baseList.push(base)
       }
       this.coins[base].push(coin)
       this.markets[id] = { base: base, coin: coin }

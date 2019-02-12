@@ -5,7 +5,6 @@
  * 구현체에서는 파라미터, 메시지 데이터만 변환작업만 진행
  */
 import Upbit from '@api/Upbit'
-import { config } from '~/Config'
 
 class Nexus {
     constructor() {
@@ -30,15 +29,6 @@ class Nexus {
             }, 500)
         }
     }
-    getExchangeList() {
-        return Object.keys(config.exchanges)
-    }
-    getBaseList(exchange) {
-        return this.api[exchange].getBaseList()
-    }
-    getCoinList(exchange, base) {
-        return this.api[exchange].getCoinList(base)
-    }
     subscribeTicker(exchange, base, callback) {
         this.api[exchange].ticker(base, callback)
     }
@@ -53,6 +43,16 @@ class Nexus {
         } else {
             this.api[exchange].wsCloseAll()
         }
+    }
+    getMarkets(exchange) {
+        return this.api[exchange].markets
+    }
+    getBaseList(exchange) {
+        return this.api[exchange].baseList
+    }
+    getCoinList(exchange, base) {
+        console.log(exchange, base)
+        return this.api[exchange].coins[base]
     }
 }
 export default new Nexus()
