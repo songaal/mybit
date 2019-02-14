@@ -6,7 +6,8 @@ import {
   Text,
   View,
   Dimensions,
-  StyleSheet
+  StyleSheet,
+  SafeAreaView
 } from 'react-native'
 import { 
   TabView

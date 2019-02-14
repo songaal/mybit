@@ -50,5 +50,8 @@ class Nexus {
     getPriceInfo(exchange, type=null) {
         return this.api[exchange].markets.priceInfo
     }
+    runOrderbook(exchange, base, coin) {
+        this.api[exchange].orderbook(base, coin)
+    }
 }
 export default new Nexus()

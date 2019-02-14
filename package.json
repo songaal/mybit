@@ -11,12 +11,14 @@
     "preset": "react-native"
   },
   "dependencies": {
+    "@ant-design/react-native": "^3.1.1",
     "ccxt": "^1.18.146",
     "expo": "^32.0.0",
     "numeral": "^2.0.6",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-navigation": "^2.8.0",
+    "react-native-picker-select": "^6.0.0",
     "react-native-tab-view": "^1.3.2",
     "react-native-vector-icons": "^6.2.0",
     "react-navigation": "^3.0.9",

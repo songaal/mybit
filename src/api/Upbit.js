@@ -49,7 +49,7 @@ class Upbit extends Base {
   orderbook(base, coin) {
     const key = this.marketKeyMap[base][coin].key
     const cfg = {
-      type: 'ticker',
+      type: 'orderbook',
       format: this.formatOrderbook,
       initSend: JSON.stringify([
         { ticket: 'orderbook' }, 
@@ -61,13 +61,27 @@ class Upbit extends Base {
   }
   formatOrderbook = async (message) => {
     let data = JSON.parse(await new Response(message).text())
-    let { base, coin } = this.revMarketKeyMap[data['cd']]
+    let { base, coin } = this.revMarketKeyMap[data['code']]
+    let asks = []
+    let bids = []
+    data['orderbook_units'].forEach(orderbook => {
+      asks.push({
+        price: numeral(orderbook['ask_price']).format('0,000'),
+        size: orderbook['ask_size'],
+        unit: 'ask'
+      })
+      bids.push({
+        price: numeral(orderbook['bid_price']).format('0,000'),
+        size: orderbook['bid_size'],
+        unit: 'bid'
+      })
+    })
+
     return {
       base: base,
       coin: coin,
-      asks: [],
-      bids: [],
-      time: null
+      units: asks.concat(bids),
+      time: data['timestamp']
     }
   }
 }

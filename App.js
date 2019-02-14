@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
-import {
-  SafeAreaView,
-  Platform,
-  Dimensions,
-  View,
-  Text
-} from 'react-native'
+import { Platform, Dimensions, View, Text, ScrollView } from 'react-native'
 import Nexus from '@api/Nexus'
 import Container from '~/containers/Container'
 
@@ -40,11 +34,7 @@ export default class App extends Component {
         </View>
       )
     }
-    return (
-      <SafeAreaView style={{flex: 1}}>
-        <Container />
-      </SafeAreaView>
-    )
+    return <Container />
   }
 
 }

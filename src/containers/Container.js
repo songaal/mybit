@@ -13,11 +13,14 @@ const exchangeStackNavigator = createStackNavigator({
   exchange: {
     screen: Exchange,
     navigationOptions: {
-      header: null
+      headerStyle: {
+        height: 0
+      }
     }
   },
   coinDetail: {
-    screen: CoinDetail
+    screen: CoinDetail,
+    navigationOptions: {}
   }
 })
 
@@ -43,22 +46,22 @@ const AppContainer = createAppContainer(
           }
         }
       },
-      strategy: {
-        screen: Strategy,
-        navigationOptions: {
-          title: '전략',
-          tabBarIcon: (<FontAwesomeIcon
-            name="stack-exchange"
-            size={24}
-            color="gray" />)
-        }
-      },
+      // strategy: {
+      //   screen: Strategy,
+      //   navigationOptions: {
+      //     title: '전략',
+      //     tabBarIcon: (<FontAwesomeIcon
+      //       name="stack-exchange"
+      //       size={24}
+      //       color="gray" />)
+      //   }
+      // },
       investHistory: {
         screen: InvestHistory,
         navigationOptions: {
-          title: '투자이력',
+          title: '투자내역',
           tabBarIcon: (<FontAwesomeIcon
-            name="history"
+            name="bookmark"
             size={24}
             color="gray" />)
         }
@@ -66,7 +69,7 @@ const AppContainer = createAppContainer(
       account: {
         screen: Account,
         navigationOptions: {
-          title: '마이페이지',
+          title: '내정보',
           tabBarIcon: (<FontAwesomeIcon
             name="user"
             size={24}
@@ -79,10 +82,6 @@ const AppContainer = createAppContainer(
 
 export default class Container extends Component {
   render() {
-    return (
-      <View style={{flex: 1}}>
-        <AppContainer />
-      </View>
-    )
+    return <AppContainer />
   }
 }

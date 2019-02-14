@@ -11,12 +11,7 @@ const options = [
   {key: 'orderHistory', title: '주문내역'}
 ]
 
-let headerTitle = ''
-
 export default class CoinDetail extends Component {
-  static navigationOptions = {
-    title: headerTitle
-  }
   constructor(props) {
     super(props)
     this._handleIndexChange = this._handleIndexChange.bind(this)
@@ -25,7 +20,6 @@ export default class CoinDetail extends Component {
     this.base = props.navigation.getParam('base')
     this.coin = props.navigation.getParam('coin')
     
-    headerTitle = this.coin
     this.state = {
       index: 0,
       routes: options,
