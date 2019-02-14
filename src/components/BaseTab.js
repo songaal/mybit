@@ -1,58 +1,23 @@
 import React, { Component } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  FlatList
-} from 'react-native'
-import { 
-  TabView
-} from 'react-native-tab-view'
+import { View, Text, Dimensions, StyleSheet } from 'react-native'
+import { TabView } from 'react-native-tab-view'
 import Nexus from '@api/Nexus'
-import Utils from '~/Utils'
 import Ticker from '@components/Ticker'
 
 const { width, height } = Dimensions.get('window')
 
-const LazyPlaceholder = ({ route }) => (
-  <View style={styles.scene}>
-    <Text>Loading…</Text>
-  </View>
-);
-
 export default class BaseTab extends Component {
   constructor(props) {
     super(props)
-    this.updateTicker = this.updateTicker.bind(this)
-    this.handleSelected = this.handleSelected.bind(this)
-    this.goCoinDetail = this.goCoinDetail.bind(this)
-    this._renderScene = this._renderScene.bind(this)
-    this._handleIndexChange = this._handleIndexChange.bind(this)
-    this.updateText = this.updateText.bind(this)
-    this.cleanTickers = {}
-
-    const options = Nexus.getBaseList(props.exchange)
+    const options = Object.keys(Nexus.getMarketKeyMap(props.exchange))
     .map(base => ({key: base, title: base}))
     this.state = {
       index: 0,
       routes: options,
-      loaded: [options[0].key],
-      tickers: {},
-      aa: 1
+      loaded: [options[0].key]
     }
-    this.updateText()
-  }
-  updateText() {
-    setInterval(() => {
-      let text = (Math.random() * 99999999)
-      console.log(text)
-        this.setState( prevState => ({
-          aa: text
-      }))
-    }, 10)
+    this._renderScene = this._renderScene.bind(this)
+    this._handleIndexChange = this._handleIndexChange.bind(this)
   }
   _handleIndexChange = index =>
     this.setState(state => {
@@ -63,35 +28,40 @@ export default class BaseTab extends Component {
           ? state.loaded
           : [...state.loaded, key],
       };
-    });
+    })
   _renderScene = ({ route }) => {
     if (
       this.state.routes.indexOf(route) !== this.state.index &&
       !this.state.loaded.includes(route.key)
     ) {
-      return <LazyPlaceholder route={route} />
+      return null
     }
-    return (<Ticker exchange={this.props.exchange} base={route.key} text={this.state.aa}/>)
-  };
-  updateTicker(ticker) {
-    if (this.cleanTickers[ticker.base] === undefined) {
-      this.cleanTickers[ticker.base] = {}
-    }
-    this.cleanTickers[ticker.base][ticker.coin] = ticker
-  }
-  handleSelected(id) {
-    Nexus.wsCloseAll()
-    this.setState({selected: id})
-    Nexus.subscribeTicker(this.props.exchange, id, this.updateTicker)
-  }
-  goCoinDetail(exchange, base, coin) {
-    Nexus.wsCloseAll()
-    let params = {
-      exchange: exchange,
-      base: base,
-      coin: coin
-    }
-    this.props.navigation.navigate('coinDetail', params)
+    
+    return (
+      <View>
+        <View style={{height: 30}}>
+            <View style={{
+              flex: 1, 
+              flexDirection: 'row', 
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderBottomWidth: 0.5,
+              borderBottomCOlor: 'gray'}}>
+                <Text style={{marginLeft: 10, textAlign: 'left'}}>코인명</Text>
+                <Text style={{textAlign: 'right'}}>가격</Text>
+                <Text style={{textAlign: 'right'}}>전일대비</Text>
+                <Text style={{marginRight: 10, textAlign: 'right'}}>거래량</Text>
+            </View>
+        </View>
+        <View style={{marginBottom: 60}}>
+          <Ticker
+            exchange={this.props.exchange} 
+            base={route.key} 
+            index={this.state.index} 
+            navigation={this.props.navigation}/>
+        </View>
+      </View>
+    )
   }
   render() {
     return (

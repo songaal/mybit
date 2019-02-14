@@ -12,15 +12,13 @@ import {
   TabView
 } from 'react-native-tab-view'
 
-const LazyPlaceholder = ({ route }) => (
-  <View style={styles.scene}>
-    <Text>Loading…</Text>
-  </View>
-);
 
 export default class Exchange extends React.Component {
   constructor(props) {
     super(props)
+    this._handleIndexChange = this._handleIndexChange.bind(this)
+    this._renderScene = this._renderScene.bind(this)
+    
     const options = config.getExchangeLabels()
     this.state = {
       index: 0,
@@ -28,7 +26,7 @@ export default class Exchange extends React.Component {
       loaded: [options[0].key]
     }
   }
-  _handleIndexChange = index =>
+  _handleIndexChange(index) {
     this.setState(state => {
       const { key } = state.routes[index]
       return {
@@ -36,18 +34,18 @@ export default class Exchange extends React.Component {
         loaded: state.loaded.includes(key)
           ? state.loaded
           : [...state.loaded, key],
-      };
-    });
+      }
+    })
+  }
   _renderScene = ({ route }) => {
     if (
       this.state.routes.indexOf(route) !== this.state.index &&
       !this.state.loaded.includes(route.key)
     ) {
-      return <LazyPlaceholder route={route} />
+      return null
     }
-    return <BaseTab exchange={route.key} />
-  };
-
+    return <BaseTab exchange={route.key} navigation={this.props.navigation}/>
+  }
   render() {
     return (
       <TabView

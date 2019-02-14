@@ -13,6 +13,7 @@
   "dependencies": {
     "ccxt": "^1.18.146",
     "expo": "^32.0.0",
+    "numeral": "^2.0.6",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-navigation": "^2.8.0",

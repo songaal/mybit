@@ -1,62 +1,125 @@
 const ccxt = require('ccxt')
-
 /**
- * 거래소 API 인터페이스
+ * 거래소의 마켓 정보 
+ * 웹소켓 or http rest polling 관리
+ * - 마켓 데이터 구조
+ * markets = {
+ *    priceInfo: {
+ *      base1: {
+ *        coin2: {
+ *          ticker: { ... },
+ *          orderbook: { ... },
+ *          trade: { ... }
+ *        }
+ *       ...
+ *      }
+ *    },
+ *    pairCoinList: {
+ *      base1: [coin1, coin2, ...]
+ *      ...
+ *    }
+ *  }
+ * - 거래소, ccxt 마켓 맵핑데이터
+ *    marketKeyMap[quote][coin] = {
+ *      symbol: symbol,
+ *      base: quote,
+ *      coin: base,
+ *      key: id
+ *    }
  */
- 
+
 export default class Base {
   constructor(config) {
     this.config = config
-    this.markets = {}
-    this.baseList = []
-    this.coins = {}
     this.ws = {}
+    this.markets = {
+      priceInfo: {},
+      pairCoinList: {}
+    }
+    this.marketKeyMap = {}
+    this.revMarketKeyMap = {}
     this.isMarketReady = false
     this._loadMarkets(config.id)
   }
   _loadMarkets = async (id) => {
     let exchagne = new ccxt[id]()
-    Object.values(await exchagne.fetchMarkets())
+    let priceInfo = {}
+    let paireCoinList = {}
+    let marketKeyMap = {}
+    let revMarketKeyMap = {}
+    const markets = await exchagne.fetchMarkets()
+    Object.values(markets)
     .forEach(market => {
-      let id = market['id']
-      let base = market['quote']
-      let coin = market['base']
-      if (this.coins[base] === undefined) {
-        this.coins[base] = []
-        this.baseList.push(base)
+      // quote == base
+      // base == coin
+      const {id, quote, base, symbol } = market
+      if (paireCoinList[quote] === undefined) {
+        paireCoinList[quote] = []
+        priceInfo[quote] = {}
+        marketKeyMap[quote] = {}
       }
-      this.coins[base].push(coin)
-      this.markets[id] = { base: base, coin: coin }
+      priceInfo[quote][base] = {}
+      paireCoinList[quote].push(base)
+      marketKeyMap[quote][base] = {
+        symbol: symbol,
+        base: quote,
+        coin: base,
+        key: id
+      }
+      revMarketKeyMap[id] = {
+        symbol: symbol,
+        base: quote,
+        coin: base
+      }
     })
-    console.log('[마켓 조회 완료]', id)
+    this.markets.priceInfo = priceInfo
+    this.markets.pairCoinList = paireCoinList
+    this.marketKeyMap = marketKeyMap
+    this.revMarketKeyMap = revMarketKeyMap
     this.isMarketReady = true
   }
-  newWebsocket(type, qs='', initSend=null, onMessage=null, onClose=null, onError=null, onOpen=null) {
-    if (type === undefined || type === null) {
-      return false
+  newWebsocket(cfg) {
+    if (this.ws[cfg.type]) {
+      this.ws[cfg.type].close()
     }
-    qs = typeof qs === 'string' ? qs : ''
+    let qs = typeof cfg.qs === 'string' ? cfg.qs : ''
     let ws = new WebSocket(this.config.ws.url + qs)
     ws.onopen = () => { 
-      console.log(this.config.id, 'websocket opened')
-      if (initSend !== null) { 
-        // console.log('initSend>>', initSend)
-        ws.send(initSend)
+      if (typeof cfg.initSend === 'string') {
+        ws.send(cfg.initSend)
       }
-      if (typeof onOpen === 'function') { this.onOpen() }
+      if (typeof cfg.onOpen === 'function') {
+        cfg.onOpen()
+      }
     }
-    ws.onclose = (event) => { 
-      console.log(this.config.id, 'websocket closed')
-      if (typeof onClose === 'function') { onClose(event) }
+    ws.onclose = (event) => {
+      if (typeof cfg.onClose === 'function') {
+        cfg.onClose(event)
+      }
     }
-    ws.onerror = (error) => { 
-      console.log(this.config.id, 'websocket error')
-      if (typeof onError === 'function') { onError(error) }
+    ws.onerror = (error) => {
+      if (typeof cfg.onError === 'function') {
+        cfg.onError(error)
+      }
     }
-    ws.onmessage = (event) => { 
-      if (typeof onMessage === 'function') { onMessage(event.data) }
+    ws.onmessage = (event) => {
+      let message = event.data
+      if (typeof cfg.onMessage === 'function') {
+        cfg.onmessage(message)
+      }
+      if (typeof cfg.format === 'function') {
+        cfg.format(message).then(priceSet => {
+          let base = priceSet.base
+          let coin = priceSet.coin
+          this.markets.priceInfo[base][coin][cfg.type] = priceSet
+        })
+      } else {
+        let base = priceSet.base
+        let coin = priceSet.coin
+        this.markets.priceInfo[base][coin][cfg.type] = message
+      }
     }
-    this.ws[type] = ws
+    this.ws[cfg.type] = ws
     return ws
   }
   wsClose(type) {
@@ -79,8 +142,8 @@ export default class Base {
     this.ws = {}
   }
 
-  ticker(base, callback) {}
-  orderbook(base, coin, callback) {}
-  trade(base, coin, callback) {}
+  ticker(base) {}
+  orderbook(base, coin) {}
+  trade(base, coin) {}
 
 }

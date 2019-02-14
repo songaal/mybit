@@ -29,9 +29,6 @@ class Nexus {
             }, 500)
         }
     }
-    subscribeTicker(exchange, base, callback) {
-        this.api[exchange].ticker(base, callback)
-    }
     wsClose(exchange, type) {
         this.api[exchange].wsClose(type)
     }
@@ -44,15 +41,14 @@ class Nexus {
             this.api[exchange].wsCloseAll()
         }
     }
-    getMarkets(exchange) {
-        return this.api[exchange].markets
+    getMarketKeyMap(exchange) {
+        return Object.assign({}, this.api[exchange].marketKeyMap)
     }
-    getBaseList(exchange) {
-        return this.api[exchange].baseList
+    runTicker(exchange, base) {
+        this.api[exchange].ticker(base)
     }
-    getCoinList(exchange, base) {
-        console.log(exchange, base)
-        return this.api[exchange].coins[base]
+    getPriceInfo(exchange, type=null) {
+        return this.api[exchange].markets.priceInfo
     }
 }
 export default new Nexus()

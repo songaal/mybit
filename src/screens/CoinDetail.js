@@ -1,30 +1,77 @@
 import React, { Component } from 'react'
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity
-} from 'react-native'
- 
-const tabs = [
-  {id: 'order', title: '주문'},
-  {id: 'chart', title: '차트'},
-  {id: 'history', title: '나의 주문'}
+import { View, Text, StyleSheet } from 'react-native'
+import { TabView } from 'react-native-tab-view' 
+import OrderTab from '@components/OrderTab'
+import ChartTab from '@components/ChartTab'
+import OrderHistoryTab from '@components/OrderHistoryTab'
+
+const options = [
+  {key: 'order', title: '주문'},
+  {key: 'chart', title: '차트'},
+  {key: 'orderHistory', title: '주문내역'}
 ]
 
+let headerTitle = ''
+
 export default class CoinDetail extends Component {
+  static navigationOptions = {
+    title: headerTitle
+  }
   constructor(props) {
     super(props)
+    this._handleIndexChange = this._handleIndexChange.bind(this)
+    this._renderScene = this._renderScene.bind(this)
+    this.exchange = props.navigation.getParam('exchange')
+    this.base = props.navigation.getParam('base')
+    this.coin = props.navigation.getParam('coin')
+    
+    headerTitle = this.coin
     this.state = {
-      selected: 'order'
+      index: 0,
+      routes: options,
+      loaded: [options[0].key]
     }
   }
-  handleChange(id) {
-    this.setState({ selected: id })
+  _handleIndexChange(index) {
+    this.setState(state => {
+      const { key } = state.routes[index]
+      return {
+        index,
+        loaded: state.loaded.includes(key)
+          ? state.loaded
+          : [...state.loaded, key],
+      }
+    })
+  }
+  _renderScene = ({ route }) => {
+    if (
+      this.state.routes.indexOf(route) !== this.state.index &&
+      !this.state.loaded.includes(route.key)
+    ) {
+      return null
+    }
+    switch(route.key) {
+      case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} />
+      case 'chart': return <ChartTab></ChartTab>
+      case 'orderHistory': return <OrderHistoryTab></OrderHistoryTab>
+      default: return null
+    }
   }
   render() {
     return (
-      <View></View>
+      <TabView
+        navigationState={this.state}
+        renderScene={this._renderScene}
+        onIndexChange={this._handleIndexChange}
+      />
     )
   }
 }
+
+const styles = StyleSheet.create({
+  scene: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

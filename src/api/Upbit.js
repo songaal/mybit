@@ -1,43 +1,74 @@
 import { config } from '~/Config'
 import Base from '@api/Base'
+import Utils from '~/Utils'
+import numeral from 'numeral'
 /**
  * upbit api
  */
+
 class Upbit extends Base {
   constructor() {
-    super(config['exchanges']['upbit']) // base에서 거래소의 마켓 정보를 store에 저장.
+    super(config.exchanges.upbit)
   }
-  ticker(base, callback, retry=10) {
-    const codes = Object.keys(this.markets).filter(key => this.markets[key].base === base)
-    const initSend = JSON.stringify([ { ticket: 'ticker' }, { type: 'ticker', codes: codes } ])
-    const convert = async (message) => {
-      let data = JSON.parse(await new Response(message).text())
-      let { base, coin } = this.markets[data['code']]
-      callback({
-        base: base,
-        coin: coin,
-        changeRate: data['signed_change_rate'],
-        tradePrice: data['trade_price'],
-        tradeVolume: data['acc_trade_price']
-      })
-    }
-    this.newWebsocket('ticker', null, initSend, convert)
+  ticker(base) {
+    const keys = Object
+    .values(this.marketKeyMap[base])
+    .map(marketKey => marketKey.key)
+    this.newWebsocket({
+      type: 'ticker',
+      format: this.formatTicker,
+      initSend: JSON.stringify([
+        { ticket: 'ticker' }, 
+        { type: 'ticker', 
+          codes: keys
+        }])
+    })
   }
-  orderbook(base, coin, callback, retry=10) {
-    const initSend = JSON.stringify([ { ticket: 'orderbook' }, { type: 'orderbook', codes: [`${base}-${coin}`] } ])
-    const convert = async (message) => {
-      let data = JSON.parse(await new Response(message).text())
-      callback(JSON.stringify(data))
+  formatTicker = async (message) => {
+    let data = JSON.parse(await new Response(message).text())
+    let { base, coin } = this.revMarketKeyMap[data['code']]
+    if (base === 'KRW' || base.startsWith('USD')) {
+      tradePrice = numeral(data['trade_price']).format('0,0[.]00a')
+      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
+      tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]00a')
+    } else {
+      tradePrice = numeral(data['trade_price']).format('0,0[.]0000a')
+      changeRate = numeral(data['signed_change_rate']).format('0,0[.]0000a%')
+      tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]0000a')
     }
-    this.newWebsocket('orderbook', null, initSend, convert)
+    
+    
+    return {
+      base: base,
+      coin: coin,
+      changeRate: changeRate,
+      tradePrice: tradePrice,
+      tradeVolume: tradeVolume
+    }
   }
-  trade(base, coin, callback, retry=10) {
-    const initSend = JSON.stringify([ { ticket: 'trade' }, { type: 'trade', codes: [`${base}-${coin}`] } ])
-    const convert = async (message) => {
-      let data = JSON.parse(await new Response(message).text())
-      callback(JSON.stringify(data))
+  orderbook(base, coin) {
+    const key = this.marketKeyMap[base][coin].key
+    const cfg = {
+      type: 'ticker',
+      format: this.formatOrderbook,
+      initSend: JSON.stringify([
+        { ticket: 'orderbook' }, 
+        { type: 'orderbook', 
+          codes: [key] }
+        ])
     }
-    this.newWebsocket('trade', null, initSend, convert)
+    this.newWebsocket(cfg)
+  }
+  formatOrderbook = async (message) => {
+    let data = JSON.parse(await new Response(message).text())
+    let { base, coin } = this.revMarketKeyMap[data['cd']]
+    return {
+      base: base,
+      coin: coin,
+      asks: [],
+      bids: [],
+      time: null
+    }
   }
 }
 export default new Upbit()

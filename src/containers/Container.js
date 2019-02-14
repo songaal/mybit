@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
-import {
-  View
-} from 'react-native'
-import {
-  createStackNavigator,
-  createBottomTabNavigator,
-  createAppContainer
-} from 'react-navigation'
+import { View, Text } from 'react-native'
+import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Home from '@screens/Home'
 import Account from '@screens/Account'
@@ -23,10 +17,7 @@ const exchangeStackNavigator = createStackNavigator({
     }
   },
   coinDetail: {
-    screen: CoinDetail,
-    navigationOptions: {
-      title: null
-    }
+    screen: CoinDetail
   }
 })
 
@@ -35,12 +26,21 @@ const AppContainer = createAppContainer(
     {
       exchange: {
         screen: exchangeStackNavigator,
-        navigationOptions: {
-          title: '거래소',
-          tabBarIcon: (<FontAwesomeIcon
-            name="exchange"
-            size={24}
-            color="gray" />)
+        navigationOptions: ({ navigation }) => {
+          let index = navigation.state.routes.length - 1
+          let routeName = navigation.state.routes[index].routeName
+          let isVisible = true
+          if('coinDetail' == routeName) {
+            isVisible = false
+          }
+          return {
+            title: '거래소',
+            tabBarVisible: isVisible,
+            tabBarIcon: (<FontAwesomeIcon
+              name="exchange"
+              size={24}
+              color="gray" />)
+          }
         }
       },
       strategy: {
