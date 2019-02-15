@@ -23,17 +23,17 @@ export default class OrderTab extends Component {
             orderType: 'market',
             orderTypes: [
                 {
-                    label: '일반구매',
+                    label: '시장가',
                     value: 'market',
                 },
                 {
-                    label: '조건구매',
+                    label: '지정가',
                     value: 'limit',
                 },
             ],
             price: 0,
             limitPrice: 0,
-            quantity: 0,
+            quantity: 1,
             enableScrollViewScroll: true
         }
     }
@@ -69,6 +69,10 @@ export default class OrderTab extends Component {
         })
     }
     render() {
+        if (this.state.units.length <= 0) {
+            return null
+        }
+        console.log(Math.round(this.state.units.length / 10))
         return (
             <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
             <ScrollView style={{flex: 1, flexDirection: 'row'}} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
@@ -190,6 +194,9 @@ export default class OrderTab extends Component {
                                     }}
                                     onFocus={(e) => {
                                         this.refs['scroll'].scrollTo({y: 80})
+                                    }}
+                                    onBlur={() => {
+                                        this.refs['scroll'].scrollTo({y: 0})
                                     }}
                                     />
                             </View>

@@ -1,14 +1,14 @@
 import React from 'react'
 import {
-  View, Text
+  View, Text, SafeAreaView
 } from 'react-native'
 
 export default class InvestHistory extends React.Component {
   render() {
     return (
-      <View>
+      <SafeAreaView style={{flex: 1}}>
         <Text>개발중입니다.</Text>
-      </View>
+      </SafeAreaView>
     )
   }
 }

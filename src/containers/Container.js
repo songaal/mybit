@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { View, Text } from 'react-native'
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Home from '@screens/Home'
 import Account from '@screens/Account'
 import Exchange from '@screens/Exchange'
-import InvestHistory from '@screens/InvestHistory'
+import InvestManagement from '@screens/InvestManagement'
 import Strategy from '@screens/Strategy'
 import CoinDetail from '@screens/CoinDetail'
 
@@ -56,12 +57,12 @@ const AppContainer = createAppContainer(
       //       color="gray" />)
       //   }
       // },
-      investHistory: {
-        screen: InvestHistory,
+      investManagement: {
+        screen: InvestManagement,
         navigationOptions: {
           title: '투자내역',
           tabBarIcon: (<FontAwesomeIcon
-            name="bookmark"
+            name="line-chart"
             size={24}
             color="gray" />)
         }

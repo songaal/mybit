@@ -67,19 +67,19 @@ export default class Ticker extends React.Component {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             marginHorizontal: 10}}>
-                            <Text style={{fontSize: 16, textAlign: 'left'}}>
+                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'left'}}>
                                 {item.ticker ? item.ticker.coin : null}
                             </Text>
-                            <Text style={{fontSize: 16, textAlign: 'right'}}>
+                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>
                                 {item.ticker ? item.ticker.tradePrice : null}
                             </Text>
-                            <Text style={{fontSize: 16, textAlign: 'right'}}>
+                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>
                                 {item.ticker ? item.ticker.changeRate : null}
                             </Text>
-                            <Text style={{fontSize: 16, textAlign: 'right'}}>
+                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>
                                 {item.ticker ? item.ticker.tradeVolume : null}
                             </Text>
-                            <FontAwesomeIcon name="chevron-right" size={20} color="gray" />
+                            {/* <FontAwesomeIcon name="chevron-right" size={20} color="gray" /> */}
                         </View>
                     </TouchableOpacity>
                 )}

@@ -12,8 +12,13 @@
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/react-fontawesome": "^0.1.4",
     "ccxt": "^1.18.146",
     "expo": "^32.0.0",
+    "i": "^0.3.6",
+    "npm": "^6.8.0",
     "numeral": "^2.0.6",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
@@ -23,6 +28,7 @@
     "react-native-vector-icons": "^6.2.0",
     "react-navigation": "^3.0.9",
     "react-redux": "^6.0.0",
+    "realm": "^2.23.0",
     "redux": "^4.0.1",
     "redux-promise": "^0.6.0"
   },

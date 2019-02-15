@@ -8,10 +8,17 @@ import OrderHistoryTab from '@components/OrderHistoryTab'
 const options = [
   {key: 'order', title: '주문'},
   {key: 'chart', title: '차트'},
-  {key: 'orderHistory', title: '주문내역'}
+  // {key: 'orderHistory', title: '주문내역'}
 ]
 
 export default class CoinDetail extends Component {
+  static navigationOptions = ({ navigation }) => {
+    let coin = navigation.getParam('coin', '')
+    let base = navigation.getParam('base', '')
+    return {
+      title: `${coin}/${base}`,
+    }
+  }
   constructor(props) {
     super(props)
     this._handleIndexChange = this._handleIndexChange.bind(this)

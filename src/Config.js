@@ -4,7 +4,6 @@ export const config = {
       id: 'upbit',
       engName: 'Upbit',
       korName: '업비트',
-      currencyUnit: 'KRW',
       ws: {
         url: 'wss://api.upbit.com/websocket/v1'
       }
@@ -19,6 +18,15 @@ export const config = {
 
 
 /*
+bitmex: {
+  id: 'bitmex',
+  engName: 'Bitmex',
+  korName: '비트맥스',
+  displayCurrencyUnit: 'USD',
+  ws: {
+    url: ''
+  }
+},
 bithumb: {
   id: 'bithumb',
   engName: 'Bithumb',
@@ -31,15 +39,6 @@ binance: {
   engName: 'Binance',
   korName: '바이낸스',
   displayCurrencyUnit: 'USDT',
-  ws: {
-    url: ''
-  }
-},
-bitmex: {
-  id: 'bitmex',
-  engName: 'Bitmex',
-  korName: '비트맥스',
-  displayCurrencyUnit: 'USD',
   ws: {
     url: ''
   }

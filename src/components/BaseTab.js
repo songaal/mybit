@@ -48,8 +48,8 @@ export default class BaseTab extends Component {
               borderBottomWidth: 0.5,
               borderBottomCOlor: 'gray'}}>
                 <Text style={{marginLeft: 10, textAlign: 'left'}}>코인명</Text>
-                <Text style={{textAlign: 'right'}}>가격</Text>
-                <Text style={{textAlign: 'right'}}>전일대비</Text>
+                <Text style={{marginLeft: 50, textAlign: 'right'}}>가격</Text>
+                <Text style={{marginLeft: 10, textAlign: 'right'}}>전일대비</Text>
                 <Text style={{marginRight: 10, textAlign: 'right'}}>거래량</Text>
             </View>
         </View>
