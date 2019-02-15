@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions} from 'react-native'
 import Nexus from '@api/Nexus'
 import RNPickerSelect from 'react-native-picker-select'
 import Button from '@ant-design/react-native/lib/button'
+
+const { width, height } = Dimensions.get('window')
 
 const viewType = {
     buy: true,
@@ -31,7 +33,8 @@ export default class OrderTab extends Component {
             ],
             price: 0,
             limitPrice: 0,
-            quantity: 0
+            quantity: 0,
+            enableScrollViewScroll: true
         }
     }
     updateOrderbook() {
@@ -60,13 +63,18 @@ export default class OrderTab extends Component {
         clearTimeout(this._interval)
         Nexus.runTicker(this.props.exchange, this.props.base)
     }
+    onEnableScroll(value) {
+        this.setState({
+            enableScrollViewScroll: value,
+        })
+    }
     render() {
         return (
             <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
-            <ScrollView style={{flex: 1}} ref="scroll">
+            <ScrollView style={{flex: 1, flexDirection: 'row'}} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                     <FlatList 
-                        style={{flex: 1}}
+                        style={{width: width / 2 - 10}}
                         data={this.state.units} 
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
@@ -86,14 +94,21 @@ export default class OrderTab extends Component {
                                         price: item.price,
                                         limitPrice: item.price
                                     })
-                                }}>
+                                }}
+                                onTouchStart={() => {
+                                    this.onEnableScroll( false )
+                                 }}
+                                 onMomentumScrollEnd={() => {
+                                    this.onEnableScroll( true )
+                                 }}
+                                 >
                                 <Text style={{fontSize: 12}}>{item.price}</Text>
                                 <Text style={{fontSize: 8}}>{item.size}</Text>
                             </TouchableOpacity>
                         )}
                     />
-
-                    <View style={{flex: 1.5, marginHorizontal: 10}}>
+                    
+                    <View style={{width: width / 2 - 10, marginHorizontal: 10}}>
                         <View style={{flexDirection: 'row', alignSelf: 'center', marginTop: 20}}>
                             <Button 
                                 type={this.state.viewType ? 'primary' : 'default'} 
@@ -143,7 +158,7 @@ export default class OrderTab extends Component {
                                     value={String(this.state.quantity)}
                                     onChangeText={text => {
                                         this.setState({
-                                            quantity: text.replace(/[^\d\.]/gi, '') || 0
+                                            quantity: text.replace(/[^\d\.]/gi, '') || ''
                                         })
                                     }}
                                     />
@@ -157,7 +172,7 @@ export default class OrderTab extends Component {
                                     value={String(this.state.price)}
                                     onChangeText={text => {
                                         this.setState({
-                                            price: text.replace(/[^\d\.]/gi, '') || 0
+                                            price: text.replace(/[^\d\.]/gi, '') || ''
                                         })
                                     }}/>
                             </View>
@@ -170,7 +185,7 @@ export default class OrderTab extends Component {
                                     value={String(this.state.limitPrice)}
                                     onChangeText={text => {
                                         this.setState({
-                                            limitPrice: text.replace(/[^\d\.]/gi, '') || 0
+                                            limitPrice: text.replace(/[^\d\.]/gi, '') || ''
                                         })
                                     }}
                                     onFocus={(e) => {
