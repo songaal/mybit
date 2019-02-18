@@ -16,7 +16,7 @@ export default class CoinDetail extends Component {
     let coin = navigation.getParam('coin', '')
     let base = navigation.getParam('base', '')
     return {
-      title: `${coin}/${base}`,
+      title: `${coin}/${base}`
     }
   }
   constructor(props) {

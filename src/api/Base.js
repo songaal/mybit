@@ -1,3 +1,4 @@
+import config from '~/Config'
 const ccxt = require('ccxt')
 /**
  * 거래소의 마켓 정보 
@@ -32,6 +33,7 @@ export default class Base {
   constructor(config) {
     this.config = config
     this.ws = {}
+    this.rest = {}
     this.markets = {
       priceInfo: {},
       pairCoinList: {}
@@ -122,15 +124,21 @@ export default class Base {
     this.ws[cfg.type] = ws
     return ws
   }
-  wsClose(type) {
+  close(type) {
     try {
       this.ws[type].close()
       delete this.ws[type]
     } catch(error) {
       // 종료 에러 무시.
     }
+    try {
+      clearTimeout(this.rest[type])
+      delete this.rest[type]
+    } catch(error) {
+      // 종료 에러 무시.
+    }
   }
-  wsCloseAll() {
+  closeAll() {
     Object.values(this.ws)
     .forEach(ws => {
       try {
@@ -140,8 +148,42 @@ export default class Base {
       }
     })
     this.ws = {}
+    let typeList = Object.keys(this.rest)
+    typeList.forEach(type => {
+      try {
+        clearTimeout(this.rest[type])
+      } catch (error) {
+        // pass
+      }
+    })
+    this.rest = {}
   }
-
+  pollingTask(type, cfg, interval) {
+    const task = (type, cfg) => {
+      let url = `${this.config.rest.url}/${cfg.endpoint}`
+      fetch(url, { ...cfg })
+      .then(response => response.json())
+      .then(response => {
+        cfg.format(response, cfg)
+        .then(formatData => {
+          if (formatData.length === undefined) {
+            // array
+            formatData = [formatData]
+          }
+          formatData.forEach(priceSet => {
+            let base = priceSet.base
+            let coin = priceSet.coin
+            this.markets.priceInfo[base][coin][type] = priceSet
+          })
+        })
+      })
+    }
+    this.rest[type] = setTimeout(() => {
+      task(type, cfg)
+      this.pollingTask(type, cfg, interval)
+    }, interval)
+  }
+  
   ticker(base) {}
   orderbook(base, coin) {}
   trade(base, coin) {}

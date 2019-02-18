@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions} from 'react-native'
+import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, Button } from 'react-native'
 import Nexus from '@api/Nexus'
 import RNPickerSelect from 'react-native-picker-select'
-import { Button } from '@ant-design/react-native'
 
 const { width, height } = Dimensions.get('window')
 
@@ -14,9 +13,8 @@ const viewType = {
 export default class OrderTab extends Component {
     constructor(props) {
         super(props)
-        this.inputRefs = {
 
-        }
+        this.isScrollTo = true
         this.state = {
             units: [],
             viewType: viewType.buy, //default view type
@@ -50,16 +48,25 @@ export default class OrderTab extends Component {
         }, 200)
     }
     componentWillMount() {
-        // 웹소켓 연결
+        // 오더북 연결
         const exchange = this.props.exchange
         const base = this.props.base
         const coin = this.props.coin
         Nexus.runOrderbook(exchange, base, coin)
         this.updateOrderbook()
     }
+    componentWillUpdate() {
+        if (this.refs['orderbook'] !== undefined 
+            && this.isScrollTo 
+            && this.state.units.length > 0) {
+            this.isScrollTo = false
+            let y = (this.state.units.length / 2) * 20
+            this.refs['orderbook'].scrollToOffset({animated: false, offset: y})
+        }
+    }
     componentWillUnmount() {
-        // 웹소켓 종료
-        Nexus.wsClose(this.props.exchange, 'orderbook')
+        // 오더북 종료
+        Nexus.close(this.props.exchange, 'orderbook')
         clearTimeout(this._interval)
         Nexus.runTicker(this.props.exchange, this.props.base)
     }
@@ -68,8 +75,11 @@ export default class OrderTab extends Component {
             enableScrollViewScroll: value,
         })
     }
+    order = async () => {
+        alert('주문을 하시겠습니까?')
+    }
     render() {
-        if (this.state.units.length <= 0) {
+        if (this.state.units.length == 0) {
             return null
         }
         return (
@@ -77,6 +87,7 @@ export default class OrderTab extends Component {
             <ScrollView style={{flex: 1, flexDirection: 'row'}} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                     <FlatList 
+                        ref="orderbook"
                         style={{width: width / 2 - 10}}
                         data={this.state.units} 
                         keyExtractor={(item, index) => index.toString()}
@@ -86,7 +97,7 @@ export default class OrderTab extends Component {
                                     height: 40,
                                     flexDirection: 'row', 
                                     justifyContent: 'space-between',
-                                    backgroundColor: item.unit == 'ask' ? 'rgba(234,98,104,0.5)': 'rgba(148,172,218,0.5)',
+                                    backgroundColor: item.unit == 'ask' ? 'rgba(234,98,104,0.1)': 'rgba(148,172,218,0.1)',
                                     paddingVertical: 10,
                                     paddingHorizontal: 10,
                                     borderBottomWidth: 0.5,
@@ -106,7 +117,7 @@ export default class OrderTab extends Component {
                                  }}
                                  >
                                 <Text style={{
-                                    flex:1.3, 
+                                    flex:1.2, 
                                     textAlign: 'right', 
                                     fontSize: 12
                                     }}>{item.price}</Text>
@@ -124,14 +135,14 @@ export default class OrderTab extends Component {
                             <Button 
                                 type={this.state.viewType ? 'primary' : 'default'} 
                                 style={{flex: 1}}
-                                onPress={(e) => {this.state.viewType = !this.state.viewType}}>
-                                구매
+                                onPress={(e) => {this.state.viewType = !this.state.viewType}}
+                                title="구매">
                             </Button>
                             <Button 
                                 type={!this.state.viewType ? 'warning' : 'default'} 
                                 style={{flex: 1}}
-                                onPress={(e) => {this.state.viewType = !this.state.viewType}}>
-                                판매
+                                onPress={(e) => {this.state.viewType = !this.state.viewType}}
+                                title="판매">
                             </Button>
                         </View>
                         <View style={{marginTop: 20}}>
@@ -157,6 +168,24 @@ export default class OrderTab extends Component {
                                         })
                                     }}
                                     value={this.state.orderType}
+                                    Icon={() => {
+                                        return (
+                                            <View
+                                                style={{
+                                                    marginTop: 5,
+                                                    backgroundColor: 'transparent',
+                                                    borderTopWidth: 10,
+                                                    borderTopColor: 'gray',
+                                                    borderRightWidth: 10,
+                                                    borderRightColor: 'transparent',
+                                                    borderLeftWidth: 10,
+                                                    borderLeftColor: 'transparent',
+                                                    width: 0,
+                                                    height: 0,
+                                                }}
+                                            />
+                                        )
+                                    }}
                                 />
                         </View>
                             <View style={{marginTop: 20}}>
@@ -203,14 +232,24 @@ export default class OrderTab extends Component {
                                         this.refs['scroll'].scrollTo({y: 80})
                                     }}
                                     onBlur={() => {
-                                        this.refs['scroll'].scrollTo({y: 0})
+                                        // this.refs['scroll'].scrollTo({y: 0})
                                     }}
                                     />
                             </View>
-                        <Button type="primary" style={{marginTop: 20, display: this.state.viewType ? 'flex' : 'none'}}>구매하기</Button>
-                        <Button type="warning" style={{marginTop: 20, display: !this.state.viewType ? 'flex' : 'none'}}>판매하기</Button>
+                        <View>
+                            <Button 
+                                onPress={() => this.order()} 
+                                color='rgb(148,172,218)'
+                                title="구매하기" />
+                            <Button 
+                                onPress={() => this.order()} 
+                                color='rgb(234,98,104)'
+                                buttonStyle={{
+                                    display: 'none'
+                                }}
+                                title="판매하기" />
+                        </View>
                     </View>
-
                 </View>
                 
 

@@ -8,6 +8,7 @@ const { width, height } = Dimensions.get('window')
 export default class Ticker extends React.Component {
     constructor(props) {
         super(props)
+        this.token = props.token
         this.updateTicker = this.updateTicker.bind(this)
         this.index = props.index,
         this.exchange = props.exchange,
@@ -21,7 +22,7 @@ export default class Ticker extends React.Component {
         this.isConnect = true
     }
     goCoinDetail(exchange, base, coin) {
-      Nexus.wsCloseAll()
+      Nexus.closeAll()
       this.props.navigation.navigate('coinDetail', {
         exchange: exchange,
         base: base,
@@ -46,6 +47,9 @@ export default class Ticker extends React.Component {
             Nexus.runTicker(this.exchange, this.base)
             this.updateTicker()
             this.isConnect = true
+        } else if (this.token === props.token && !Nexus.isSubscribe(this.exchange, 'ticker')) {
+            Nexus.runTicker(this.exchange, this.base)
+            this.updateTicker()
         }
     }
     shouldComponentUpdate() {
@@ -67,13 +71,19 @@ export default class Ticker extends React.Component {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             marginHorizontal: 10}}>
-                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'left'}}>
+                            <Text style={{width: width / 4 - 30, fontSize: 14, textAlign: 'left'}}>
                                 {item.ticker ? item.ticker.coin : null}
                             </Text>
-                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>
+                            <Text style={{
+                                width: width / 4, 
+                                fontSize: 14, 
+                                textAlign: 'right'}}>
                                 {item.ticker ? item.ticker.tradePrice : null}
                             </Text>
-                            <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>
+                            <Text style={{
+                                width: width / 4 - 30, 
+                                fontSize: 14, 
+                                textAlign: 'right'}}>
                                 {item.ticker ? item.ticker.changeRate : null}
                             </Text>
                             <Text style={{width: width / 4 - 15, fontSize: 14, textAlign: 'right'}}>

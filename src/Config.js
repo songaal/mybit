@@ -7,6 +7,22 @@ export const config = {
       ws: {
         url: 'wss://api.upbit.com/websocket/v1'
       }
+    },
+    bithumb: {
+      id: 'bithumb',
+      engName: 'Bithumb',
+      korName: '빗썸',
+      rest: {
+        url: 'https://api.bithumb.com'
+      }
+    },
+    bitmex: {
+      id: 'bitmex',
+      engName: 'Bitmex',
+      korName: '비트맥스',
+      ws: {
+        url: 'wss: //www.bitmex.com/realtime'
+      }
     }
   },
   getExchangeLabels: () => {

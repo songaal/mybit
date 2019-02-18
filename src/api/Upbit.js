@@ -12,8 +12,7 @@ class Upbit extends Base {
     super(config.exchanges.upbit)
   }
   ticker(base) {
-    const keys = Object
-    .values(this.marketKeyMap[base])
+    const keys = Object.values(this.marketKeyMap[base])
     .map(marketKey => marketKey.key)
     this.newWebsocket({
       type: 'ticker',
@@ -34,15 +33,17 @@ class Upbit extends Base {
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]00a')
       tradeVolume=tradeVolume.replace('b', '억').replace('m', '백만').replace('k', '만')
     } else if (base.startsWith('USD')) {
-      tradePrice = numeral(data['trade_price']).format('0,0[.]000a')
+      tradePrice = numeral(data['trade_price']).format('0,0[.]00a')
       changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]000a')
     } else {
       tradePrice = numeral(data['trade_price']).format('0,0[.]00000000a')
+      if (isNaN(tradePrice)) {
+        tradePrice = '0.000000' + (data['trade_price'] * 100000000).toFixed(0)
+      }
       changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]000a')
     }
-    
     return {
       base: base,
       coin: coin,
@@ -71,12 +72,12 @@ class Upbit extends Base {
     let bids = []
     data['orderbook_units'].forEach(orderbook => {
       asks.push({
-        price: numeral(orderbook['ask_price']).format('0,000'),
+        price: numeral(orderbook['ask_price']).format('0,000[.]00'),
         size: orderbook['ask_size'],
         unit: 'ask'
       })
       bids.push({
-        price: numeral(orderbook['bid_price']).format('0,000'),
+        price: numeral(orderbook['bid_price']).format('0,000[.]00'),
         size: orderbook['bid_size'],
         unit: 'bid'
       })

@@ -9,6 +9,7 @@ const { width, height } = Dimensions.get('window')
 export default class BaseTab extends Component {
   constructor(props) {
     super(props)
+    this.token = props.token
     const options = Object.keys(Nexus.getMarketKeyMap(props.exchange))
     .map(base => ({key: base, title: base}))
     this.state = {
@@ -36,7 +37,7 @@ export default class BaseTab extends Component {
     ) {
       return null
     }
-    
+
     return (
       <View>
         <View style={{height: 30}}>
@@ -49,7 +50,7 @@ export default class BaseTab extends Component {
               borderBottomCOlor: 'gray'}}>
                 <Text style={{marginLeft: 10, textAlign: 'left'}}>코인명</Text>
                 <Text style={{marginLeft: 50, textAlign: 'right'}}>가격</Text>
-                <Text style={{marginLeft: 10, textAlign: 'right'}}>전일대비</Text>
+                <Text style={{marginLeft: -10, textAlign: 'right'}}>전일대비</Text>
                 <Text style={{marginRight: 10, textAlign: 'right'}}>거래량</Text>
             </View>
         </View>
@@ -58,7 +59,8 @@ export default class BaseTab extends Component {
             exchange={this.props.exchange} 
             base={route.key} 
             index={this.state.index} 
-            navigation={this.props.navigation}/>
+            navigation={this.props.navigation}
+            token={this.props.token}/>
         </View>
       </View>
     )

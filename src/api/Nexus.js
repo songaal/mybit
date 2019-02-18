@@ -5,11 +5,15 @@
  * 구현체에서는 파라미터, 메시지 데이터만 변환작업만 진행
  */
 import Upbit from '@api/Upbit'
+import Bithumb from '@api/Bithumb'
+import Bitmex from '@api/Bitmex'
 
 class Nexus {
     constructor() {
         this.api = {
-            'upbit': Upbit
+            'upbit': Upbit,
+            'bithumb': Bithumb,
+            'bitmex': Bitmex
         }
     }
     checkMarket(callback) {
@@ -29,16 +33,20 @@ class Nexus {
             }, 500)
         }
     }
-    wsClose(exchange, type) {
-        this.api[exchange].wsClose(type)
+    isSubscribe(exchange, type) {
+        return this.api[exchange].ws[type] !== undefined ||
+        this.api[exchange].rest[type] !== undefined 
     }
-    wsCloseAll(exchange) {
+    close(exchange, type) {
+        this.api[exchange].close(type)
+    }
+    closeAll(exchange) {
         if (exchange === undefined) {
             Object.keys(this.api).forEach(key => {
-                this.api[key].wsCloseAll()
+                this.api[key].closeAll()
             })
         } else {
-            this.api[exchange].wsCloseAll()
+            this.api[exchange].closeAll()
         }
     }
     getMarketKeyMap(exchange) {

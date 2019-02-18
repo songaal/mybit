@@ -16,12 +16,14 @@ const exchangeStackNavigator = createStackNavigator({
     navigationOptions: {
       headerStyle: {
         height: 0
-      }
+      },
+      headerBackTitle: null
     }
   },
   coinDetail: {
     screen: CoinDetail,
-    navigationOptions: {}
+    navigationOptions: {
+    }
   }
 })
 
@@ -42,8 +44,9 @@ const AppContainer = createAppContainer(
             tabBarVisible: isVisible,
             tabBarIcon: (<FontAwesomeIcon
               name="exchange"
-              size={24}
-              color="gray" />)
+              size={18}
+              color="gray" />),
+            
           }
         }
       },
@@ -63,7 +66,7 @@ const AppContainer = createAppContainer(
           title: '투자내역',
           tabBarIcon: (<FontAwesomeIcon
             name="line-chart"
-            size={24}
+            size={18}
             color="gray" />)
         }
       },
@@ -73,7 +76,7 @@ const AppContainer = createAppContainer(
           title: '내정보',
           tabBarIcon: (<FontAwesomeIcon
             name="user"
-            size={24}
+            size={18}
             color="gray" />)
         }
       }

@@ -37,6 +37,7 @@ export default class Exchange extends React.Component {
           : [...state.loaded, key],
       }
     })
+    Nexus.closeAll()
   }
   _renderScene = ({ route }) => {
     if (
@@ -45,7 +46,7 @@ export default class Exchange extends React.Component {
     ) {
       return null
     }
-    return <BaseTab exchange={route.key} navigation={this.props.navigation}/>
+    return <BaseTab exchange={route.key} navigation={this.props.navigation} token={this.state.index} />
   }
   render() {
     return (
