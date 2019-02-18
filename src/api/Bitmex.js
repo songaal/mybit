@@ -2,17 +2,16 @@ import { config } from '~/Config'
 import Base from '@api/Base'
 import Utils from '~/Utils'
 import numeral from 'numeral'
-
 /**
  * upbit api
  */
 
-class Upbit extends Base {
+class Bitmex extends Base {
   constructor() {
-    super(config.exchanges.upbit)
+    super(config.exchanges.bitmex)
   }
   ticker(base) {
-    const keys = Object
+    const keys = []
     .values(this.marketKeyMap[base])
     .map(marketKey => marketKey.key)
     this.newWebsocket({
@@ -85,10 +84,9 @@ class Upbit extends Base {
     return {
       base: base,
       coin: coin,
-      units: asks.reverse().concat(bids),
+      units: asks.concat(bids),
       time: data['timestamp']
     }
   }
-
 }
 export default new Upbit()

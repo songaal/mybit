@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions} from 'react-native'
 import Nexus from '@api/Nexus'
 import RNPickerSelect from 'react-native-picker-select'
-import Button from '@ant-design/react-native/lib/button'
+import { Button } from '@ant-design/react-native'
 
 const { width, height } = Dimensions.get('window')
 
@@ -47,7 +47,7 @@ export default class OrderTab extends Component {
                 })
             }
             this.updateOrderbook()
-        }, 100)
+        }, 200)
     }
     componentWillMount() {
         // 웹소켓 연결
@@ -72,7 +72,6 @@ export default class OrderTab extends Component {
         if (this.state.units.length <= 0) {
             return null
         }
-        console.log(Math.round(this.state.units.length / 10))
         return (
             <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
             <ScrollView style={{flex: 1, flexDirection: 'row'}} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
@@ -106,8 +105,16 @@ export default class OrderTab extends Component {
                                     this.onEnableScroll( true )
                                  }}
                                  >
-                                <Text style={{fontSize: 12}}>{item.price}</Text>
-                                <Text style={{fontSize: 8}}>{item.size}</Text>
+                                <Text style={{
+                                    flex:1.3, 
+                                    textAlign: 'right', 
+                                    fontSize: 12
+                                    }}>{item.price}</Text>
+                                <Text style={{
+                                    flex:1, 
+                                    textAlign: 'right', 
+                                    fontSize: 8
+                                    }}>{item.size}</Text>
                             </TouchableOpacity>
                         )}
                     />
