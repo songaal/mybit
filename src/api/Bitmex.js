@@ -12,7 +12,7 @@ class Bitmex extends Base {
   }
   ticker(base) {
     const keys = Object.values(this.marketKeyMap[base])
-    .map(marketKey => marketKey.key)
+      .map(marketKey => marketKey.key)
     console.log(keys, base)
     // this.newWebsocket({
     //   type: 'ticker',
@@ -41,7 +41,7 @@ class Bitmex extends Base {
     //   changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
     //   tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]000a')
     // }
-    
+
     return {
       base: 1,
       coin: 2,
@@ -56,10 +56,12 @@ class Bitmex extends Base {
       type: 'orderbook',
       format: this.formatOrderbook,
       initSend: JSON.stringify([
-        { ticket: 'orderbook' }, 
-        { type: 'orderbook', 
-          codes: [key] }
-        ])
+        { ticket: 'orderbook' },
+        {
+          type: 'orderbook',
+          codes: [key]
+        }
+      ])
     }
     this.newWebsocket(cfg)
   }

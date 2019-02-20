@@ -29,19 +29,19 @@ class Upbit extends Base {
     let { base, coin } = this.revMarketKeyMap[data['code']]
     if (base === 'KRW') {
       tradePrice = numeral(data['trade_price']).format('0,000[.]00')
-      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
+      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]00a')
       tradeVolume=tradeVolume.replace('b', '억').replace('m', '백만').replace('k', '만')
     } else if (base.startsWith('USD')) {
       tradePrice = numeral(data['trade_price']).format('0,0[.]00a')
-      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
+      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]000a')
     } else {
       tradePrice = numeral(data['trade_price']).format('0,0[.]00000000a')
       if (isNaN(tradePrice)) {
         tradePrice = '0.000000' + (data['trade_price'] * 100000000).toFixed(0)
       }
-      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a%')
+      changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]000a')
     }
     return {

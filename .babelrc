@@ -13,7 +13,8 @@
           "@components": "./src/components",
           "@screens": "./src/screens",
           "@redux": "./src/redux",
-          "@api": "./src/api"
+          "@api": "./src/api",
+          "@constants": "./src/constants"
         }
       }
     ]

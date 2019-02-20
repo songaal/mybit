@@ -6,14 +6,14 @@
  */
 import Upbit from '@api/Upbit'
 import Bithumb from '@api/Bithumb'
-import Bitmex from '@api/Bitmex'
+// import Bitmex from '@api/Bitmex'
 
 class Nexus {
     constructor() {
         this.api = {
             'upbit': Upbit,
             'bithumb': Bithumb,
-            'bitmex': Bitmex
+            // 'bitmex': Bitmex
         }
     }
     checkMarket(callback) {

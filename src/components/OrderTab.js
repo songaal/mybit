@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList,TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, Button } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, Button } from 'react-native'
 import Nexus from '@api/Nexus'
 import RNPickerSelect from 'react-native-picker-select'
 
@@ -56,12 +56,12 @@ export default class OrderTab extends Component {
         this.updateOrderbook()
     }
     componentWillUpdate() {
-        if (this.refs['orderbook'] !== undefined 
-            && this.isScrollTo 
+        if (this.refs['orderbook'] !== undefined
+            && this.isScrollTo
             && this.state.units.length > 0) {
             this.isScrollTo = false
             let y = (this.state.units.length / 2) * 20
-            this.refs['orderbook'].scrollToOffset({animated: false, offset: y})
+            this.refs['orderbook'].scrollToOffset({ animated: false, offset: y })
         }
     }
     componentWillUnmount() {
@@ -83,70 +83,70 @@ export default class OrderTab extends Component {
             return null
         }
         return (
-            <KeyboardAvoidingView style={{flex: 1}} behavior="padding" enabled>
-            <ScrollView style={{flex: 1, flexDirection: 'row'}} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                    <FlatList 
-                        ref="orderbook"
-                        style={{width: width / 2 - 10}}
-                        data={this.state.units} 
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                            <TouchableOpacity 
-                                style={{
-                                    height: 40,
-                                    flexDirection: 'row', 
-                                    justifyContent: 'space-between',
-                                    backgroundColor: item.unit == 'ask' ? 'rgba(234,98,104,0.1)': 'rgba(148,172,218,0.1)',
-                                    paddingVertical: 10,
-                                    paddingHorizontal: 10,
-                                    borderBottomWidth: 0.5,
-                                    borderBottomColor: '#bbb'
-                                }}
-                                onPress={(e) => {
-                                    this.setState({
-                                        price: item.price,
-                                        limitPrice: item.price
-                                    })
-                                }}
-                                onTouchStart={() => {
-                                    this.onEnableScroll( false )
-                                 }}
-                                 onMomentumScrollEnd={() => {
-                                    this.onEnableScroll( true )
-                                 }}
-                                 >
-                                <Text style={{
-                                    flex:1.2, 
-                                    textAlign: 'right', 
-                                    fontSize: 12
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+                <ScrollView style={{ flex: 1, flexDirection: 'row' }} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <FlatList
+                            ref="orderbook"
+                            style={{ width: width / 2 - 10 }}
+                            data={this.state.units}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    style={{
+                                        height: 40,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        backgroundColor: item.unit == 'ask' ? 'rgba(234,98,104,0.1)' : 'rgba(148,172,218,0.1)',
+                                        paddingVertical: 10,
+                                        paddingHorizontal: 10,
+                                        borderBottomWidth: 0.5,
+                                        borderBottomColor: '#bbb'
+                                    }}
+                                    onPress={(e) => {
+                                        this.setState({
+                                            price: item.price,
+                                            limitPrice: item.price
+                                        })
+                                    }}
+                                    onTouchStart={() => {
+                                        this.onEnableScroll(false)
+                                    }}
+                                    onMomentumScrollEnd={() => {
+                                        this.onEnableScroll(true)
+                                    }}
+                                >
+                                    <Text style={{
+                                        flex: 1.2,
+                                        textAlign: 'right',
+                                        fontSize: 12
                                     }}>{item.price}</Text>
-                                <Text style={{
-                                    flex:1, 
-                                    textAlign: 'right', 
-                                    fontSize: 8
+                                    <Text style={{
+                                        flex: 1,
+                                        textAlign: 'right',
+                                        fontSize: 8
                                     }}>{item.size}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-                    
-                    <View style={{width: width / 2 - 10, marginHorizontal: 10}}>
-                        <View style={{flexDirection: 'row', alignSelf: 'center', marginTop: 20}}>
-                            <Button 
-                                type={this.state.viewType ? 'primary' : 'default'} 
-                                style={{flex: 1}}
-                                onPress={(e) => {this.state.viewType = !this.state.viewType}}
-                                title="구매">
-                            </Button>
-                            <Button 
-                                type={!this.state.viewType ? 'warning' : 'default'} 
-                                style={{flex: 1}}
-                                onPress={(e) => {this.state.viewType = !this.state.viewType}}
-                                title="판매">
-                            </Button>
-                        </View>
-                        <View style={{marginTop: 20}}>
-                            <Text style={{fontSize: 20, color: 'gray'}}>
+                                </TouchableOpacity>
+                            )}
+                        />
+
+                        <View style={{ width: width / 2 - 10, marginHorizontal: 10 }}>
+                            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 20 }}>
+                                <Button
+                                    type={this.state.viewType ? 'primary' : 'default'}
+                                    style={{ flex: 1 }}
+                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}
+                                    title="구매">
+                                </Button>
+                                <Button
+                                    type={!this.state.viewType ? 'warning' : 'default'}
+                                    style={{ flex: 1 }}
+                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}
+                                    title="판매">
+                                </Button>
+                            </View>
+                            <View style={{ marginTop: 20 }}>
+                                <Text style={{ fontSize: 20, color: 'gray' }}>
                                     주문방식
                                 </Text>
                                 <RNPickerSelect
@@ -187,13 +187,13 @@ export default class OrderTab extends Component {
                                         )
                                     }}
                                 />
-                        </View>
-                            <View style={{marginTop: 20}}>
-                                <Text style={{fontSize: 20, color: 'gray'}}>수량</Text>
-                                <TextInput 
-                                    style={defaultStyle.textInput} 
-                                    keyboardType='numeric' 
-                                    autoCorrect={false} 
+                            </View>
+                            <View style={{ marginTop: 20 }}>
+                                <Text style={{ fontSize: 20, color: 'gray' }}>수량</Text>
+                                <TextInput
+                                    style={defaultStyle.textInput}
+                                    keyboardType='numeric'
+                                    autoCorrect={false}
                                     autoCapitalize="none"
                                     value={String(this.state.quantity)}
                                     onChangeText={text => {
@@ -201,26 +201,26 @@ export default class OrderTab extends Component {
                                             quantity: text.replace(/[^\d\.]/gi, '') || ''
                                         })
                                     }}
-                                    />
+                                />
                             </View>
-                            <View style={{marginTop: 20, display: this.state.orderType == 'limit'? 'flex' : 'none'}}>
-                                <Text style={{fontSize: 20, color: 'gray'}}>가격</Text>
-                                <TextInput 
-                                    style={defaultStyle.textInput} 
-                                    keyboardType='numeric' 
+                            <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
+                                <Text style={{ fontSize: 20, color: 'gray' }}>가격</Text>
+                                <TextInput
+                                    style={defaultStyle.textInput}
+                                    keyboardType='numeric'
                                     autoCorrect={false}
                                     value={String(this.state.price)}
                                     onChangeText={text => {
                                         this.setState({
                                             price: text.replace(/[^\d\.]/gi, '') || ''
                                         })
-                                    }}/>
+                                    }} />
                             </View>
-                            <View style={{marginTop: 20, display: this.state.orderType == 'limit'? 'flex' : 'none'}}>
-                                <Text style={{fontSize: 20, color: 'gray'}}>발동가격</Text>
-                                <TextInput 
-                                    style={defaultStyle.textInput} 
-                                    keyboardType='numeric' 
+                            <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
+                                <Text style={{ fontSize: 20, color: 'gray' }}>발동가격</Text>
+                                <TextInput
+                                    style={defaultStyle.textInput}
+                                    keyboardType='numeric'
                                     autoCorrect={false}
                                     value={String(this.state.limitPrice)}
                                     onChangeText={text => {
@@ -229,32 +229,32 @@ export default class OrderTab extends Component {
                                         })
                                     }}
                                     onFocus={(e) => {
-                                        this.refs['scroll'].scrollTo({y: 80})
+                                        this.refs['scroll'].scrollTo({ y: 80 })
                                     }}
                                     onBlur={() => {
                                         // this.refs['scroll'].scrollTo({y: 0})
                                     }}
-                                    />
+                                />
                             </View>
-                        <View>
-                            <Button 
-                                onPress={() => this.order()} 
-                                color='rgb(148,172,218)'
-                                title="구매하기" />
-                            <Button 
-                                onPress={() => this.order()} 
-                                color='rgb(234,98,104)'
-                                buttonStyle={{
-                                    display: 'none'
-                                }}
-                                title="판매하기" />
+                            <View>
+                                <Button
+                                    onPress={() => this.order()}
+                                    color='rgb(148,172,218)'
+                                    title="구매하기" />
+                                <Button
+                                    onPress={() => this.order()}
+                                    color='rgb(234,98,104)'
+                                    buttonStyle={{
+                                        display: 'none'
+                                    }}
+                                    title="판매하기" />
+                            </View>
                         </View>
                     </View>
-                </View>
-                
 
-                
-            </ScrollView>
+
+
+                </ScrollView>
             </KeyboardAvoidingView>
         )
     }

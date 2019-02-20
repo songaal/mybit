@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, SafeAreaView, TextInput, AsyncStorage, TouchableOpacity, Dimensions } from 'react-native'
 import { Button, NoticeBar, WhiteSpace, Card } from '@ant-design/react-native'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-
+import Links from '@constants/Links'
 const { width, height } = Dimensions.get('window')
 
 export default class Account extends React.Component {
@@ -17,7 +17,7 @@ export default class Account extends React.Component {
     }
   }
   componentWillMount() {
-    (async() => {
+    (async () => {
       try {
         let accessKey = await AsyncStorage.getItem('accessKey')
         let secretKey = await AsyncStorage.getItem('secretKey')
@@ -30,7 +30,7 @@ export default class Account extends React.Component {
       }
     })()
   }
-  registerKey = async() => {
+  registerKey = async () => {
     console.log(this.state.accessKey, this.state.secretKey)
     let accessKey = this.state.accessKey
     let secretKey = this.state.secretKey
@@ -43,43 +43,53 @@ export default class Account extends React.Component {
       alert('저장 실패하였습니다.')
     }
   }
-
+  goDynamicWebView(linkName) {
+    this.props.navigation.navigate('dynamicWebView', {
+      ...Links[linkName]
+    })
+  }
+  goExchangeKeyList() {
+    this.props.navigation.navigate('exchangeKeyList', {
+      tabBarHidden: true
+    })
+  }
   render() {
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <Text 
+      <View style={{ flex: 1 }}>
+        <Text
           style={{
-            fontSize: 20, 
-            fontWeight: 'bold', 
-            textAlign: 'center'}}>
+            fontSize: 20,
+            fontWeight: 'bold',
+            textAlign: 'center'
+          }}>
           내정보
         </Text>
-        
-        <View 
+
+        <View
           style={{
             marginTop: 50,
             alignItems: 'center'
           }}>
-          
+
           {/* <Button>
             로그인
           </Button> */}
-          <Text style={{fontSize: 20}}>환영합니다!</Text>
+          <Text style={{ fontSize: 20 }}>환영합니다!</Text>
 
         </View>
-        
 
-        <TouchableOpacity>
-          <View 
+        <View style={{ height: 50}}></View>
+
+        <TouchableOpacity onPress={() => { this.goDynamicWebView('Notice') }}>
+          <View
             style={{
-              marginTop: 50,
               borderTopWidth: 0.5,
               borderTopColor: '#bbb',
               borderBottomWidth: 0.5,
               borderBottomColor: '#bbb',
               flexDirection: 'row'
             }}>
-            <Text 
+            <Text
               style={{
                 width: width - 30,
                 fontSize: 18,
@@ -90,33 +100,33 @@ export default class Account extends React.Component {
               }}>
               공지사항
             </Text>
-            <Text 
+            <Text
               style={{
                 width: 30,
-                paddingTop: 30,
+                paddingTop: 20,
                 alignItems: 'flex-end'
               }}>
-              <FontAwesomeIcon 
+              <FontAwesomeIcon
                 name="chevron-right"
-                size={18} 
-                color="gray"/>
+                size={18}
+                color="gray" />
             </Text>
-            
+
           </View>
         </TouchableOpacity>
-        
-        
-        <TouchableOpacity>
-          <View 
+
+        <View style={{ height: 50}}></View>
+
+        <TouchableOpacity onPress={() => { this.goExchangeKeyList() }}>
+          <View
             style={{
-              marginTop: 50,
               borderTopWidth: 0.5,
               borderTopColor: '#bbb',
               borderBottomWidth: 0.5,
               borderBottomColor: '#bbb',
               flexDirection: 'row'
             }}>
-            <Text 
+            <Text
               style={{
                 width: width - 30,
                 fontSize: 18,
@@ -127,32 +137,33 @@ export default class Account extends React.Component {
               }}>
               거래소키
             </Text>
-            <Text 
+            <Text
               style={{
                 width: 30,
                 paddingTop: 20,
                 alignItems: 'flex-end'
               }}>
-              <FontAwesomeIcon 
+              <FontAwesomeIcon
                 name="chevron-right"
-                size={18} 
-                color="gray"/>
+                size={18}
+                color="gray" />
             </Text>
-            
+
           </View>
         </TouchableOpacity>
+        
+        <View style={{ height: 50}}></View>
 
-        <TouchableOpacity>
-          <View 
+        <TouchableOpacity onPress={() => { this.goDynamicWebView('TermsOfService') }}>
+          <View
             style={{
-              marginTop: 50,
               borderTopWidth: 0.5,
               borderTopColor: '#bbb',
               borderBottomWidth: 0.5,
               borderBottomColor: '#bbb',
               flexDirection: 'row'
             }}>
-            <Text 
+            <Text
               style={{
                 width: width - 30,
                 fontSize: 18,
@@ -163,30 +174,30 @@ export default class Account extends React.Component {
               }}>
               이용약관
             </Text>
-            <Text 
+            <Text
               style={{
                 width: 30,
                 paddingTop: 20,
                 alignItems: 'flex-end'
               }}>
-              <FontAwesomeIcon 
+              <FontAwesomeIcon
                 name="chevron-right"
-                size={18} 
-                color="gray"/>
+                size={18}
+                color="gray" />
             </Text>
-            
+
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity>
-          <View 
+        <TouchableOpacity onPress={() => { this.goDynamicWebView('TermsOfPrivacy') }}>
+          <View
             style={{
               marginTop: 0,
               borderBottomWidth: 0.5,
               borderBottomColor: '#bbb',
               flexDirection: 'row'
             }}>
-            <Text 
+            <Text
               style={{
                 width: width - 30,
                 fontSize: 18,
@@ -197,23 +208,23 @@ export default class Account extends React.Component {
               }}>
               개인정보처리약관
             </Text>
-            <Text 
+            <Text
               style={{
                 width: 30,
                 paddingTop: 20,
                 alignItems: 'flex-end'
               }}>
-              <FontAwesomeIcon 
+              <FontAwesomeIcon
                 name="chevron-right"
-                size={18} 
-                color="gray"/>
+                size={18}
+                color="gray" />
             </Text>
-            
+
           </View>
         </TouchableOpacity>
 
 
-        <View 
+        {/* <View 
           style={{
             marginTop: 50
           }}>
@@ -222,7 +233,7 @@ export default class Account extends React.Component {
             로그아웃
           </Button>
 
-        </View>
+        </View> */}
 
 
 
@@ -270,8 +281,8 @@ export default class Account extends React.Component {
             
           </Card.Body>
         </Card> */}
-        
-      </SafeAreaView>
+
+      </View>
     )
   }
 }

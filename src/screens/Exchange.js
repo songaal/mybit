@@ -9,7 +9,7 @@ import {
   StyleSheet,
   SafeAreaView
 } from 'react-native'
-import { 
+import {
   TabView
 } from 'react-native-tab-view'
 
@@ -19,7 +19,7 @@ export default class Exchange extends React.Component {
     super(props)
     this._handleIndexChange = this._handleIndexChange.bind(this)
     this._renderScene = this._renderScene.bind(this)
-    
+
     const options = config.getExchangeLabels()
     this.state = {
       index: 0,

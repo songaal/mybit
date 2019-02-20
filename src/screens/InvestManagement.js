@@ -7,7 +7,7 @@ import Card from '@components/Card'
 export default class InvestHistory extends React.Component {
   constructor(props) {
     super(props)
-    
+
     this.fetchBalance('upbit').then(balance => {
       console.log(balance)
     }, error => {
@@ -16,7 +16,7 @@ export default class InvestHistory extends React.Component {
 
     this.state = {}
   }
-  fetchBalance = async ( exchangeId ) => {
+  fetchBalance = async (exchangeId) => {
     // TODO 거래소 마다 스토리지에서 키정보가져오기
     const accessKey = await AsyncStorage.getItem('accessKey')
     const secretKey = await AsyncStorage.getItem('secretKey')
@@ -30,78 +30,78 @@ export default class InvestHistory extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, alignItems: 'center'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>투자내역</Text>
+      <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>투자내역</Text>
         <ScrollView>
-          
-          <Card style={{marginTop: 30}}>
+
+          <Card style={{ marginTop: 30 }}>
             <View key="header">
-              <Text style={{fontSize: 18}}> 업비트</Text>
+              <Text style={{ fontSize: 18 }}> 업비트</Text>
             </View>
             <View key="body">
-              
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 KRW</Text>
+
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 KRW</Text>
                 </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>25000 KRW</Text>
-                </View>
-              </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 BTC</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>1.00550522 BTC</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>25000 KRW</Text>
                 </View>
               </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 ETH</Text>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 BTC</Text>
                 </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>8315.00000000 ETH</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>1.00550522 BTC</Text>
+                </View>
+              </View>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 ETH</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>8315.00000000 ETH</Text>
                 </View>
               </View>
 
             </View>
           </Card>
 
-          <Card style={{marginTop: 30}}>
+          <Card style={{ marginTop: 30 }}>
             <View key="header">
-              <Text style={{fontSize: 18}}>빗썸</Text>
+              <Text style={{ fontSize: 18 }}>빗썸</Text>
             </View>
             <View key="body">
-              
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 KRW</Text>
+
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 KRW</Text>
                 </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>25000 KRW</Text>
-                </View>
-              </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 BTC</Text>
-                </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>1.00550522 BTC</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>25000 KRW</Text>
                 </View>
               </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'gray'}}>보유 ETH</Text>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 BTC</Text>
                 </View>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 18, color: 'black', textAlign: 'right'}}>8315.00000000 ETH</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>1.00550522 BTC</Text>
+                </View>
+              </View>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 ETH</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>8315.00000000 ETH</Text>
                 </View>
               </View>
 
             </View>
           </Card>
-          
+
         </ScrollView>
 
       </SafeAreaView>

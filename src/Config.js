@@ -16,14 +16,14 @@ export const config = {
         url: 'https://api.bithumb.com'
       }
     },
-    bitmex: {
-      id: 'bitmex',
-      engName: 'Bitmex',
-      korName: '비트맥스',
-      ws: {
-        url: 'wss: //www.bitmex.com/realtime'
-      }
-    }
+    // bitmex: {
+    //   id: 'bitmex',
+    //   engName: 'Bitmex',
+    //   korName: '비트맥스',
+    //   ws: {
+    //     url: 'wss: //www.bitmex.com/realtime'
+    //   }
+    // }
   },
   getExchangeLabels: () => {
     return Object.values(config.exchanges).map(exchange => {

@@ -12,6 +12,6 @@ export default class ChartTab extends Component {
     }
 
     render() {
-        return <WebView source={chartHTML} style={{flex: 1}} scrollEnabled={false}/>
+        return <WebView source={chartHTML} style={{ flex: 1 }} scrollEnabled={false} />
     }
 }

@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { TabView } from 'react-native-tab-view' 
+import { TabView } from 'react-native-tab-view'
 import OrderTab from '@components/OrderTab'
 import ChartTab from '@components/ChartTab'
 import OrderHistoryTab from '@components/OrderHistoryTab'
 
 const options = [
-  {key: 'order', title: '주문'},
-  {key: 'chart', title: '차트'},
+  { key: 'order', title: '주문' },
+  { key: 'chart', title: '차트' },
   // {key: 'orderHistory', title: '주문내역'}
 ]
 
@@ -26,7 +26,7 @@ export default class CoinDetail extends Component {
     this.exchange = props.navigation.getParam('exchange')
     this.base = props.navigation.getParam('base')
     this.coin = props.navigation.getParam('coin')
-    
+
     this.state = {
       index: 0,
       routes: options,
@@ -51,7 +51,7 @@ export default class CoinDetail extends Component {
     ) {
       return null
     }
-    switch(route.key) {
+    switch (route.key) {
       case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} />
       case 'chart': return <ChartTab></ChartTab>
       case 'orderHistory': return <OrderHistoryTab></OrderHistoryTab>

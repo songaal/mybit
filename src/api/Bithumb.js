@@ -13,10 +13,10 @@ class Bithumb extends Base {
   }
   ticker(base) {
     const config = {
-        endpoint: '/public/ticker/all',
-        method: 'GET',
-        base: base,
-        format: this.formatTicker
+      endpoint: '/public/ticker/all',
+      method: 'GET',
+      base: base,
+      format: this.formatTicker
     }
     this.pollingTask('ticker', config, 200)
   }
@@ -25,25 +25,25 @@ class Bithumb extends Base {
     delete message.data['date']
     let base = config.base
     Object.keys(message.data).forEach(coin => {
-        let ticker = message.data[coin]
-        formatData.push({
-            coin: coin,
-            base: config.base,
-            tradePrice: numeral(ticker['closing_price']).format('0,000[.]00'),
-            changeRate: numeral(ticker['24H_fluctate_rate'] / 100).format('0,0[.]00a%'),
-            tradeVolume: numeral(ticker['units_traded']).format('0,0[.]00a')
-                .replace('b', '억').replace('m', '백만').replace('k', '만')
-        })
+      let ticker = message.data[coin]
+      formatData.push({
+        coin: coin,
+        base: config.base,
+        tradePrice: numeral(ticker['closing_price']).format('0,000[.]00'),
+        changeRate: numeral(ticker['24H_fluctate_rate'] / 100).format('0,0[.]00a'),
+        tradeVolume: numeral(ticker['units_traded']).format('0,0[.]00a')
+          .replace('b', '억').replace('m', '백만').replace('k', '만')
+      })
     })
     return formatData
   }
   orderbook(base, coin) {
     const config = {
-        endpoint: `/public/orderbook/${coin}`,
-        method: 'GET',
-        base: base,
-        coin: coin,
-        format: this.formatOrderbook
+      endpoint: `/public/orderbook/${coin}`,
+      method: 'GET',
+      base: base,
+      coin: coin,
+      format: this.formatOrderbook
     }
     this.pollingTask('orderbook', config, 200)
   }
@@ -58,11 +58,11 @@ class Bithumb extends Base {
       })
     })
     message['data']['bids'].forEach(orderbook => {
-        bids.push({
-            price: numeral(orderbook['price']).format('0,000[.]00'),
-            size: orderbook['quantity'],
-            unit: 'bid'
-        })
+      bids.push({
+        price: numeral(orderbook['price']).format('0,000[.]00'),
+        size: orderbook['quantity'],
+        unit: 'bid'
+      })
     })
     return {
       base: config.base,

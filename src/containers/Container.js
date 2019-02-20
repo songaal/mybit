@@ -9,21 +9,55 @@ import Exchange from '@screens/Exchange'
 import InvestManagement from '@screens/InvestManagement'
 import Strategy from '@screens/Strategy'
 import CoinDetail from '@screens/CoinDetail'
+import DynamicWebView from '@components/DynamicWebView'
+import ExchangeKeyList from '@screens/ExchangeKeyList'
+import ExchangeKeyDetail from '@screens/ExchangeKeyDetail'
+import AddExchangeKey from '@screens/AddExchangeKey'
 
 const exchangeStackNavigator = createStackNavigator({
   exchange: {
     screen: Exchange,
     navigationOptions: {
       headerStyle: {
-        height: 0
+        height: 0,
+        borderBottomWidth: 0
       },
       headerBackTitle: null
     }
   },
   coinDetail: {
     screen: CoinDetail,
+    navigationOptions: {}
+  }
+})
+
+const accountStackNavigator = createStackNavigator({
+  account: {
+    screen: Account,
     navigationOptions: {
+      headerStyle: {
+        height: 0,
+        borderBottomWidth: 0
+      },
+      headerTintColor: 'red',
+      headerBackTitle: null
     }
+  },
+  dynamicWebView: {
+    screen: DynamicWebView,
+    navigationOptions: {}
+  },
+  exchangeKeyList: {
+    screen: ExchangeKeyList,
+    navigationOptions: {}
+  },
+  addExchangeKey: {
+    screen: AddExchangeKey,
+    navigationOptions: {}
+  },
+  exchangeKeyDetail: {
+    screen: ExchangeKeyDetail,
+    navigationOptions: {}
   }
 })
 
@@ -36,7 +70,7 @@ const AppContainer = createAppContainer(
           let index = navigation.state.routes.length - 1
           let routeName = navigation.state.routes[index].routeName
           let isVisible = true
-          if('coinDetail' == routeName) {
+          if ('coinDetail' == routeName) {
             isVisible = false
           }
           return {
@@ -46,7 +80,7 @@ const AppContainer = createAppContainer(
               name="exchange"
               size={18}
               color="gray" />),
-            
+
           }
         }
       },
@@ -71,13 +105,22 @@ const AppContainer = createAppContainer(
         }
       },
       account: {
-        screen: Account,
-        navigationOptions: {
-          title: '내정보',
-          tabBarIcon: (<FontAwesomeIcon
-            name="user"
-            size={18}
-            color="gray" />)
+        screen: accountStackNavigator,
+        navigationOptions: ({ navigation }) => {
+          let index = navigation.state.routes.length - 1
+          let isVisible = true
+          let params = navigation.state.routes[index]['params']
+          if (params && params['tabBarHidden'] === true) {
+            isVisible = false
+          }
+          return {
+            title: '내정보',
+            tabBarVisible: isVisible,
+            tabBarIcon: (<FontAwesomeIcon
+              name="user"
+              size={18}
+              color="gray" />)
+          }
         }
       }
     }
