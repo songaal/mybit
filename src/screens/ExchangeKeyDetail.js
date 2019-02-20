@@ -18,7 +18,7 @@ export default class ExchangeKeyDetail extends Component {
             keyList: []
         }
     }
-    componentWillUnmount() {}
+    componentWillUnmount() { }
     componentWillMount() {
         (async () => {
             let exchangeId = this.props.navigation.getParam('exchange', '')

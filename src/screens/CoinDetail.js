@@ -8,7 +8,7 @@ import OrderHistoryTab from '@components/OrderHistoryTab'
 const options = [
   { key: 'order', title: '주문' },
   { key: 'chart', title: '차트' },
-  // {key: 'orderHistory', title: '주문내역'}
+  { key: 'orderHistory', title: '주문내역' }
 ]
 
 export default class CoinDetail extends Component {
@@ -53,8 +53,8 @@ export default class CoinDetail extends Component {
     }
     switch (route.key) {
       case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} />
-      case 'chart': return <ChartTab></ChartTab>
-      case 'orderHistory': return <OrderHistoryTab></OrderHistoryTab>
+      case 'chart': return <ChartTab exchange={this.exchange} base={this.base} coin={this.coin}></ChartTab>
+      case 'orderHistory': return <OrderHistoryTab exchange={this.exchange} base={this.base} coin={this.coin}></OrderHistoryTab>
       default: return null
     }
   }

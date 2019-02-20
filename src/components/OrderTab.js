@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, Button } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, AsyncStorage } from 'react-native'
 import Nexus from '@api/Nexus'
 import RNPickerSelect from 'react-native-picker-select'
+import { exchangeKeyId } from '@constants/StorageKey'
+import numeral from 'numeral'
 
 const { width, height } = Dimensions.get('window')
 
@@ -13,7 +15,6 @@ const viewType = {
 export default class OrderTab extends Component {
     constructor(props) {
         super(props)
-
         this.isScrollTo = true
         this.state = {
             units: [],
@@ -32,7 +33,9 @@ export default class OrderTab extends Component {
             price: 0,
             limitPrice: 0,
             quantity: 1,
-            enableScrollViewScroll: true
+            enableScrollViewScroll: true,
+            base: 0,
+            coin: 0
         }
     }
     updateOrderbook() {
@@ -47,6 +50,45 @@ export default class OrderTab extends Component {
             this.updateOrderbook()
         }, 200)
     }
+    _fetchBalance = async () => {
+        let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
+        if (exchangeKeys === null || exchangeKeys === undefined) {
+            this.setState({
+                base: '거래소키를 등록하세요.',
+                coin: '거래소키를 등록하세요.'
+            })
+            return false
+        }
+        exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
+        if (exchangeKey === undefined || exchangeKey === null) {
+            this.setState({
+                base: '거래소키를 등록하세요.',
+                coin: '거래소키를 등록하세요.'
+            })
+            return false
+        }
+        let accessKey = exchangeKey['active']['accessKey']
+        let secretKey = exchangeKey['active']['secretKey']
+        let exchange = this.props.exchange
+        let base = this.props.base
+        let coin = this.props.coin
+        let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
+        if (balance['status'] == 'success') {
+            this.setState({
+                base: numeral(balance['data'][base]['used'] || 0).format('0,0[.]00000000'),
+                coin: numeral(balance['data'][coin]['used'] || 0).format('0,0[.]00000000')
+            })
+        } else {
+            this.setState({
+                base: '조회 실패.',
+                coin: '조회 실패.'
+            })
+        }
+        
+        this._interval = setTimeout(() => {
+            this._fetchBalance()
+        }, 1000)
+    }
     componentWillMount() {
         // 오더북 연결
         const exchange = this.props.exchange
@@ -54,6 +96,7 @@ export default class OrderTab extends Component {
         const coin = this.props.coin
         Nexus.runOrderbook(exchange, base, coin)
         this.updateOrderbook()
+        this._fetchBalance()
     }
     componentWillUpdate() {
         if (this.refs['orderbook'] !== undefined
@@ -66,6 +109,8 @@ export default class OrderTab extends Component {
     }
     componentWillUnmount() {
         // 오더북 종료
+        clearTimeout(this._interval)
+        this._interval = null
         Nexus.close(this.props.exchange, 'orderbook')
         clearTimeout(this._interval)
         Nexus.runTicker(this.props.exchange, this.props.base)
@@ -76,7 +121,46 @@ export default class OrderTab extends Component {
         })
     }
     order = async () => {
-        alert('주문을 하시겠습니까?')
+        let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
+        if (exchangeKeys === null || exchangeKeys === undefined) {
+            alert('거래소 키를 먼저 등록하세요.')
+            return false
+        }
+        exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
+        if (exchangeKey === undefined || exchangeKey === null) {
+            alert('거래소 키를 먼저 등록하세요.')
+            return false
+        }
+        if (this.state.orderType === null) {
+            alert('주문방식을 선택하세요.')
+            return false
+        }
+        if (this.state.quantity == 0) {
+            alert('수량을 입력하세요.')
+            return false
+        }
+        let exchange = this.props.exchange
+        let base = this.props.base
+        let coin = this.props.coin
+        let accessKey = exchangeKey['active']['accessKey']
+        let secretKey = exchangeKey['active']['secretKey']
+        let orderCfg = {
+            symbol: `${coin}/${base}`,
+            type: this.state.orderType,
+            side: this.state.viewType ? 'buy' : 'sell',
+            amount: String(this.state.quantity).replace(/[^0-9.]/gi, ''),
+            price: String(this.state.price).replace(/[^0-9]/gi, '')
+        }
+        let order = await Nexus.createOrder(exchange, accessKey, secretKey, orderCfg)
+        if (order['status'] === 'success') {
+            alert('주문완료')
+        } else {
+            alert(order['message'])
+        }
+        // createOrder (symbol, type, side, amount[, price[, params]])
+
+        // console.log(order)
+
     }
     render() {
         if (this.state.units.length == 0) {
@@ -88,7 +172,7 @@ export default class OrderTab extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <FlatList
                             ref="orderbook"
-                            style={{ width: width / 2 - 10 }}
+                            style={{ width: width / 2 }}
                             data={this.state.units}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
@@ -130,22 +214,45 @@ export default class OrderTab extends Component {
                             )}
                         />
 
-                        <View style={{ width: width / 2 - 10, marginHorizontal: 10 }}>
-                            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 20 }}>
-                                <Button
-                                    type={this.state.viewType ? 'primary' : 'default'}
-                                    style={{ flex: 1 }}
-                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}
-                                    title="구매">
-                                </Button>
-                                <Button
-                                    type={!this.state.viewType ? 'warning' : 'default'}
-                                    style={{ flex: 1 }}
-                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}
-                                    title="판매">
-                                </Button>
+                        <View style={{ width: width / 2 - 20, marginHorizontal: 10 }}>
+
+                            <View style={{ flexDirection: 'row', marginTop: 30 }}>
+                                <TouchableOpacity
+                                    style={{
+                                        flex: 1,
+                                        height: 50,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: this.state.viewType ? '#2743ce' : '#b7b3b3',
+                                        marginRight: 5,
+                                        borderRadius: 2
+                                    }}
+                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}>
+                                    <Text style={{
+                                        color: 'white',
+                                        fontSize: 20
+                                    }}>구매</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        flex: 1,
+                                        height: 50,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: !this.state.viewType ? '#e04323' : '#b7b3b3',
+                                        marginLeft: 5,
+                                        borderRadius: 2
+                                    }}
+                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 20
+                                        }}>판매</Text>
+                                </TouchableOpacity>
                             </View>
-                            <View style={{ marginTop: 20 }}>
+
+                            <View style={{ marginTop: 40 }}>
                                 <Text style={{ fontSize: 20, color: 'gray' }}>
                                     주문방식
                                 </Text>
@@ -202,6 +309,20 @@ export default class OrderTab extends Component {
                                         })
                                     }}
                                 />
+                                <Text style={{
+                                    textAlign: 'right',
+                                    color: 'gray',
+                                    fontSize: 10
+                                    }}>
+                                    {this.props.coin}: {this.state.coin}
+                                </Text>
+                                <Text style={{
+                                    textAlign: 'right',
+                                    color: 'gray',
+                                    fontSize: 10
+                                    }}>
+                                    {this.props.base}: {this.state.base}
+                                </Text>
                             </View>
                             <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
                                 <Text style={{ fontSize: 20, color: 'gray' }}>가격</Text>
@@ -214,9 +335,12 @@ export default class OrderTab extends Component {
                                         this.setState({
                                             price: text.replace(/[^\d\.]/gi, '') || ''
                                         })
+                                    }}
+                                    onFocus={(e) => {
+                                        this.refs['scroll'].scrollTo({ y: 60 })
                                     }} />
                             </View>
-                            <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
+                            {/* <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
                                 <Text style={{ fontSize: 20, color: 'gray' }}>발동가격</Text>
                                 <TextInput
                                     style={defaultStyle.textInput}
@@ -231,23 +355,49 @@ export default class OrderTab extends Component {
                                     onFocus={(e) => {
                                         this.refs['scroll'].scrollTo({ y: 80 })
                                     }}
-                                    onBlur={() => {
-                                        // this.refs['scroll'].scrollTo({y: 0})
-                                    }}
                                 />
-                            </View>
-                            <View>
-                                <Button
+                            </View> */}
+                            <View
+                                style={{
+                                    marginTop: 40
+                                }}>
+                                <TouchableOpacity
                                     onPress={() => this.order()}
-                                    color='rgb(148,172,218)'
-                                    title="구매하기" />
-                                <Button
+                                    style={{
+                                        display: !this.state.viewType,
+                                        height: 50,
+                                        backgroundColor: '#2743ce',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: 3
+                                    }}>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 20,
+                                        }}>
+                                        구매하기
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
                                     onPress={() => this.order()}
-                                    color='rgb(234,98,104)'
-                                    buttonStyle={{
-                                        display: 'none'
-                                    }}
-                                    title="판매하기" />
+                                    color='#e04323'
+                                    style={{
+                                        display: this.state.viewType,
+                                        height: 50,
+                                        backgroundColor: '#e04323',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: 3
+                                    }}>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 20,
+                                        }}>
+                                        판매하기
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
