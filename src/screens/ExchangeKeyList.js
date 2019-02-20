@@ -41,7 +41,6 @@ export default class ExchangeKeyList extends Component {
     }
     constructor(props) {
         super(props)
-        AsyncStorage.clear()
         this._interval = null
         this.exchanges = config.getExchangeLabels()
         this.state = {

@@ -48,11 +48,11 @@ export default class ExchangeKeyDetail extends Component {
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
-                        거래소:
+                        거래소
                 </Text>
                     <Text style={{
                         width: width - 100,
-                        fontSize: 18,
+                        fontSize: 16,
                         textAlign: 'left'
                     }}>
                         {this.state.active.exchangeName}
@@ -72,11 +72,11 @@ export default class ExchangeKeyDetail extends Component {
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
-                        액세스키:
+                        액세스키
                 </Text>
                     <Text style={{
                         width: width - 100,
-                        fontSize: 18,
+                        fontSize: 16,
                         textAlign: 'left'
                     }}>
                         {this.state.active.accessKey}
@@ -96,11 +96,11 @@ export default class ExchangeKeyDetail extends Component {
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
-                        시크릿키:
+                        시크릿키
                 </Text>
                     <Text style={{
                         width: width - 100,
-                        fontSize: 18,
+                        fontSize: 16,
                         textAlign: 'left'
                     }}>
                         {this.state.active.secretKey.substring(0, 5) + '**********'}
