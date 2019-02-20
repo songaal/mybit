@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, Dimensions, StyleSheet } from 'react-native'
-import { TabView } from 'react-native-tab-view'
+import { TabView, TabBar } from 'react-native-tab-view'
 import Nexus from '@api/Nexus'
 import Ticker from '@components/Ticker'
 
@@ -65,23 +65,47 @@ export default class BaseTab extends Component {
       </View>
     )
   }
+  _renderTabBar = props => (
+    <TabBar
+      {...props}
+      scrollEnabled
+      indicatorStyle={styles.indicator}
+      style={styles.tabbar}
+      tabStyle={styles.tab}
+      labelStyle={styles.label}
+    />
+  )
   render() {
     return (
-      <View style={{flex: 1}}>
-        <TabView
+      <TabView
+          style={this.props.style}
           navigationState={this.state}
           renderScene={this._renderScene}
           onIndexChange={this._handleIndexChange}
+          renderTabBar={this._renderTabBar}
         />
-      </View>
     )
   }
 }
 
+// const styles = StyleSheet.create({
+//   scene: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
 const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  tabbar: {
+    // backgroundColor: '#3f51b5',
+  },
+  tab: {
+    width: 105,
+  },
+  indicator: {
+    // backgroundColor: '#aee5dd',
+  },
+  label: {
+    fontWeight: '400',
   },
 });

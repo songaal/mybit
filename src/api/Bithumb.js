@@ -22,7 +22,11 @@ class Bithumb extends Base {
   }
   formatTicker = async (message, config) => {
     let formatData = []
-    delete message.data['date']
+    try {
+      delete message.data['date']
+    } catch (error) {
+      console.log('[warning] 데이터 삭제 실패.')
+    }
     let base = config.base
     Object.keys(message.data).forEach(coin => {
       let ticker = message.data[coin]
@@ -50,25 +54,32 @@ class Bithumb extends Base {
   formatOrderbook = async (message, config) => {
     let asks = []
     let bids = []
-    message['data']['asks'].forEach(orderbook => {
-      asks.push({
-        price: numeral(orderbook['price']).format('0,000[.]00'),
-        size: orderbook['quantity'],
-        unit: 'ask'
+    let time = null
+    try {
+      message['data']['asks'].forEach(orderbook => {
+        asks.push({
+          price: numeral(orderbook['price']).format('0,000[.]00'),
+          size: orderbook['quantity'],
+          unit: 'ask'
+        })
       })
-    })
-    message['data']['bids'].forEach(orderbook => {
-      bids.push({
-        price: numeral(orderbook['price']).format('0,000[.]00'),
-        size: orderbook['quantity'],
-        unit: 'bid'
+      message['data']['bids'].forEach(orderbook => {
+        bids.push({
+          price: numeral(orderbook['price']).format('0,000[.]00'),
+          size: orderbook['quantity'],
+          unit: 'bid'
+        })
       })
-    })
+      time = message['data']['timestamp']
+    } catch (error) {
+      console.log('오더북 데이터가 없음.', error)
+    }
+
     return {
       base: config.base,
       coin: config.coin,
       units: asks.reverse().concat(bids),
-      time: message['data']['timestamp']
+      time: time
     }
   }
 

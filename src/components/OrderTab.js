@@ -16,6 +16,7 @@ export default class OrderTab extends Component {
     constructor(props) {
         super(props)
         this.isScrollTo = true
+        this.isConnect = true
         this.state = {
             units: [],
             viewType: viewType.buy, //default view type
@@ -40,57 +41,68 @@ export default class OrderTab extends Component {
     }
     updateOrderbook() {
         this._interval = setTimeout(() => {
-            const priceInfo = Nexus.getPriceInfo(this.props.exchange)
-            const orderbook = priceInfo[this.props.base][this.props.coin]['orderbook']
-            if (orderbook) {
-                this.setState({
-                    units: orderbook['units'] || []
-                })
+            try {
+                const priceInfo = Nexus.getPriceInfo(this.props.exchange)
+                const orderbook = priceInfo[this.props.base][this.props.coin]['orderbook']
+                if (orderbook) {
+                    this.setState({
+                        units: orderbook['units'] || []
+                    })
+                }
+            } catch (error) {
+                console.log('오더북 상태 저장 실패.', error)
             }
             this.updateOrderbook()
         }, 200)
     }
     _fetchBalance = async () => {
-        let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
-        if (exchangeKeys === null || exchangeKeys === undefined) {
-            this.setState({
-                base: '거래소키를 등록하세요.',
-                coin: '거래소키를 등록하세요.'
-            })
+        if (this.isConnect === false) {
             return false
         }
-        exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
-        if (exchangeKey === undefined || exchangeKey === null) {
-            this.setState({
-                base: '거래소키를 등록하세요.',
-                coin: '거래소키를 등록하세요.'
-            })
-            return false
+        try {
+            let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
+            if (exchangeKeys === null || exchangeKeys === undefined) {
+                this.setState({
+                    base: '거래소키를 등록하세요.',
+                    coin: '거래소키를 등록하세요.'
+                })
+                return false
+            }
+            exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
+            if (exchangeKey === undefined || exchangeKey === null) {
+                this.setState({
+                    base: '거래소키를 등록하세요.',
+                    coin: '거래소키를 등록하세요.'
+                })
+                return false
+            }
+            let accessKey = exchangeKey['active']['accessKey']
+            let secretKey = exchangeKey['active']['secretKey']
+            let exchange = this.props.exchange
+            let base = this.props.base
+            let coin = this.props.coin
+            let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
+            if (balance['status'] == 'success') {
+                this.setState({
+                    base: numeral(balance['data'][base]['used'] || 0).format('0,0[.]00000000'),
+                    coin: numeral(balance['data'][coin]['used'] || 0).format('0,0[.]00000000')
+                })
+            } else {
+                this.setState({
+                    base: '조회 실패.',
+                    coin: '조회 실패.'
+                })
+            }
+        } catch (error) {
+            console.log('밸런스 조회 실패.. 1초뒤 재시도합니다.')
         }
-        let accessKey = exchangeKey['active']['accessKey']
-        let secretKey = exchangeKey['active']['secretKey']
-        let exchange = this.props.exchange
-        let base = this.props.base
-        let coin = this.props.coin
-        let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
-        if (balance['status'] == 'success') {
-            this.setState({
-                base: numeral(balance['data'][base]['used'] || 0).format('0,0[.]00000000'),
-                coin: numeral(balance['data'][coin]['used'] || 0).format('0,0[.]00000000')
-            })
-        } else {
-            this.setState({
-                base: '조회 실패.',
-                coin: '조회 실패.'
-            })
-        }
-        
         this._interval = setTimeout(() => {
             this._fetchBalance()
-        }, 1000)
+        }, 500)
     }
     componentWillMount() {
         // 오더북 연결
+        this.isConnect = true
         const exchange = this.props.exchange
         const base = this.props.base
         const coin = this.props.coin
@@ -109,11 +121,18 @@ export default class OrderTab extends Component {
     }
     componentWillUnmount() {
         // 오더북 종료
-        clearTimeout(this._interval)
-        this._interval = null
-        Nexus.close(this.props.exchange, 'orderbook')
-        clearTimeout(this._interval)
-        Nexus.runTicker(this.props.exchange, this.props.base)
+        try {
+            this.isConnect = false
+            Nexus.close(this.props.exchange, 'orderbook')
+            clearTimeout(this._interval)
+            Nexus.runTicker(this.props.exchange, this.props.base)
+            if (this._interval !== undefined) {
+                clearTimeout(this._interval)
+                this._interval = undefined
+            }
+        } catch (error) {
+            console.log('인터벌 종료 중 에러 발생..')
+        }
     }
     onEnableScroll(value) {
         this.setState({
@@ -313,14 +332,14 @@ export default class OrderTab extends Component {
                                     textAlign: 'right',
                                     color: 'gray',
                                     fontSize: 10
-                                    }}>
+                                }}>
                                     {this.props.coin}: {this.state.coin}
                                 </Text>
                                 <Text style={{
                                     textAlign: 'right',
                                     color: 'gray',
                                     fontSize: 10
-                                    }}>
+                                }}>
                                     {this.props.base}: {this.state.base}
                                 </Text>
                             </View>

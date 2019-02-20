@@ -2,16 +2,8 @@ import React from 'react'
 import { config } from '~/Config'
 import Nexus from '@api/Nexus'
 import BaseTab from '@components/BaseTab'
-import {
-  Text,
-  View,
-  Dimensions,
-  StyleSheet,
-  SafeAreaView
-} from 'react-native'
-import {
-  TabView
-} from 'react-native-tab-view'
+import { Text, View, Dimensions, StyleSheet, SafeAreaView } from 'react-native'
+import { TabView, TabBar} from 'react-native-tab-view'
 
 
 export default class Exchange extends React.Component {
@@ -48,20 +40,45 @@ export default class Exchange extends React.Component {
     }
     return <BaseTab exchange={route.key} navigation={this.props.navigation} token={this.state.index} />
   }
+  _renderTabBar = props => (
+    <TabBar
+      {...props}
+      scrollEnabled
+      indicatorStyle={styles.indicator}
+      style={styles.tabbar}
+      tabStyle={styles.tab}
+      labelStyle={styles.label}
+    />
+  )
   render() {
     return (
       <TabView
         navigationState={this.state}
         renderScene={this._renderScene}
         onIndexChange={this._handleIndexChange}
+        renderTabBar={this._renderTabBar}
       />
     )
   }
 }
+// const styles = StyleSheet.create({
+//   scene: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
 const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  tabbar: {
+    // backgroundColor: '#3f51b5',
+  },
+  tab: {
+    width: 100,
+  },
+  indicator: {
+    // backgroundColor: '#aee5dd',
+  },
+  label: {
+    fontWeight: '400',
   },
 });

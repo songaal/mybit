@@ -49,31 +49,41 @@ export default class Base {
     let paireCoinList = {}
     let marketKeyMap = {}
     let revMarketKeyMap = {}
-    const markets = await exchagne.fetchMarkets()
+    let markets = null
+    try {
+      markets = await exchagne.fetchMarkets()
+    } catch (error) {
+      console.log('마켓 조회 실패... 1초뒤 재시도 합니다.')
+      setTimeout(() => {
+        this._loadMarkets(id)
+      }, 1000)
+      return false
+    }
+
     Object.values(markets)
-    .forEach(market => {
-      // quote == base
-      // base == coin
-      const {id, quote, base, symbol } = market
-      if (paireCoinList[quote] === undefined) {
-        paireCoinList[quote] = []
-        priceInfo[quote] = {}
-        marketKeyMap[quote] = {}
-      }
-      priceInfo[quote][base] = {}
-      paireCoinList[quote].push(base)
-      marketKeyMap[quote][base] = {
-        symbol: symbol,
-        base: quote,
-        coin: base,
-        key: id
-      }
-      revMarketKeyMap[id] = {
-        symbol: symbol,
-        base: quote,
-        coin: base
-      }
-    })
+      .forEach(market => {
+        // quote == base
+        // base == coin
+        const { id, quote, base, symbol } = market
+        if (paireCoinList[quote] === undefined) {
+          paireCoinList[quote] = []
+          priceInfo[quote] = {}
+          marketKeyMap[quote] = {}
+        }
+        priceInfo[quote][base] = {}
+        paireCoinList[quote].push(base)
+        marketKeyMap[quote][base] = {
+          symbol: symbol,
+          base: quote,
+          coin: base,
+          key: id
+        }
+        revMarketKeyMap[id] = {
+          symbol: symbol,
+          base: quote,
+          coin: base
+        }
+      })
     this.markets.priceInfo = priceInfo
     this.markets.pairCoinList = paireCoinList
     this.marketKeyMap = marketKeyMap
@@ -86,7 +96,7 @@ export default class Base {
     }
     let qs = typeof cfg.qs === 'string' ? cfg.qs : ''
     let ws = new WebSocket(this.config.ws.url + qs)
-    ws.onopen = () => { 
+    ws.onopen = () => {
       if (typeof cfg.initSend === 'string') {
         ws.send(cfg.initSend)
       }
@@ -128,25 +138,25 @@ export default class Base {
     try {
       this.ws[type].close()
       delete this.ws[type]
-    } catch(error) {
+    } catch (error) {
       // 종료 에러 무시.
     }
     try {
       clearTimeout(this.rest[type])
       delete this.rest[type]
-    } catch(error) {
+    } catch (error) {
       // 종료 에러 무시.
     }
   }
   closeAll() {
     Object.values(this.ws)
-    .forEach(ws => {
-      try {
-        ws.close()
-      } catch (error) {
-        // 종료 에러 무시.
-      }
-    })
+      .forEach(ws => {
+        try {
+          ws.close()
+        } catch (error) {
+          // 종료 에러 무시.
+        }
+      })
     this.ws = {}
     let typeList = Object.keys(this.rest)
     typeList.forEach(type => {
@@ -162,30 +172,30 @@ export default class Base {
     const task = (type, cfg) => {
       let url = `${this.config.rest.url}/${cfg.endpoint}`
       fetch(url, { ...cfg })
-      .then(response => response.json())
-      .then(response => {
-        cfg.format(response, cfg)
-        .then(formatData => {
-          if (formatData.length === undefined) {
-            // array
-            formatData = [formatData]
-          }
-          formatData.forEach(priceSet => {
-            let base = priceSet.base
-            let coin = priceSet.coin
-            this.markets.priceInfo[base][coin][type] = priceSet
-          })
+        .then(response => response.json())
+        .then(response => {
+          cfg.format(response, cfg)
+            .then(formatData => {
+              if (formatData.length === undefined) {
+                // array
+                formatData = [formatData]
+              }
+              formatData.forEach(priceSet => {
+                let base = priceSet.base
+                let coin = priceSet.coin
+                this.markets.priceInfo[base][coin][type] = priceSet
+              })
+            })
         })
-      })
     }
     this.rest[type] = setTimeout(() => {
       task(type, cfg)
       this.pollingTask(type, cfg, interval)
     }, interval)
   }
-  
-  ticker(base) {}
-  orderbook(base, coin) {}
-  trade(base, coin) {}
+
+  ticker(base) { }
+  orderbook(base, coin) { }
+  trade(base, coin) { }
 
 }

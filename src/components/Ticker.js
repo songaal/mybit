@@ -61,7 +61,13 @@ export default class Ticker extends React.Component {
                 data={this.state.tickers}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => { this.goCoinDetail(this.exchange, this.base, item.ticker.coin) }}>
+                    <TouchableOpacity onPress={() => { 
+                        if (item.ticker && item.ticker.tradePrice != 0) {
+                            this.goCoinDetail(this.exchange, this.base, item.ticker.coin) 
+                        } else {
+                            alert('거래불가 코인입니다.')
+                        }
+                        }}>
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',

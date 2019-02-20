@@ -7,6 +7,7 @@
 import ccxt from 'ccxt'
 import Upbit from '@api/Upbit'
 import Bithumb from '@api/Bithumb'
+import Binance from '@api/Binance'
 // import Bitmex from '@api/Bitmex'
 
 class Nexus {
@@ -14,7 +15,8 @@ class Nexus {
     this.api = {
       'upbit': Upbit,
       'bithumb': Bithumb,
-      // 'bitmex': Bitmex
+      'binance': Binance,
+    //   'bitmex': Bitmex,
     }
   }
   checkMarket(callback) {
