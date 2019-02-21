@@ -28,7 +28,7 @@ class Nexus {
           return false
         }
       })
-    if (isReady === true) {
+    if (isReady === true && typeof callback === 'function') {
       callback(isReady)
     } else {
       setTimeout(() => {

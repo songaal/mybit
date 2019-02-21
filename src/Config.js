@@ -24,7 +24,7 @@ export const config = {
       engName: 'Binance',
       korName: '바이낸스',
       ws: {
-        url: 'wss://stream.binance.com:9443'
+        url: 'wss://stream.binance.com:9443/stream'
       }
     },
     // bitmex: {

@@ -44,6 +44,9 @@ export default class Base {
     this._loadMarkets(config.id)
   }
   _loadMarkets = async (id) => {
+    if (this.isMarketReady === true) {
+      return false
+    }
     let exchagne = new ccxt[id]()
     let priceInfo = {}
     let paireCoinList = {}

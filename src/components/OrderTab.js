@@ -82,15 +82,11 @@ export default class OrderTab extends Component {
             let base = this.props.base
             let coin = this.props.coin
             let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
+            console.log(balance)
             if (balance['status'] == 'success') {
                 this.setState({
-                    base: numeral(balance['data'][base]['used'] || 0).format('0,0[.]00000000'),
-                    coin: numeral(balance['data'][coin]['used'] || 0).format('0,0[.]00000000')
-                })
-            } else {
-                this.setState({
-                    base: '조회 실패.',
-                    coin: '조회 실패.'
+                    base: numeral(balance['data'][base]['total'] || 0).format('0,0[.]00000000'),
+                    coin: numeral(balance['data'][coin]['total'] || 0).format('0,0[.]00000000')
                 })
             }
         } catch (error) {
@@ -98,7 +94,7 @@ export default class OrderTab extends Component {
         }
         this._interval = setTimeout(() => {
             this._fetchBalance()
-        }, 500)
+        }, 2000)
     }
     componentWillMount() {
         // 오더북 연결
@@ -246,7 +242,7 @@ export default class OrderTab extends Component {
                                         marginRight: 5,
                                         borderRadius: 2
                                     }}
-                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}>
+                                    onPress={(e) => { this.state.viewType = true }}>
                                     <Text style={{
                                         color: 'white',
                                         fontSize: 20
@@ -262,7 +258,7 @@ export default class OrderTab extends Component {
                                         marginLeft: 5,
                                         borderRadius: 2
                                     }}
-                                    onPress={(e) => { this.state.viewType = !this.state.viewType }}>
+                                    onPress={(e) => { this.state.viewType = false }}>
                                     <Text
                                         style={{
                                             color: 'white',

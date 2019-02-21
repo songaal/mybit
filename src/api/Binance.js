@@ -12,17 +12,15 @@ class Binance extends Base {
     super(config.exchanges.binance)
   }
   ticker(base) {
-    // const keys = Object.values(this.marketKeyMap[base])
-    // .map(marketKey => marketKey.key)
-    // this.newWebsocket({
-    //   type: 'ticker',
-    //   format: this.formatTicker,
-    //   initSend: JSON.stringify([
-    //     { ticket: 'ticker' }, 
-    //     { type: 'ticker', 
-    //       codes: keys
-    //     }])
-    // })
+    let serviceNames = Object.values(this.marketKeyMap[base])
+    .map(marketKey => marketKey.key.toLowerCase() + '@ticker/').join('')
+    serviceNames = serviceNames.substring(0, serviceNames.length - 1)
+    console.log(serviceNames)
+    this.newWebsocket({
+      type: 'ticker',
+      qs: 'streams=' + serviceNames,
+      format: this.formatTicker,
+    })
   }
   formatTicker = async (message) => {
     // let data = JSON.parse(await new Response(message).text())

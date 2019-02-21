@@ -13,10 +13,11 @@ const options = [
 
 export default class CoinDetail extends Component {
   static navigationOptions = ({ navigation }) => {
+    let exchange = navigation.getParam('exchange', '').toUpperCase()
     let coin = navigation.getParam('coin', '')
     let base = navigation.getParam('base', '')
     return {
-      title: `${coin}/${base}`
+      title: `${exchange}/${coin}/${base}`
     }
   }
   constructor(props) {

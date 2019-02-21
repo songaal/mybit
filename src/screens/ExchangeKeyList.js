@@ -62,6 +62,9 @@ export default class ExchangeKeyList extends Component {
             this._isRefresh()
         }, 1000)
     }
+    componentDidMount() {
+        _isChanged = true
+    }
     goExchangeDetail(exchange) {
         this.props.navigation.navigate('exchangeKeyDetail', {
             tabBarHidden: true,
