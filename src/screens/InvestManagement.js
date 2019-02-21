@@ -3,104 +3,69 @@ import { View, Text, SafeAreaView, AsyncStorage, Dimensions, ScrollView } from '
 import { config } from '~/Config'
 import ccxt from 'ccxt'
 import Card from '@components/Card'
+import Nexus from '@api/Nexus'
+import { exchangeKeyId } from '@constants/StorageKey'
+
+const balanceList = (exchange, data) => {
+  List = Object.keys(data).map(key => {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 18, color: 'gray' }}>보유 {key}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>{data[key]['total']}</Text>
+        </View>
+      </View>
+    )
+  })
+  return (
+    <Card style={{ marginTop: 30 }}>
+      <View key="header">
+        <Text style={{ fontSize: 18 }}> {exchange}</Text>
+      </View>
+      <View key="body">
+        {List}
+      </View>
+    </Card>
+  )
+}
+
+
 
 export default class InvestHistory extends React.Component {
   constructor(props) {
     super(props)
+    this._balances = {}
+    this.fetchBalance()
+    this.state = {
 
-    this.fetchBalance('upbit').then(balance => {
-      console.log(balance)
-    }, error => {
-      // alert(error)
+    }
+  }
+  fetchBalance = async () => {
+    const exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
+    if (exchangeKeys == null) {
+      return false
+    }
+    exObj = JSON.parse(exchangeKeys)
+    Object.keys(exObj).forEach(key => {
+      (async () => {
+        let accessKey = exObj[key]['active']['accessKey']
+        let secretKey = exObj[key]['active']['secretKey']
+        let b = await Nexus.getBalance(key, accessKey, secretKey)
+        // this._balances[key] = b['data']
+        console.log(b['data'])
+      })()
+
     })
 
-    this.state = {}
   }
-  fetchBalance = async (exchangeId) => {
-    // TODO 거래소 마다 스토리지에서 키정보가져오기
-    const accessKey = await AsyncStorage.getItem('accessKey')
-    const secretKey = await AsyncStorage.getItem('secretKey')
-    let exchange = new ccxt[exchangeId]({
-      apiKey: accessKey,
-      secret: secretKey
-    })
-    return await exchange.fetchBalance()
-  }
-
-
   render() {
     return (
       <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>투자내역</Text>
         <ScrollView>
 
-          <Card style={{ marginTop: 30 }}>
-            <View key="header">
-              <Text style={{ fontSize: 18 }}> 업비트</Text>
-            </View>
-            <View key="body">
-
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 KRW</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>25000 KRW</Text>
-                </View>
-              </View>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 BTC</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>1.00550522 BTC</Text>
-                </View>
-              </View>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 ETH</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>8315.00000000 ETH</Text>
-                </View>
-              </View>
-
-            </View>
-          </Card>
-
-          <Card style={{ marginTop: 30 }}>
-            <View key="header">
-              <Text style={{ fontSize: 18 }}>빗썸</Text>
-            </View>
-            <View key="body">
-
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 KRW</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>25000 KRW</Text>
-                </View>
-              </View>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 BTC</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>1.00550522 BTC</Text>
-                </View>
-              </View>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'gray' }}>보유 ETH</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18, color: 'black', textAlign: 'right' }}>8315.00000000 ETH</Text>
-                </View>
-              </View>
-
-            </View>
-          </Card>
 
         </ScrollView>
 

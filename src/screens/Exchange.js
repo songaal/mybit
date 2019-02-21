@@ -38,7 +38,7 @@ export default class Exchange extends React.Component {
     ) {
       return null
     }
-    return <BaseTab exchange={route.key} navigation={this.props.navigation} token={this.state.index} />
+    return <BaseTab exchange={route.key} exchangeKr={route.title} navigation={this.props.navigation} token={this.state.index} />
   }
   _renderTabBar = props => (
     <TabBar

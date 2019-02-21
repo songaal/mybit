@@ -108,7 +108,7 @@ class Nexus {
       let message = JSON.parse(error.message.substring(trashIndex))['message']
       result = {
         status: 'fail',
-        message: message
+        message: message === undefined ? error.message : message
       }
     }
     return result

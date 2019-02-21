@@ -82,7 +82,6 @@ export default class OrderTab extends Component {
             let base = this.props.base
             let coin = this.props.coin
             let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
-            console.log(balance)
             if (balance['status'] == 'success') {
                 this.setState({
                     base: numeral(balance['data'][base]['total'] || 0).format('0,0[.]00000000'),

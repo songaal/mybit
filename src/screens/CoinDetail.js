@@ -4,6 +4,7 @@ import { TabView } from 'react-native-tab-view'
 import OrderTab from '@components/OrderTab'
 import ChartTab from '@components/ChartTab'
 import OrderHistoryTab from '@components/OrderHistoryTab'
+import { exchangeKeyId } from '@constants/StorageKey'
 
 const options = [
   { key: 'order', title: '주문' },
@@ -13,11 +14,11 @@ const options = [
 
 export default class CoinDetail extends Component {
   static navigationOptions = ({ navigation }) => {
-    let exchange = navigation.getParam('exchange', '').toUpperCase()
+    let exchangeKr = navigation.getParam('exchangeKr', '')
     let coin = navigation.getParam('coin', '')
     let base = navigation.getParam('base', '')
     return {
-      title: `${exchange}/${coin}/${base}`
+      title: `${exchangeKr}/${coin}/${base}`
     }
   }
   constructor(props) {

@@ -76,10 +76,9 @@ export default class ExchangeKeyList extends Component {
             <TouchableOpacity key={index} onPress={() => { this.goExchangeDetail(exchange) }}>
                 <View
                     style={{
-                        marginTop: 20,
-                        borderTopWidth: 0.5,
+                        borderTopWidth: 0.2,
                         borderTopColor: '#bbb',
-                        borderBottomWidth: 0.5,
+                        borderBottomWidth: 0.2,
                         borderBottomColor: '#bbb',
                         flexDirection: 'row'
                     }}>
@@ -129,7 +128,7 @@ export default class ExchangeKeyList extends Component {
             keyList.push(this.ExchangeKeyTmplate(index, active['exchangeName'], active['exchange']))
         })
         return (
-            <ScrollView style={{ marginTop: 10 }}>
+            <ScrollView style={{ marginTop: 0 }}>
                 {keyList}
             </ScrollView>
         )

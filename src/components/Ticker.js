@@ -10,12 +10,13 @@ export default class Ticker extends React.Component {
         super(props)
         this.token = props.token
         this.updateTicker = this.updateTicker.bind(this)
-        this.index = props.index,
-            this.exchange = props.exchange,
-            this.base = props.base,
-            this.state = {
-                tickers: []
-            }
+        this.index = props.index
+        this.exchange = props.exchange
+        this.exchangeKr = props.exchangeKr
+        this.base = props.base
+        this.state = {
+            tickers: []
+        }
         // 최초 실행.
         Nexus.runTicker(props.exchange, props.base)
         this.updateTicker()
@@ -24,6 +25,7 @@ export default class Ticker extends React.Component {
     goCoinDetail(exchange, base, coin) {
         Nexus.closeAll()
         this.props.navigation.navigate('coinDetail', {
+            exchangeKr: this.exchangeKr,
             exchange: exchange,
             base: base,
             coin: coin
@@ -61,13 +63,13 @@ export default class Ticker extends React.Component {
                 data={this.state.tickers}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => { 
+                    <TouchableOpacity onPress={() => {
                         if (item.ticker && item.ticker.tradePrice != 0) {
-                            this.goCoinDetail(this.exchange, this.base, item.ticker.coin) 
+                            this.goCoinDetail(this.exchange, this.base, item.ticker.coin)
                         } else {
                             alert('거래불가 코인입니다.')
                         }
-                        }}>
+                    }}>
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',

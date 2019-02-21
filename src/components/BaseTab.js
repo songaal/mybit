@@ -57,6 +57,7 @@ export default class BaseTab extends Component {
         <View style={{marginBottom: 60}}>
           <Ticker
             exchange={this.props.exchange} 
+            exchangeKr={this.props.exchangeKr}
             base={route.key} 
             index={this.state.index} 
             navigation={this.props.navigation}
