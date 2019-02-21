@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text, SafeAreaView, TextInput, AsyncStorage, TouchableOpacity, Dimensions } from 'react-native'
-import { Button, NoticeBar, WhiteSpace, Card } from '@ant-design/react-native'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Links from '@constants/Links'
 const { width, height } = Dimensions.get('window')
