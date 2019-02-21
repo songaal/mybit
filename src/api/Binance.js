@@ -1,7 +1,5 @@
 import { config } from '~/Config'
 import Base from '@api/Base'
-import Utils from '~/Utils'
-import numeral from 'numeral'
 
 /**
  * binance api
