@@ -69,6 +69,9 @@ export default class Ticker extends React.Component {
                         } else {
                             alert('거래불가 코인입니다.')
                         }
+                    }}
+                    style={{
+                        display: item.ticker && item.ticker.tradePrice != 0 ? 'flex' : 'none'
                     }}>
                         <View style={{
                             flex: 1,

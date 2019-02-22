@@ -97,7 +97,7 @@ export default class Base {
     if (this.ws[cfg.type]) {
       this.ws[cfg.type].close()
     }
-    let qs = typeof cfg.qs === 'string' ? cfg.qs : ''
+    let qs = typeof cfg.qs === 'string' ? '?' + cfg.qs : ''
     let ws = new WebSocket(this.config.ws.url + qs)
     ws.onopen = () => {
       if (typeof cfg.initSend === 'string') {
@@ -123,7 +123,8 @@ export default class Base {
         cfg.onmessage(message)
       }
       if (typeof cfg.format === 'function') {
-        cfg.format(message).then(priceSet => {
+        cfg.format(message, cfg)
+        .then(priceSet => {
           let base = priceSet.base
           let coin = priceSet.coin
           this.markets.priceInfo[base][coin][cfg.type] = priceSet

@@ -57,6 +57,7 @@ export default class Account extends React.Component {
       <View style={{ flex: 1 }}>
         <Text
           style={{
+            marginTop: 30,
             fontSize: 20,
             fontWeight: 'bold',
             textAlign: 'center'

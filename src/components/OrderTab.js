@@ -17,6 +17,8 @@ export default class OrderTab extends Component {
         super(props)
         this.isScrollTo = true
         this.isConnect = true
+        this._fetchBalance = this._fetchBalance.bind(this)
+        this._invalidKey = false
         this.state = {
             units: [],
             viewType: viewType.buy, //default view type
@@ -62,18 +64,12 @@ export default class OrderTab extends Component {
         try {
             let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
             if (exchangeKeys === null || exchangeKeys === undefined) {
-                this.setState({
-                    base: '거래소키를 등록하세요.',
-                    coin: '거래소키를 등록하세요.'
-                })
+                this._invalidKey = true
                 return false
             }
             exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
             if (exchangeKey === undefined || exchangeKey === null) {
-                this.setState({
-                    base: '거래소키를 등록하세요.',
-                    coin: '거래소키를 등록하세요.'
-                })
+                this._invalidKey = true
                 return false
             }
             let accessKey = exchangeKey['active']['accessKey']
@@ -87,6 +83,7 @@ export default class OrderTab extends Component {
                     base: numeral(balance['data'][base]['total'] || 0).format('0,0[.]00000000'),
                     coin: numeral(balance['data'][coin]['total'] || 0).format('0,0[.]00000000')
                 })
+                this._invalidKey = false
             }
         } catch (error) {
             console.log('밸런스 조회 실패.. 1초뒤 재시도합니다.')
@@ -180,9 +177,21 @@ export default class OrderTab extends Component {
         if (this.state.units.length == 0) {
             return null
         }
+
+        let InvalidKey = null
+        if (this._invalidKey === true) {
+            InvalidKey = <Text style={{
+                    color: 'red',
+                    fontSize: 14,
+                    textAlign: 'right'
+                }}>* 거래소키를 등룍하세요.</Text>
+        }
+
         return (
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-                <ScrollView style={{ flex: 1, flexDirection: 'row' }} ref="scroll" scrollEnabled={this.state.enableScrollViewScroll}>
+                <ScrollView style={{ flex: 1, flexDirection: 'row' }}
+                    ref="scroll"
+                    scrollEnabled={this.state.enableScrollViewScroll}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <FlatList
                             ref="orderbook"
@@ -373,8 +382,11 @@ export default class OrderTab extends Component {
                             </View> */}
                             <View
                                 style={{
-                                    marginTop: 40
+                                    marginTop: 30
                                 }}>
+
+                                {InvalidKey}
+
                                 <TouchableOpacity
                                     onPress={() => this.order()}
                                     style={{
