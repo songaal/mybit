@@ -44,14 +44,14 @@ export default class ExchangeKeyDetail extends Component {
                     paddingBottom: 5
                 }}>
                     <Text style={{
-                        width: 100,
+                        width: 80,
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
                         거래소
                 </Text>
                     <Text style={{
-                        width: width - 100,
+                        width: width - 80,
                         fontSize: 16,
                         textAlign: 'left'
                     }}>
@@ -68,14 +68,14 @@ export default class ExchangeKeyDetail extends Component {
                     paddingBottom: 5
                 }}>
                     <Text style={{
-                        width: 100,
+                        width: 80,
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
                         액세스키
                 </Text>
                     <Text style={{
-                        width: width - 100,
+                        width: width - 80,
                         fontSize: 16,
                         textAlign: 'left'
                     }}>
@@ -92,14 +92,14 @@ export default class ExchangeKeyDetail extends Component {
                     paddingBottom: 5
                 }}>
                     <Text style={{
-                        width: 100,
+                        width: 80,
                         fontSize: 18,
                         textAlign: 'left'
                     }}>
                         시크릿키
                 </Text>
                     <Text style={{
-                        width: width - 100,
+                        width: width - 80,
                         fontSize: 16,
                         textAlign: 'left'
                     }}>

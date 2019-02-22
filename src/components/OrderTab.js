@@ -174,17 +174,17 @@ export default class OrderTab extends Component {
 
     }
     render() {
-        if (this.state.units.length == 0) {
-            return null
-        }
+        // if (this.state.units.length == 0) {
+        //     return null
+        // }
 
         let InvalidKey = null
         if (this._invalidKey === true) {
             InvalidKey = <Text style={{
-                    color: 'red',
-                    fontSize: 14,
-                    textAlign: 'right'
-                }}>* 거래소키를 등룍하세요.</Text>
+                color: 'red',
+                fontSize: 14,
+                textAlign: 'right'
+            }}>* 거래소키를 등룍하세요.</Text>
         }
 
         return (
@@ -250,7 +250,9 @@ export default class OrderTab extends Component {
                                         marginRight: 5,
                                         borderRadius: 2
                                     }}
-                                    onPress={(e) => { this.state.viewType = true }}>
+                                    onPress={(e) => {
+                                        this.state.viewType = true
+                                    }}>
                                     <Text style={{
                                         color: 'white',
                                         fontSize: 20
@@ -266,7 +268,9 @@ export default class OrderTab extends Component {
                                         marginLeft: 5,
                                         borderRadius: 2
                                     }}
-                                    onPress={(e) => { this.state.viewType = false }}>
+                                    onPress={(e) => {
+                                        this.state.viewType = false
+                                    }}>
                                     <Text
                                         style={{
                                             color: 'white',
@@ -360,7 +364,7 @@ export default class OrderTab extends Component {
                                         })
                                     }}
                                     onFocus={(e) => {
-                                        this.refs['scroll'].scrollTo({ y: 60 })
+                                        this.refs['scroll'].scrollTo({ y: 120 })
                                     }} />
                             </View>
                             {/* <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>

@@ -5,6 +5,7 @@ export const config = {
       tvExchangeId: 'BITHUMB',
       engName: 'Upbit',
       korName: '업비트',
+      tether: 'KRW',
       ws: {
         url: 'wss://api.upbit.com/websocket/v1'
       }
@@ -14,6 +15,7 @@ export const config = {
       tvExchangeId: 'BITHUMB',
       engName: 'Bithumb',
       korName: '빗썸',
+      tether: 'KRW',
       rest: {
         url: 'https://api.bithumb.com'
       }
@@ -23,8 +25,12 @@ export const config = {
       tvExchangeId: 'BINANCE',
       engName: 'Binance',
       korName: '바이낸스',
+      tether: 'USDT',
       ws: {
         url: 'wss://stream.binance.com:9443/stream'
+      },
+      rest: {
+        url: 'https://www.binance.com/api/v1/'
       }
     },
     // bitmex: {

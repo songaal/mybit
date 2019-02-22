@@ -76,9 +76,9 @@ export default class ExchangeKeyList extends Component {
             <TouchableOpacity key={index} onPress={() => { this.goExchangeDetail(exchange) }}>
                 <View
                     style={{
-                        borderTopWidth: 0.2,
+                        borderTopWidth: 0.3,
                         borderTopColor: '#bbb',
-                        borderBottomWidth: 0.2,
+                        borderBottomWidth: 0.3,
                         borderBottomColor: '#bbb',
                         flexDirection: 'row'
                     }}>

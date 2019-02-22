@@ -16,7 +16,7 @@ class Nexus {
       'upbit': Upbit,
       'bithumb': Bithumb,
       'binance': Binance,
-    //   'bitmex': Bitmex,
+      //   'bitmex': Bitmex,
     }
   }
   checkMarket(callback) {
@@ -123,9 +123,9 @@ class Nexus {
       })
       if (exchange.has['fetchMyTrades'] === false) {
         result = {
-            status: 'fail',
-            message: '주문내역을 지원하지 않습니다.'
-          }
+          status: 'fail',
+          message: '주문내역을 지원하지 않습니다.'
+        }
       } else {
         result = {
           status: 'success',
@@ -165,5 +165,21 @@ class Nexus {
     }
     return result
   }
+
+  getCoinLastPrice = async (accessKey, secretKey, exchangeId, base, coin) => {
+    let exchange = new ccxt[exchangeId]({
+      apiKey: accessKey,
+      secret: secretKey
+    })
+    let lastPrice = 0
+    try {
+      lastPrice = (await exchange.fetchTicker(`${coin}/${base}`))['close']
+    } catch (error) {
+      console.log(error)
+    }
+    return lastPrice
+  }
 }
+
+
 export default new Nexus()

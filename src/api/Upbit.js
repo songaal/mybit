@@ -60,23 +60,29 @@ class Upbit extends Base {
         { ticket: 'orderbook' }, 
         { type: 'orderbook', 
           codes: [key] }
-        ])
+        ]),
+      base: base,
+      coin: coin
     }
     this.newWebsocket(cfg)
   }
-  formatOrderbook = async (message) => {
+  formatOrderbook = async (message, cfg) => {
     let data = JSON.parse(await new Response(message).text())
     let { base, coin } = this.revMarketKeyMap[data['code']]
     let asks = []
     let bids = []
+    let priceRex = '0,000[.]00000000'
+    if (cfg.base == 'KRW' || cfg.base.indexOf('USD') != -1) {
+      priceRex = '0,000[.]00'
+    }
     data['orderbook_units'].forEach(orderbook => {
       asks.push({
-        price: numeral(orderbook['ask_price']).format('0,000[.]00'),
+        price: numeral(orderbook['ask_price']).format(priceRex),
         size: orderbook['ask_size'],
         unit: 'ask'
       })
       bids.push({
-        price: numeral(orderbook['bid_price']).format('0,000[.]00'),
+        price: numeral(orderbook['bid_price']).format(priceRex),
         size: orderbook['bid_size'],
         unit: 'bid'
       })

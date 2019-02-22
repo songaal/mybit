@@ -17,7 +17,7 @@ class Bithumb extends Base {
       base: base,
       format: this.formatTicker
     }
-    this.pollingTask('ticker', config, 200)
+    this.pollingTask('ticker', config, 500)
   }
   formatTicker = async (message, config) => {
     let formatData = []
@@ -50,7 +50,7 @@ class Bithumb extends Base {
     }
     this.pollingTask('orderbook', config, 200)
   }
-  formatOrderbook = async (message, config) => {
+  formatOrderbook = async (message, cfg) => {
     let asks = []
     let bids = []
     let time = null
@@ -75,12 +75,11 @@ class Bithumb extends Base {
     }
 
     return {
-      base: config.base,
-      coin: config.coin,
+      base: cfg.base,
+      coin: cfg.coin,
       units: asks.reverse().concat(bids),
       time: time
     }
   }
-
 }
 export default new Bithumb()
