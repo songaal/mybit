@@ -179,6 +179,10 @@ class Nexus {
     }
     return lastPrice
   }
+
+  getOrders = async (accessKey, secretKey, exchangeId, base, coin) => {
+    return await this.api[exchangeId].getOrders(accessKey, secretKey, base, coin)
+  }
 }
 
 

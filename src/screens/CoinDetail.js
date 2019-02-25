@@ -53,9 +53,9 @@ export default class CoinDetail extends Component {
       return null
     }
     switch (route.key) {
-      case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} />
-      case 'chart': return <ChartTab exchange={this.exchange} base={this.base} coin={this.coin}></ChartTab>
-      case 'orderHistory': return <OrderHistoryTab exchange={this.exchange} base={this.base} coin={this.coin}></OrderHistoryTab>
+      case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
+      case 'chart': return <ChartTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
+      case 'orderHistory': return <OrderHistoryTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
       default: return null
     }
   }

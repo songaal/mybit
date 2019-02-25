@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, AsyncStorage } from 'react-native'
 import Nexus from '@api/Nexus'
 import { exchangeKeyId } from '@constants/StorageKey'
+import { NavigationEvents } from 'react-navigation'
 
 export default class OrderHistoryTab extends Component {
     constructor(props) {
@@ -12,27 +13,23 @@ export default class OrderHistoryTab extends Component {
         // 최소 한번실행
         this.getTradeHistory()
     }
-    componentWillUpdate() {
+    componentWillUpdate(props) {
+        console.log(props)
         // 다시 탭 선택했을때
         this.getTradeHistory()
     }
     getTradeHistory = async () => {
-        let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
-        if (exchangeKeys === null || exchangeKeys === undefined) {
-            return false
-        }
-        exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
-        if (exchangeKey === undefined || exchangeKey === null) {
-            return false
-        }
-        let accessKey = exchangeKey['active']['accessKey']
-        let secretKey = exchangeKey['active']['secretKey']
-        let result = await Nexus.getOrderHistory(this.props.exchange, this.props.base, this.props.coin, accessKey, secretKey)
-        console.log(result['status'])
+        console.log('call')
     }
     render() {
         return (
             <View>
+                <NavigationEvents
+                    onWillFocus={payload => console.log('will focus', payload)}
+                    onDidFocus={payload => console.log('did focus', payload)}
+                    onWillBlur={payload => console.log('will blur', payload)}
+                    onDidBlur={payload => console.log('did blur', payload)}
+                />
                 <Text>주문이력</Text>
             </View>
         )

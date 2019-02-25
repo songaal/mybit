@@ -95,6 +95,9 @@ class Upbit extends Base {
       time: data['timestamp']
     }
   }
-
+  getOrders = async (accessKey, secretKey, base, coin) => {
+    let exchange = new ccxt[config.exchanges.upbit.id]()
+    console.log(await exchange.fetchOrders())
+  }
 }
 export default new Upbit()
