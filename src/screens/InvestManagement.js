@@ -78,7 +78,7 @@ export default class InvestHistory extends React.Component {
       let tether = config.exchanges[exchangeId].tether
       let tetherPrice = await Nexus.getCoinLastPrice(accessKey, secretKey, exchangeId, tether, 'BTC')
 
-      console.log(`거래소: ${exchangeId}`)
+      // console.log(`거래소: ${exchangeId}`)
       this._exchangeInCoinPriceSet[exchangeId] = {}
       for (let j = 0; j < coins.length; j++) {
         let coin = coins[j]
@@ -108,9 +108,9 @@ export default class InvestHistory extends React.Component {
 
         this._sumBtcValue[exchangeId] += btcValue
 
-        console.log(`코인: ${coin}, 코인가격: ${coinPrice}, 보유수량: ${coinAmount}, BTC 가치 수량: ${btcValue}`)
+        // console.log(`코인: ${coin}, 코인가격: ${coinPrice}, 보유수량: ${coinAmount}, BTC 가치 수량: ${btcValue}`)
       }
-      console.log(`총 BTC 가치 수량: ${this._sumBtcValue[exchangeId]}`)
+      // console.log(`총 BTC 가치 수량: ${this._sumBtcValue[exchangeId]}`)
 
       // ****************************
       // 4. BTC 가격을 원화로 환산하여 상태에 저장한다.
@@ -123,7 +123,7 @@ export default class InvestHistory extends React.Component {
       } else {
         this._sumKrwValue[exchangeId] = 0
       }
-      console.log('원화 가치: ', this._sumKrwValue[exchangeId])
+      // console.log('원화 가치: ', this._sumKrwValue[exchangeId])
     }
     let krwSum = 0
     Object.values(this._sumKrwValue).forEach(v => krwSum += v)
