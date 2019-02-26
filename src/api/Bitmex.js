@@ -12,7 +12,7 @@ class Bitmex extends Base {
   ticker(base) {
     const keys = Object.values(this.marketKeyMap[base])
       .map(marketKey => marketKey.key)
-    console.log(keys, base)
+    // console.log(keys, base)
     // this.newWebsocket({
     //   type: 'ticker',
     //   format: this.formatTicker,

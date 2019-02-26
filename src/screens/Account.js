@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, SafeAreaView, TextInput, AsyncStorage, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, AsyncStorage, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Links from '@constants/Links'
 const { width, height } = Dimensions.get('window')
@@ -30,7 +30,6 @@ export default class Account extends React.Component {
     })()
   }
   registerKey = async () => {
-    console.log(this.state.accessKey, this.state.secretKey)
     let accessKey = this.state.accessKey
     let secretKey = this.state.secretKey
     try {
@@ -54,7 +53,7 @@ export default class Account extends React.Component {
   }
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, marginBottom: 50 }}>
         <Text
           style={{
             marginTop: 30,
@@ -235,54 +234,7 @@ export default class Account extends React.Component {
 
         </View> */}
 
-
-
-        {/* <Card style={{marginTop: 20}}>
-          <Card.Header
-            title="업비트"
-            extra=""
-          />
-          <Card.Body>
-            <Text style={{marginTop: 10}}>AccessKey</Text>
-            <TextInput 
-              autoCapitalize="none" 
-              style={{
-                marginTop:10, 
-                height: 40, 
-                borderWidth: 0.5, 
-                borderColor: 'gray'}} 
-              value={String(this.state.accessKey)}
-              onChangeText={(text) => {
-                console.log(text)
-                this.setState({
-                  accessKey: text
-                })
-              }}/>
-            
-            <Text style={{marginTop: 10}}>SecretKey</Text>
-            <TextInput 
-              autoCapitalize="none" 
-              style={{
-                marginTop:10, 
-                height: 40, 
-                borderWidth: 0.5, 
-                borderColor: 'gray'}} 
-              value={String(this.state.secretKey)}
-              onChangeText={(text) => {
-                this.setState({
-                  secretKey: text
-                })
-              }}/>
-            <View style={{marginTop: 20, marginRight: 10, alignItems: 'flex-end'}}>
-              <Button style={{width: 80}} type="primary" onPress={() => {this.registerKey()}}>
-                저장
-              </Button>
-            </View>
-            
-          </Card.Body>
-        </Card> */}
-
-      </View>
+      </ScrollView>
     )
   }
 }

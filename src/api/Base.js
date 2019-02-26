@@ -1,4 +1,3 @@
-import config from '~/Config'
 const ccxt = require('ccxt')
 /**
  * 거래소의 마켓 정보 
@@ -94,9 +93,6 @@ export default class Base {
     this.isMarketReady = true
   }
   newWebsocket(cfg) {
-    if (this.ws[cfg.type]) {
-      this.ws[cfg.type].close()
-    }
     let qs = typeof cfg.qs === 'string' ? '?' + cfg.qs : ''
     let ws = new WebSocket(this.config.ws.url + qs)
     ws.onopen = () => {
@@ -135,6 +131,7 @@ export default class Base {
         this.markets.priceInfo[base][coin][cfg.type] = message
       }
     }
+    this.close(cfg.type)
     this.ws[cfg.type] = ws
     return ws
   }

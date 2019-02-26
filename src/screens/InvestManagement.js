@@ -58,7 +58,8 @@ export default class InvestHistory extends React.Component {
     // ****************************
     // 1. 저장된 모든거래소키 정보 가져온다.
     // ****************************
-    let exchangeKeys = JSON.parse((await AsyncStorage.getItem(exchangeKeyId)) || {})
+    let val = await AsyncStorage.getItem(exchangeKeyId)
+    let exchangeKeys = val === null ? {} : JSON.parse(val)
     let exchangeIds = Object.keys(exchangeKeys)
 
     // ****************************
@@ -165,7 +166,7 @@ export default class InvestHistory extends React.Component {
           }}
         />
         <Text style={{
-          marginTop: 30,
+          marginTop: 50,
           fontSize: 20,
           fontWeight: 'bold',
           textAlign: 'center'

@@ -20,7 +20,8 @@ class Upbit extends Base {
         { ticket: 'ticker' }, 
         { type: 'ticker', 
           codes: keys
-        }])
+        }]),
+      base: base
     })
   }
   formatTicker = async (message) => {

@@ -1,9 +1,9 @@
-import React from 'react'
-import { config } from '~/Config'
-import Nexus from '@api/Nexus'
-import BaseTab from '@components/BaseTab'
-import { Text, View, Dimensions, StyleSheet, SafeAreaView } from 'react-native'
-import { TabView, TabBar} from 'react-native-tab-view'
+import Nexus from '@api/Nexus';
+import BaseTab from '@components/BaseTab';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { TabBar, TabView } from 'react-native-tab-view';
+import { config } from '~/Config';
 
 
 export default class Exchange extends React.Component {
@@ -29,16 +29,15 @@ export default class Exchange extends React.Component {
           : [...state.loaded, key],
       }
     })
-    Nexus.closeAll()
+    // Nexus.closeAll()
   }
   _renderScene = ({ route }) => {
-    if (
-      this.state.routes.indexOf(route) !== this.state.index &&
-      !this.state.loaded.includes(route.key)
-    ) {
-      return null
+    if (this.state.routes.indexOf(route) !== this.state.index) {
+      return <View></View>
     }
-    return <BaseTab exchange={route.key} exchangeKr={route.title} navigation={this.props.navigation} token={this.state.index} />
+    return <BaseTab exchange={route.key}
+      exchangeKr={route.title}
+      navigation={this.props.navigation} />
   }
   _renderTabBar = props => (
     <TabBar
@@ -61,13 +60,6 @@ export default class Exchange extends React.Component {
     )
   }
 }
-// const styles = StyleSheet.create({
-//   scene: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
 const styles = StyleSheet.create({
   tabbar: {
     // backgroundColor: '#3f51b5',

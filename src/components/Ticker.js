@@ -1,31 +1,23 @@
-import React, { Component } from 'react'
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
-import Nexus from '@api/Nexus'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import Nexus from '@api/Nexus';
+import React from 'react';
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width, height } = Dimensions.get('window')
 
 export default class Ticker extends React.Component {
     constructor(props) {
         super(props)
-        this.token = props.token
         this.updateTicker = this.updateTicker.bind(this)
-        this.index = props.index
-        this.exchange = props.exchange
-        this.exchangeKr = props.exchangeKr
-        this.base = props.base
-        this.state = {
-            tickers: []
-        }
-        // 최초 실행.
         Nexus.runTicker(props.exchange, props.base)
         this.updateTicker()
         this.isConnect = true
+        
+        this.state = { tickers: [] }
     }
     goCoinDetail(exchange, base, coin) {
         Nexus.closeAll()
         this.props.navigation.navigate('coinDetail', {
-            exchangeKr: this.exchangeKr,
+            exchangeKr: this.props.exchangeKr,
             exchange: exchange,
             base: base,
             coin: coin
@@ -33,31 +25,23 @@ export default class Ticker extends React.Component {
     }
     updateTicker() {
         this._interval = setTimeout(() => {
-            const tickers = Object.values(Nexus.getPriceInfo(this.exchange)[this.base])
+            const tickers = Object.values(Nexus.getPriceInfo(this.props.exchange)[this.props.base])
             // TODO 변경사항에 있을때 highlight animate
-            this.setState({
-                tickers: tickers
-            })
+            if (this.isConnect) {
+                this.setState({
+                    tickers: tickers
+                })
+            }
             this.updateTicker()
         }, 500)
     }
-    componentWillReceiveProps(props) {
-        if (this.index !== props.index) {
-            clearTimeout(this._interval)
-            this.isConnect = false
-        } else if (this.index === props.index && !this.isConnect) {
-            Nexus.runTicker(this.exchange, this.base)
-            this.updateTicker()
-            this.isConnect = true
-        } else if (this.token === props.token && !Nexus.isSubscribe(this.exchange, 'ticker')) {
-            Nexus.runTicker(this.exchange, this.base)
-            this.updateTicker()
-        }
-    }
-    shouldComponentUpdate() {
-        return this.isConnect
+    componentWillUnmount() {
+        this.isConnect = false
     }
     render() {
+        if (this.state.tickers.length == 0) {
+            return <View></View>
+        }
         return (
             <FlatList
                 data={this.state.tickers}
@@ -65,14 +49,14 @@ export default class Ticker extends React.Component {
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => {
                         if (item.ticker && item.ticker.tradePrice != 0) {
-                            this.goCoinDetail(this.exchange, this.base, item.ticker.coin)
+                            this.goCoinDetail(this.props.exchange, this.props.base, item.ticker.coin)
                         } else {
                             alert('거래불가 코인입니다.')
                         }
                     }}
-                    style={{
-                        display: item.ticker && item.ticker.tradePrice != 0 ? 'flex' : 'none'
-                    }}>
+                        style={{
+                            display: item.ticker && item.ticker.tradePrice != 0 ? 'flex' : 'none'
+                        }}>
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',
@@ -97,7 +81,8 @@ export default class Ticker extends React.Component {
                                 width: width / 4 - 30,
                                 fontSize: 14,
                                 textAlign: 'right',
-                                color: item.ticker ? (Number(item.ticker.changeRate) > 0 ? 'blue' : (Number(item.ticker.changeRate) < 0 ? 'red' : 'black')) : 'black'
+                                color: item.ticker ? (Number(item.ticker.changeRate) > 0
+                                    ? 'blue' : (Number(item.ticker.changeRate) < 0 ? 'red' : 'black')) : 'black'
                             }}>
                                 {item.ticker ? item.ticker.changeRate + '%' : null}
                             </Text>
@@ -112,16 +97,3 @@ export default class Ticker extends React.Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 22
-    },
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
-        textAlign: 'center'
-    },
-})

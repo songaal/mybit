@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, Dimensions, AsyncStorage } from 'react-native'
-import Nexus from '@api/Nexus'
-import RNPickerSelect from 'react-native-picker-select'
-import { exchangeKeyId } from '@constants/StorageKey'
-import numeral from 'numeral'
+import Nexus from '@api/Nexus';
+import { exchangeKeyId } from '@constants/StorageKey';
+import numeral from 'numeral';
+import React, { Component } from 'react';
+import { AsyncStorage, Dimensions, FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 const { width, height } = Dimensions.get('window')
 
@@ -55,7 +55,7 @@ export default class OrderTab extends Component {
                 console.log('오더북 상태 저장 실패.', error)
             }
             this.updateOrderbook()
-        }, 200)
+        }, 1000)
     }
     _fetchBalance = async () => {
         if (this.isConnect === false) {
@@ -351,7 +351,10 @@ export default class OrderTab extends Component {
                                     {this.props.base}: {this.state.base}
                                 </Text>
                             </View>
-                            <View style={{ marginTop: 20, display: this.state.orderType == 'limit' ? 'flex' : 'none' }}>
+                            <View style={{
+                                marginTop: 20,
+                                display: this.state.orderType == 'limit' ? "flex" : "none"
+                            }}>
                                 <Text style={{ fontSize: 20, color: 'gray' }}>가격</Text>
                                 <TextInput
                                     style={defaultStyle.textInput}
@@ -394,7 +397,7 @@ export default class OrderTab extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.order()}
                                     style={{
-                                        display: !this.state.viewType,
+                                        display: !this.state.orderType == 'limit' ? "flex" : "none",
                                         height: 50,
                                         backgroundColor: '#2743ce',
                                         alignItems: 'center',
@@ -413,7 +416,7 @@ export default class OrderTab extends Component {
                                     onPress={() => this.order()}
                                     color='#e04323'
                                     style={{
-                                        display: this.state.viewType,
+                                        display: this.state.orderType == 'limit' ? "flex" : "none",
                                         height: 50,
                                         backgroundColor: '#e04323',
                                         alignItems: 'center',
@@ -431,9 +434,6 @@ export default class OrderTab extends Component {
                             </View>
                         </View>
                     </View>
-
-
-
                 </ScrollView>
             </KeyboardAvoidingView>
         )
@@ -454,7 +454,6 @@ const pickerSelectStyles = StyleSheet.create({
     },
     inputAndroid: {
         marginTop: 10,
-        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 8,
         borderWidth: 0.5,

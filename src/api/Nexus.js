@@ -72,7 +72,7 @@ class Nexus {
         apiKey: accessKey,
         secret: secretKey
       })
-      console.log(params)
+      // console.log(params)
 
       let order = null
 
