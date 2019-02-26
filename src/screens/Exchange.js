@@ -56,6 +56,7 @@ export default class Exchange extends React.Component {
         renderScene={this._renderScene}
         onIndexChange={this._handleIndexChange}
         renderTabBar={this._renderTabBar}
+        animationEnabled={false}
       />
     )
   }

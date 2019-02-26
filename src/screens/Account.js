@@ -53,7 +53,7 @@ export default class Account extends React.Component {
   }
   render() {
     return (
-      <ScrollView style={{ flex: 1, marginBottom: 50 }}>
+      <ScrollView style={{ flex: 1 }}>
         <Text
           style={{
             marginTop: 30,
@@ -222,7 +222,9 @@ export default class Account extends React.Component {
           </View>
         </TouchableOpacity>
 
+        <View style={{marginBottom: 50}}>
 
+        </View>
         {/* <View 
           style={{
             marginTop: 50

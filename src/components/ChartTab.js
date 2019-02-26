@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { View, WebView, Dimensions } from 'react-native'
+import { View, Text, WebView, Dimensions, Platform } from 'react-native'
 import { config } from '~/Config'
-
 const { width, height } = Dimensions.get('window')
 
 export default class ChartTab extends Component {
@@ -37,11 +36,25 @@ export default class ChartTab extends Component {
         )
     }
     render() {
+        // let path = Platform.select({
+        //     ios: '~/resources/tradingview.html',
+        //     android: '../resources/tradingview.html'
+        // })
+        // console.log(path)
         return (
+            // <WebView ref={ref => (this.webview = ref)}
+            //     source={require('~/resources/tradingview.html')}
+            //     scrollEnabled={false}
+            //     onLoad={() => { this.injection() }} />
             <WebView ref={ref => (this.webview = ref)}
-                source={require('~/resources/tradingview.html')}
+                source={require('./tradingview.html')}
                 scrollEnabled={false}
-                onLoad={() => { this.injection() }} />
+                onLoad={() => { this.injection() }}
+                scalesPageToFit={Platform.select({
+                    ios: true,
+                    android: false,
+                })} />
+
         )
     }
 }

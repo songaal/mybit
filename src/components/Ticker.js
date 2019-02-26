@@ -4,15 +4,17 @@ import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from '
 
 const { width, height } = Dimensions.get('window')
 
-export default class Ticker extends React.Component {
+export default class Ticker extends React.PureComponent {
     constructor(props) {
         super(props)
         this.updateTicker = this.updateTicker.bind(this)
         Nexus.runTicker(props.exchange, props.base)
         this.updateTicker()
         this.isConnect = true
-        
-        this.state = { tickers: [] }
+
+        this.state = {
+            tickers: Object.values(Nexus.getPriceInfo(this.props.exchange)[this.props.base])
+        }
     }
     goCoinDetail(exchange, base, coin) {
         Nexus.closeAll()
@@ -45,6 +47,8 @@ export default class Ticker extends React.Component {
         return (
             <FlatList
                 data={this.state.tickers}
+                initialNumToRender={10}
+                onEndReachedThreshold={1200}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => {

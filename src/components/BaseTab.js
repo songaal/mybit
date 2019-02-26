@@ -79,7 +79,7 @@ export default class BaseTab extends Component {
         renderScene={this._renderScene}
         onIndexChange={this._handleIndexChange}
         renderTabBar={this._renderTabBar}
-
+        animationEnabled={false}
       />
     )
   }

@@ -55,7 +55,7 @@ export default class OrderTab extends Component {
                 console.log('오더북 상태 저장 실패.', error)
             }
             this.updateOrderbook()
-        }, 1000)
+        }, 500)
     }
     _fetchBalance = async () => {
         if (this.isConnect === false) {
@@ -90,7 +90,7 @@ export default class OrderTab extends Component {
         }
         this._interval = setTimeout(() => {
             this._fetchBalance()
-        }, 2000)
+        }, 1000)
     }
     componentWillMount() {
         // 오더북 연결
@@ -134,12 +134,12 @@ export default class OrderTab extends Component {
     order = async () => {
         let exchangeKeys = await AsyncStorage.getItem(exchangeKeyId)
         if (exchangeKeys === null || exchangeKeys === undefined) {
-            alert('거래소 키를 먼저 등록하세요.')
+            alert('거래소키를 등록하세요.')
             return false
         }
         exchangeKey = JSON.parse(exchangeKeys)[this.props.exchange]
         if (exchangeKey === undefined || exchangeKey === null) {
-            alert('거래소 키를 먼저 등록하세요.')
+            alert('거래소키를 등록하세요.')
             return false
         }
         if (this.state.orderType === null) {
@@ -184,7 +184,7 @@ export default class OrderTab extends Component {
                 color: 'red',
                 fontSize: 14,
                 textAlign: 'right'
-            }}>* 거래소키를 등룍하세요.</Text>
+            }}>* 거래소키를 등록하세요.</Text>
         }
 
         return (
@@ -197,6 +197,8 @@ export default class OrderTab extends Component {
                             ref="orderbook"
                             style={{ width: width / 2 }}
                             data={this.state.units}
+                            initialNumToRender={10}
+                            onEndReachedThreshold={1200}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
@@ -237,7 +239,7 @@ export default class OrderTab extends Component {
                             )}
                         />
 
-                        <View style={{ width: width / 2 - 20, marginHorizontal: 10 }}>
+                        <ScrollView style={{ width: width / 2 - 20, marginHorizontal: 10 }}>
 
                             <View style={{ flexDirection: 'row', marginTop: 30 }}>
                                 <TouchableOpacity
@@ -284,12 +286,13 @@ export default class OrderTab extends Component {
                                     주문방식
                                 </Text>
                                 <RNPickerSelect
+                                    useNativeAndroidPickerStyle={false}
                                     style={{
                                         ...pickerSelectStyles,
                                         iconContainer: {
                                             top: 20,
                                             right: 10,
-                                        },
+                                        }
                                     }}
                                     placeholder={{
                                         label: '선택하세요.',
@@ -360,6 +363,7 @@ export default class OrderTab extends Component {
                                     style={defaultStyle.textInput}
                                     keyboardType='numeric'
                                     autoCorrect={false}
+                                    autoCapitalize="none"
                                     value={String(this.state.price)}
                                     onChangeText={text => {
                                         this.setState({
@@ -389,7 +393,8 @@ export default class OrderTab extends Component {
                             </View> */}
                             <View
                                 style={{
-                                    marginTop: 30
+                                    marginTop: 30,
+                                    marginBottom: 30
                                 }}>
 
                                 {InvalidKey}
@@ -397,7 +402,7 @@ export default class OrderTab extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.order()}
                                     style={{
-                                        display: !this.state.orderType == 'limit' ? "flex" : "none",
+                                        display: this.state.viewType ? 'flex' : 'none',
                                         height: 50,
                                         backgroundColor: '#2743ce',
                                         alignItems: 'center',
@@ -416,7 +421,7 @@ export default class OrderTab extends Component {
                                     onPress={() => this.order()}
                                     color='#e04323'
                                     style={{
-                                        display: this.state.orderType == 'limit' ? "flex" : "none",
+                                        display: !this.state.viewType ? 'flex' : 'none',
                                         height: 50,
                                         backgroundColor: '#e04323',
                                         alignItems: 'center',
@@ -432,7 +437,7 @@ export default class OrderTab extends Component {
                                     </Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
+                        </ScrollView>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -448,7 +453,7 @@ const pickerSelectStyles = StyleSheet.create({
         paddingHorizontal: 10,
         borderWidth: 0.5,
         borderColor: 'gray',
-        borderRadius: 4,
+        borderRadius: 2,
         color: 'black',
         paddingRight: 30, // to ensure the text is never behind the icon
     },
@@ -458,7 +463,7 @@ const pickerSelectStyles = StyleSheet.create({
         paddingVertical: 8,
         borderWidth: 0.5,
         borderColor: 'gray',
-        borderRadius: 8,
+        borderRadius: 2,
         color: 'black',
         paddingRight: 30, // to ensure the text is never behind the icon
     }
