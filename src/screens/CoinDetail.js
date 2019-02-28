@@ -8,7 +8,7 @@ import OrderHistoryTab from '@components/OrderHistoryTab'
 const options = [
   { key: 'order', title: '주문' },
   { key: 'chart', title: '차트' },
-  // { key: 'orderHistory', title: '주문내역' }
+  { key: 'orderHistory', title: '주문내역' }
 ]
 
 export default class CoinDetail extends Component {
@@ -47,27 +47,29 @@ export default class CoinDetail extends Component {
   }
   _renderScene = ({ route }) => {
     if (
-      this.state.routes.indexOf(route) !== this.state.index &&
-      !this.state.loaded.includes(route.key)
+      this.state.routes.indexOf(route) !== this.state.index 
+      // && !this.state.loaded.includes(route.key)
     ) {
       return <View></View>
     }
     switch (route.key) {
-      case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
-      case 'chart': return <ChartTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
-      case 'orderHistory': return <OrderHistoryTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key}/>
+      case 'order': return <OrderTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key} />
+      case 'chart': return <ChartTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key} />
+      case 'orderHistory': return <OrderHistoryTab exchange={this.exchange} base={this.base} coin={this.coin} key={route.key} />
       default: return <View></View>
     }
   }
   render() {
     return (
-      <TabView
-        navigationState={this.state}
-        renderScene={this._renderScene}
-        onIndexChange={this._handleIndexChange}
-        animationEnabled={false}
-        swipeEnabled={false}
-      />
+      <View style={{flex: 1}}>
+        <TabView
+          navigationState={this.state}
+          renderScene={this._renderScene}
+          onIndexChange={this._handleIndexChange}
+          animationEnabled={false}
+          swipeEnabled={false}
+        />
+      </View>
     )
   }
 }

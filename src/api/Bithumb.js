@@ -1,6 +1,7 @@
 import { config } from '~/Config'
 import Base from '@api/Base'
 import numeral from 'numeral'
+import ccxt from 'ccxt'
 
 /**
  * upbit api
@@ -80,6 +81,48 @@ class Bithumb extends Base {
       units: asks.reverse().concat(bids),
       time: time
     }
+  }
+  getOrders = async (accessKey, secretKey, base, coin) => {
+    let url = config.exchanges.bithumb.rest.url + '/info/orders'
+    let responseBody = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        apiKey: accessKey,
+        secretKey: secretKey,
+        currency: coin,
+        count: 50
+      })
+    })
+
+    console.log(responseBody)
+    return []
+    // let exchange = new ccxt[config.exchanges.upbit.id]({
+    //   apiKey: accessKey,
+    //   secret: secretKey
+    // })
+    // let orders = await exchange.fetchOrders(`${coin}/${base}`, undefined, 50)
+    // if (orders.length > 0) {
+    //   return orders.map(order => {
+    //     if (base == 'KRW' || base.indexOf('USD') != -1) {
+    //       priceRex = '0,000[.]00'
+    //     }
+    //     return {
+    //       id: order['id'],
+    //       base: base,
+    //       coin: coin,
+    //       amount: order['amount'],
+    //       timestamp: Utils.formatTimestamp(order['timestamp']),
+    //       filled: order['filled'],
+    //       price: numeral(order['price']).format(priceRex),
+    //       side: order['side'],
+    //       type: order['type'],
+    //       fee: order['fee'] || 0,
+    //       status: order['status']
+    //     }
+    //   })
+    // } else {
+    //   return []
+    // }
   }
 }
 export default new Bithumb()

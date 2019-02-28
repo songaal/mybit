@@ -198,5 +198,6 @@ export default class Base {
   ticker(base) { }
   orderbook(base, coin) { }
   trade(base, coin) { }
+  getOrders() {}
 
 }

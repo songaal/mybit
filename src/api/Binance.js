@@ -1,6 +1,8 @@
 import { config } from '~/Config'
 import Base from '@api/Base'
 import numeral from 'numeral'
+import ccxt from 'ccxt'
+import Utils from '~/Utils'
 /**
  * binance api
  */
@@ -88,5 +90,34 @@ class Binance extends Base {
     }
   }
 
+  getOrders = async (accessKey, secretKey, base, coin) => {
+    let exchange = new ccxt[config.exchanges.binance.id]({
+      apiKey: accessKey,
+      secret: secretKey
+    })
+    let orders = await exchange.fetchOrders(`${coin}/${base}`, undefined, 100)
+    if (orders.length > 0) {
+      return orders.map(order => {
+        if (base == 'KRW' || base.indexOf('USD') != -1) {
+          priceRex = '0,000[.]00'
+        }
+        return {
+          id: order['id'],
+          base: base,
+          coin: coin,
+          amount: order['amount'],
+          timestamp: Utils.formatTimestamp(order['timestamp']),
+          filled: order['filled'],
+          price: numeral(order['price']).format(priceRex),
+          side: order['side'],
+          type: order['type'],
+          fee: order['fee'] || 0,
+          status: order['status']
+        }
+      })
+    } else {
+      return []
+    }
+  }
 }
 export default new Binance()

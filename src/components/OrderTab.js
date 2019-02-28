@@ -46,7 +46,7 @@ export default class OrderTab extends Component {
             try {
                 const priceInfo = Nexus.getPriceInfo(this.props.exchange)
                 const orderbook = priceInfo[this.props.base][this.props.coin]['orderbook']
-                if (orderbook) {
+                if (this.isConnect && orderbook) {
                     this.setState({
                         units: orderbook['units'] || []
                     })
@@ -78,7 +78,7 @@ export default class OrderTab extends Component {
             let base = this.props.base
             let coin = this.props.coin
             let balance = await Nexus.getBalance(exchange, accessKey, secretKey)
-            if (balance['status'] == 'success') {
+            if (this.isConnect && balance['status'] == 'success') {
                 this.setState({
                     base: numeral(balance['data'][base]['total'] || 0).format('0,0[.]00000000'),
                     coin: numeral(balance['data'][coin]['total'] || 0).format('0,0[.]00000000')

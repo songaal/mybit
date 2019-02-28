@@ -1,6 +1,7 @@
 import { config } from '~/Config'
 import Base from '@api/Base'
 import numeral from 'numeral'
+import ccxt from 'ccxt'
 
 /**
  * upbit api
@@ -12,13 +13,14 @@ class Upbit extends Base {
   }
   ticker(base) {
     const keys = Object.values(this.marketKeyMap[base])
-    .map(marketKey => marketKey.key)
+      .map(marketKey => marketKey.key)
     this.newWebsocket({
       type: 'ticker',
       format: this.formatTicker,
       initSend: JSON.stringify([
-        { ticket: 'ticker' }, 
-        { type: 'ticker', 
+        { ticket: 'ticker' },
+        {
+          type: 'ticker',
           codes: keys
         }]),
       base: base
@@ -31,7 +33,7 @@ class Upbit extends Base {
       tradePrice = numeral(data['trade_price']).format('0,000[.]00')
       changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a')
       tradeVolume = numeral(data['acc_trade_price']).format('0,0[.]00a')
-      tradeVolume=tradeVolume.replace('b', '억').replace('m', '백만').replace('k', '만')
+      tradeVolume = tradeVolume.replace('b', '억').replace('m', '백만').replace('k', '만')
     } else if (base.indexOf('USD') != -1) {
       tradePrice = numeral(data['trade_price']).format('0,0[.]00a')
       changeRate = numeral(data['signed_change_rate']).format('0,0[.]00a')
@@ -58,10 +60,12 @@ class Upbit extends Base {
       type: 'orderbook',
       format: this.formatOrderbook,
       initSend: JSON.stringify([
-        { ticket: 'orderbook' }, 
-        { type: 'orderbook', 
-          codes: [key] }
-        ]),
+        { ticket: 'orderbook' },
+        {
+          type: 'orderbook',
+          codes: [key]
+        }
+      ]),
       base: base,
       coin: coin
     }
@@ -97,8 +101,7 @@ class Upbit extends Base {
     }
   }
   getOrders = async (accessKey, secretKey, base, coin) => {
-    let exchange = new ccxt[config.exchanges.upbit.id]()
-    console.log(await exchange.fetchOrders())
+    return undefined
   }
 }
 export default new Upbit()

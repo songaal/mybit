@@ -15,6 +15,8 @@ export default class ChartTab extends Component {
         }
         let coin = this.props.coin
         let base = this.props.base
+        // 'https://9u3jawxuod.execute-api.ap-northeast-2.amazonaws.com/v1_1'
+        // datafeed: new window.Datafeeds.UDFCompatibleDatafeed(config.datafeedUrl),
         this.webview.injectJavaScript(
             `new TradingView.widget(
                 {
