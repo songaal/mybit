@@ -4,7 +4,6 @@ class Utils {
     if (diff > 0) {
       for (let i =0; i < diff; i++) {
         s = c + s
-        console.log(s)
       }
     }
     return s

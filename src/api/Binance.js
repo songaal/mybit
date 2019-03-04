@@ -95,7 +95,7 @@ class Binance extends Base {
       apiKey: accessKey,
       secret: secretKey
     })
-    let orders = await exchange.fetchOrders(`${coin}/${base}`, undefined, 100)
+    let orders = await exchange.fetchOrders(`${coin}/${base}`, undefined, 3)
     if (orders.length > 0) {
       return orders.map(order => {
         if (base == 'KRW' || base.indexOf('USD') != -1) {

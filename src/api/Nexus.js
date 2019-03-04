@@ -4,6 +4,7 @@
  * class Base 상속받아서 구현제 만들기.
  * 구현체에서는 파라미터, 메시지 데이터만 변환작업만 진행
  */
+import { AsyncStorage } from 'react-native'
 import ccxt from 'ccxt'
 import Upbit from '@api/Upbit'
 import Bithumb from '@api/Bithumb'
@@ -72,7 +73,6 @@ class Nexus {
         apiKey: accessKey,
         secret: secretKey
       })
-      // console.log(params)
 
       let order = null
 
@@ -89,18 +89,25 @@ class Nexus {
           order = await exchange.createLimitSellOrder(params['symbol'], params['amount'], params['price'], params['params'] || {})
         }
       }
+      // TEST CODE
+      // let orders = await AsyncStorage.getItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`)
+      // if (orders === null) {
+      //   orders = []
+      // } else {
+      //   orders = JSON.parse(orders)
+      // }
+      // if (orders.length >= 100) {
+      //   orders = orders.splice(orders.length - 100)
+      // }
 
-      //   order = await exchange.createOrder(params['symbol'],
-      //     params['type'],
-      //     params['side'],
-      //     params['amount'],
-      //     params['price'],
-      //     params['params'] || {})
-
+      // orders.push(params)
+      // await AsyncStorage.setItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`, JSON.stringify(orders))
+      
       result = {
         status: 'success',
         order: order
       }
+      
 
     } catch (error) {
       console.log(error)

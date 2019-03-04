@@ -98,8 +98,8 @@ export default class OrderTab extends Component {
         const exchange = this.props.exchange
         const base = this.props.base
         const coin = this.props.coin
-        Nexus.runOrderbook(exchange, base, coin)
         this.updateOrderbook()
+        Nexus.runOrderbook(exchange, base, coin)
         this._fetchBalance()
     }
     componentWillUpdate() {
@@ -155,13 +155,35 @@ export default class OrderTab extends Component {
         let coin = this.props.coin
         let accessKey = exchangeKey['active']['accessKey']
         let secretKey = exchangeKey['active']['secretKey']
+
         let orderCfg = {
+            coin: coin,
+            base: base,
+            time: new Date().getTime(),
             symbol: `${coin}/${base}`,
             type: this.state.orderType,
             side: this.state.viewType ? 'buy' : 'sell',
             amount: String(this.state.quantity).replace(/[^0-9.]/gi, ''),
             price: String(this.state.price).replace(/[^0-9]/gi, '')
         }
+        
+        let orders = await AsyncStorage.getItem(`${accessKey}-${exchange}-${base}-${coin}`)
+        if (orders === null || orders === undefined) {
+          orders = []
+        } else {
+          orders = JSON.parse(orders)
+        }
+        if (orders.length >= 100) {
+          orders = orders.splice(orders.length - 100)
+        }
+  
+        orders.push(orderCfg)
+        await AsyncStorage.setItem(`${accessKey}-${exchange}-${base}-${coin}`, JSON.stringify(orders))
+
+
+
+
+
         let order = await Nexus.createOrder(exchange, accessKey, secretKey, orderCfg)
         if (order['status'] === 'success') {
             alert('주문완료')

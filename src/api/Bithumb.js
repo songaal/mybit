@@ -83,18 +83,36 @@ class Bithumb extends Base {
     }
   }
   getOrders = async (accessKey, secretKey, base, coin) => {
-    let url = config.exchanges.bithumb.rest.url + '/info/orders'
-    let responseBody = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({
-        apiKey: accessKey,
-        secretKey: secretKey,
-        currency: coin,
-        count: 50
-      })
-    })
+    // let url = config.exchanges.bithumb.rest.url + '/info/orders'
+    // let responseBody = await fetch(url, {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     apiKey: accessKey,
+    //     secretKey: secretKey,
+    //     currency: coin,
+    //     count: 50
+    //   })
+    // })
 
-    console.log(responseBody)
+    // console.log(responseBody)
+
+    let exchange = new ccxt['bithumb']({
+      apiKey: "7c2ace2277f231489130087e5ee4afd3",
+	    secret: "5924e3a2d09c1697535464557ab742fd"
+    })
+    exchange.loadMarkets()
+    console.log(exchange)
+    console.log(exchange.sign())
+    // console.log('2', exchange.sign_message())
+    // console.log('3', exchange.sign_message2())
+    
+    // let response = await exchange.privatePostInfoOrder({
+    //   currency: 'BTC'
+    // })
+    
+    // console.log(response)
+
+
     return []
     // let exchange = new ccxt[config.exchanges.upbit.id]({
     //   apiKey: accessKey,
