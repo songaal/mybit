@@ -42,18 +42,18 @@ export default class OrderTab extends Component {
         }
     }
     updateOrderbook() {
-        this._interval = setTimeout(() => {
-            try {
-                const priceInfo = Nexus.getPriceInfo(this.props.exchange)
-                const orderbook = priceInfo[this.props.base][this.props.coin]['orderbook']
-                if (this.isConnect && orderbook) {
-                    this.setState({
-                        units: orderbook['units'] || []
-                    })
-                }
-            } catch (error) {
-                console.log('오더북 상태 저장 실패.', error)
+        try {
+            const priceInfo = Nexus.getPriceInfo(this.props.exchange)
+            const orderbook = priceInfo[this.props.base][this.props.coin]['orderbook']
+            if (this.isConnect && orderbook) {
+                this.setState({
+                    units: orderbook['units'] || []
+                })
             }
+        } catch (error) {
+            console.log('오더북 상태 저장 실패.', error)
+        }
+        this._interval = setTimeout(() => {
             this.updateOrderbook()
         }, 500)
     }
@@ -166,7 +166,7 @@ export default class OrderTab extends Component {
             amount: String(this.state.quantity).replace(/[^0-9.]/gi, ''),
             price: String(this.state.price).replace(/[^0-9]/gi, '')
         }
-        
+
         // TEST CODE
         // let orders = await AsyncStorage.getItem(`${accessKey}-${exchange}-${base}-${coin}`)
         // if (orders === null || orders === undefined) {
@@ -177,7 +177,7 @@ export default class OrderTab extends Component {
         // if (orders.length >= 100) {
         //   orders = orders.splice(orders.length - 100)
         // }
-  
+
         // orders.push(orderCfg)
         // await AsyncStorage.setItem(`${accessKey}-${exchange}-${base}-${coin}`, JSON.stringify(orders))
 

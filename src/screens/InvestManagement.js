@@ -9,11 +9,11 @@ import numeral from 'numeral'
 
 const { width, height } = Dimensions.get('window')
 
-const InvestCard = (title, sumPrice, data) => {
+const InvestCard = (key, title, sumPrice, data) => {
   let List = Object.keys(data)
-    .map(key => {
+    .map((key, index) => {
       return (
-        <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View key={index} style={{ flex: 1, flexDirection: 'row' }}>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, color: 'gray' }}>
               보유 {key}
@@ -28,7 +28,7 @@ const InvestCard = (title, sumPrice, data) => {
       )
     })
   return (
-    <Card style={{ marginTop: 10, marginBottom: 10 }}>
+    <Card key={key} style={{ marginTop: 10, marginBottom: 10 }}>
       <View key="header" style={{flexDirection: 'row'}}>
         <Text style={{ fontSize: 18, flex: 1 }}> {title}</Text>
         <Text style={{ fontSize: 14, flex: 1, textAlign: 'right' }}> {sumPrice} BTC</Text>
@@ -130,6 +130,7 @@ export default class InvestHistory extends React.Component {
     Object.values(this._sumKrwValue).forEach(v => krwSum += v)
     let btcSum = 0
     Object.values(this._sumBtcValue).forEach(v => btcSum += v)
+    
     this.setState({
       sumKrwValue: numeral(krwSum).format('0,0'),
       sumBtcValue: numeral(btcSum).format('0,0[.]00000000'),
@@ -147,10 +148,10 @@ export default class InvestHistory extends React.Component {
     }
     let listTag = []
     Object.keys(this.state.exchangeInCoinPriceSet)
-      .forEach(exchange => {
+      .forEach((exchange, index) => {
         let title = config.exchanges[exchange]['korName']
         let sumBtc = numeral(this._sumBtcValue[exchange]).format('0,0[.]00000000')
-        listTag.push(InvestCard(title, sumBtc, this.state.exchangeInCoinPriceSet[exchange]))
+        listTag.push(InvestCard(index, title, sumBtc, this.state.exchangeInCoinPriceSet[exchange]))
       })
 
     return (
@@ -166,7 +167,7 @@ export default class InvestHistory extends React.Component {
           }}
         />
         <Text style={{
-          marginTop: 50,
+          marginTop: 30,
           fontSize: 20,
           fontWeight: 'bold',
           textAlign: 'center'

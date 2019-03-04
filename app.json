@@ -28,7 +28,7 @@
     },
     "android": {
       "package": "io.gncloud.mybit",
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }

@@ -4,6 +4,7 @@ import Nexus from '@api/Nexus'
 import { exchangeKeyId } from '@constants/StorageKey'
 import { NavigationEvents } from 'react-navigation'
 import Utils from '~/Utils'
+import numeral from 'numeral'
 
 const { width, height } = Dimensions.get('window')
 
@@ -19,7 +20,6 @@ export default class OrderHistoryTab extends Component {
         // 마운트, 다시 탭 선택했을때
         (async () => {
             let accessKeys = await AsyncStorage.getItem(exchangeKeyId)
-            console.log(accessKeys)
             if (accessKeys === null || accessKeys === undefined
                 || JSON.parse(accessKeys)[this.props.exchange] === undefined) {
                 isAddedKey = false
@@ -101,8 +101,8 @@ export default class OrderHistoryTab extends Component {
                                     alignItems: 'flex-start',
                                     justifyContent: 'flex-start'
                                 }}>
-                                    <Text style={{ fontSize: 14 }}>@{item.price}</Text>
-                                    <Text style={{ fontSize: 14 }}>{item.amount}</Text>
+                                    <Text style={{ fontSize: 14 }}>@{numeral(item.price).format('0,0[.]00000000')}</Text>
+                                    <Text style={{ fontSize: 14 }}>{numeral(item.amount).format('0,0[.]00000000')}</Text>
                                 </View>
                                 <View style={{
                                     width: width / 3,

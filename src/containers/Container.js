@@ -13,7 +13,7 @@ import DynamicWebView from '@components/DynamicWebView'
 import ExchangeKeyList from '@screens/ExchangeKeyList'
 import ExchangeKeyDetail from '@screens/ExchangeKeyDetail'
 import AddExchangeKey from '@screens/AddExchangeKey'
-
+// icon stack-exchange
 const exchangeStackNavigator = createStackNavigator({
   exchange: {
     screen: Exchange,
@@ -89,7 +89,7 @@ const AppContainer = createAppContainer(
       //   navigationOptions: {
       //     title: '전략',
       //     tabBarIcon: (<FontAwesomeIcon
-      //       name="stack-exchange"
+      //       name="clone"
       //       size={24}
       //       color="gray" />)
       //   }
