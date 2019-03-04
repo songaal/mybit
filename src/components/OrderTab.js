@@ -167,7 +167,7 @@ export default class OrderTab extends Component {
             price: String(this.state.price).replace(/[^0-9]/gi, '')
         }
 
-        // TEST CODE
+        // ///////////////////////////// TEST CODE
         // let orders = await AsyncStorage.getItem(`${accessKey}-${exchange}-${base}-${coin}`)
         // if (orders === null || orders === undefined) {
         //   orders = []
@@ -177,9 +177,13 @@ export default class OrderTab extends Component {
         // if (orders.length >= 100) {
         //   orders = orders.splice(orders.length - 100)
         // }
-
+        // if(orderCfg['type'] == 'market') {
+        //     orderCfg['price'] = Math.random() * 99999
+        // }
         // orders.push(orderCfg)
         // await AsyncStorage.setItem(`${accessKey}-${exchange}-${base}-${coin}`, JSON.stringify(orders))
+        // alert('주문완료')
+        // /////////////////////////////
 
         let order = await Nexus.createOrder(exchange, accessKey, secretKey, orderCfg)
         if (order['status'] === 'success') {
@@ -187,10 +191,6 @@ export default class OrderTab extends Component {
         } else {
             alert(order['message'])
         }
-        // createOrder (symbol, type, side, amount[, price[, params]])
-
-        // console.log(order)
-
     }
     render() {
         // if (this.state.units.length == 0) {

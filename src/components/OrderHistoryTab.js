@@ -80,7 +80,7 @@ export default class OrderHistoryTab extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={{
-                            marginHorizontal: 20,
+                            // marginHorizontal: 20,
                             borderBottomColor: 'gray',
                             borderBottomWidth: 0.5,
                             marginVertical: 5,
@@ -92,12 +92,12 @@ export default class OrderHistoryTab extends Component {
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}>
-                                    <Text style={{ fontSize: 25, color: item.side === 'buy' ? 'blue' : 'red' }}>
+                                    <Text style={{ fontSize: 20, color: item.side === 'buy' ? 'blue' : 'red' }}>
                                         {item.side === 'buy' ? '매수': '매도'}
                                     </Text>
                                 </View>
                                 <View style={{
-                                    width: width / 3,
+                                    width: width / 3 + 30,
                                     alignItems: 'flex-start',
                                     justifyContent: 'flex-start'
                                 }}>
@@ -105,7 +105,7 @@ export default class OrderHistoryTab extends Component {
                                     <Text style={{ fontSize: 14 }}>{numeral(item.amount).format('0,0[.]00000000')}</Text>
                                 </View>
                                 <View style={{
-                                    width: width / 3,
+                                    width: width / 3 - 30,
                                     alignItems: 'flex-start',
                                     justifyContent: 'flex-start'
                                 }}>
