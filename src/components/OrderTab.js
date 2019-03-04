@@ -167,22 +167,19 @@ export default class OrderTab extends Component {
             price: String(this.state.price).replace(/[^0-9]/gi, '')
         }
         
-        let orders = await AsyncStorage.getItem(`${accessKey}-${exchange}-${base}-${coin}`)
-        if (orders === null || orders === undefined) {
-          orders = []
-        } else {
-          orders = JSON.parse(orders)
-        }
-        if (orders.length >= 100) {
-          orders = orders.splice(orders.length - 100)
-        }
+        // TEST CODE
+        // let orders = await AsyncStorage.getItem(`${accessKey}-${exchange}-${base}-${coin}`)
+        // if (orders === null || orders === undefined) {
+        //   orders = []
+        // } else {
+        //   orders = JSON.parse(orders)
+        // }
+        // if (orders.length >= 100) {
+        //   orders = orders.splice(orders.length - 100)
+        // }
   
-        orders.push(orderCfg)
-        await AsyncStorage.setItem(`${accessKey}-${exchange}-${base}-${coin}`, JSON.stringify(orders))
-
-
-
-
+        // orders.push(orderCfg)
+        // await AsyncStorage.setItem(`${accessKey}-${exchange}-${base}-${coin}`, JSON.stringify(orders))
 
         let order = await Nexus.createOrder(exchange, accessKey, secretKey, orderCfg)
         if (order['status'] === 'success') {

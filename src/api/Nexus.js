@@ -89,19 +89,19 @@ class Nexus {
           order = await exchange.createLimitSellOrder(params['symbol'], params['amount'], params['price'], params['params'] || {})
         }
       }
-      // TEST CODE
-      // let orders = await AsyncStorage.getItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`)
-      // if (orders === null) {
-      //   orders = []
-      // } else {
-      //   orders = JSON.parse(orders)
-      // }
-      // if (orders.length >= 100) {
-      //   orders = orders.splice(orders.length - 100)
-      // }
-
-      // orders.push(params)
-      // await AsyncStorage.setItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`, JSON.stringify(orders))
+      
+      let orders = await AsyncStorage.getItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`)
+      if (orders === null) {
+        orders = []
+      } else {
+        orders = JSON.parse(orders)
+      }
+      if (orders.length >= 100) {
+        orders = orders.splice(orders.length - 100)
+      }
+      params['price'] = order['price']
+      orders.push(params)
+      await AsyncStorage.setItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`, JSON.stringify(orders))
       
       result = {
         status: 'success',
