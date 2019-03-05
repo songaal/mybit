@@ -35,7 +35,7 @@ export default class OrderTab extends Component {
             ],
             price: 0,
             limitPrice: 0,
-            quantity: 1,
+            quantity: 0.1,
             enableScrollViewScroll: true,
             base: 0,
             coin: 0
@@ -103,13 +103,7 @@ export default class OrderTab extends Component {
         this._fetchBalance()
     }
     componentWillUpdate() {
-        if (this.refs['orderbook'] !== undefined
-            && this.isScrollTo
-            && this.state.units.length > 0) {
-            this.isScrollTo = false
-            let y = (this.state.units.length / 2) * 20
-            this.refs['orderbook'].scrollToOffset({ animated: false, offset: y })
-        }
+
     }
     componentWillUnmount() {
         // 오더북 종료
@@ -193,9 +187,9 @@ export default class OrderTab extends Component {
         }
     }
     render() {
-        // if (this.state.units.length == 0) {
-        //     return null
-        // }
+        if (this.state.units.length == 0) {
+            return <View></View>
+        }
 
         let InvalidKey = null
         if (this._invalidKey === true) {
@@ -218,6 +212,16 @@ export default class OrderTab extends Component {
                             data={this.state.units}
                             initialNumToRender={10}
                             onEndReachedThreshold={1200}
+                            onEndReached={(e) => {
+                                if (this.refs['orderbook'] !== undefined
+                                    && this.isScrollTo
+                                    && this.state.units.length > 0) {
+                                    this.isScrollTo = false
+                                    // let y = (this.state.units.length / 2) * 40 / e.distanceFromEnd
+                                    let y = (e.distanceFromEnd / 2).toFixed(0)
+                                    this.refs['orderbook'].scrollToOffset({ animated: false, offset: y })
+                                }
+                            }}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity

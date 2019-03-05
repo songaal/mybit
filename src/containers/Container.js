@@ -84,16 +84,16 @@ const AppContainer = createAppContainer(
           }
         }
       },
-      strategy: {
-        screen: Strategy,
-        navigationOptions: {
-          title: '전략',
-          tabBarIcon: (<FontAwesomeIcon
-            name="clone"
-            size={24}
-            color="gray" />)
-        }
-      },
+      // strategy: {
+      //   screen: Strategy,
+      //   navigationOptions: {
+      //     title: '전략',
+      //     tabBarIcon: (<FontAwesomeIcon
+      //       name="clone"
+      //       size={24}
+      //       color="gray" />)
+      //   }
+      // },
       investManagement: {
         screen: InvestManagement,
         navigationOptions: {

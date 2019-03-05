@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, SafeAreaView, Dimensions, FlatList } from 'react-native'
+import { View, Text, SafeAreaView, Dimensions, FlatList, TouchableOpacity } from 'react-native'
 import Card from '@components/Card'
 
 const { width, height } = Dimensions.get('window')
@@ -23,9 +23,9 @@ export default class Strategy extends React.Component {
           style={{
             marginTop: 30
           }}>
-          <Card 
-          style={{
-          }}>
+          <Card
+            style={{
+            }}>
             <View
               key="header"
               style={{
@@ -70,6 +70,9 @@ export default class Strategy extends React.Component {
                   기간 365일
                 </Text>
               </View>
+            </View>
+            <View key="footer">
+                  <TouchableOpacity />
             </View>
           </Card>
 
