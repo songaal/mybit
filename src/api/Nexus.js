@@ -59,6 +59,16 @@ class Nexus {
   runTicker(exchange, base) {
     this.api[exchange].ticker(base)
   }
+  getCoinKoName(coin) {
+    let coinKoName = ''
+    Object.keys(this.api).forEach(e => {
+      if (this.api[e].markets.coinKoName[coin]) {
+        coinKoName = this.api[e].markets.coinKoName[coin]
+        return false
+      }
+    })
+    return coinKoName
+  }
   getPriceInfo(exchange, type = null) {
     return this.api[exchange].markets.priceInfo
   }

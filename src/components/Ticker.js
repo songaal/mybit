@@ -1,19 +1,21 @@
 import Nexus from '@api/Nexus';
 import React from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+import { config } from '~/Config'
 const { width, height } = Dimensions.get('window')
 
 export default class Ticker extends React.PureComponent {
     constructor(props) {
         super(props)
         this.updateTicker = this.updateTicker.bind(this)
+        this.getfilterTickers = this.getfilterTickers.bind(this)
+
         Nexus.runTicker(props.exchange, props.base)
         this.updateTicker()
-        this.isConnect = true
 
+        this.isConnect = true
         this.state = {
-            tickers: Object.values(Nexus.getPriceInfo(this.props.exchange)[this.props.base])
+            tickers: this.getfilterTickers(props.exchange, props.base)
         }
     }
     goCoinDetail(exchange, base, coin) {
@@ -27,7 +29,7 @@ export default class Ticker extends React.PureComponent {
     }
     updateTicker() {
         this._interval = setTimeout(() => {
-            const tickers = Object.values(Nexus.getPriceInfo(this.props.exchange)[this.props.base])
+            const tickers = this.getfilterTickers(this.props.exchange, this.props.base)
             // TODO 변경사항에 있을때 highlight animate
             if (this.isConnect) {
                 this.setState({
@@ -36,6 +38,10 @@ export default class Ticker extends React.PureComponent {
             }
             this.updateTicker()
         }, 500)
+    }
+    getfilterTickers(exchange, base) {
+        let tickers = Object.values(Nexus.getPriceInfo(exchange)[base])
+        return tickers
     }
     componentWillUnmount() {
         this.isConnect = false
@@ -71,26 +77,33 @@ export default class Ticker extends React.PureComponent {
                             alignItems: 'center',
                             marginHorizontal: 10
                         }}>
-                            <Text style={{ width: width / 4 - 30, fontSize: 14, textAlign: 'left' }}>
-                                {item.ticker ? item.ticker.coin : null}
-                            </Text>
+                            <View>
+                                <Text style={{ width: width / 4 - 30, fontSize: 14, textAlign: 'left' }}>
+                                    {item.ticker ? item.ticker.coin : null}
+                                </Text>
+                                <Text style={{ width: width / 4 - 30, fontSize: 10, textAlign: 'left', color: 'gray' }}>
+                                    {item.ticker ? Nexus.getCoinKoName(item.ticker.coin) : ''}
+                                </Text>
+                            </View>
+
+
                             <Text style={{
                                 width: width / 4,
-                                fontSize: 14,
+                                fontSize: 13,
                                 textAlign: 'right'
                             }}>
                                 {item.ticker ? item.ticker.tradePrice : null}
                             </Text>
                             <Text style={{
                                 width: width / 4 - 30,
-                                fontSize: 14,
+                                fontSize: 13,
                                 textAlign: 'right',
                                 color: item.ticker ? (Number(item.ticker.changeRate) > 0
                                     ? 'blue' : (Number(item.ticker.changeRate) < 0 ? 'red' : 'black')) : 'black'
                             }}>
                                 {item.ticker ? item.ticker.changeRate + '%' : null}
                             </Text>
-                            <Text style={{ width: width / 4 - 15, fontSize: 14, textAlign: 'right' }}>
+                            <Text style={{ width: width / 4 - 15, fontSize: 13, textAlign: 'right' }}>
                                 {item.ticker ? item.ticker.tradeVolume : null}
                             </Text>
                             {/* <FontAwesomeIcon name="chevron-right" size={20} color="gray" /> */}

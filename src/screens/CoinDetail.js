@@ -4,6 +4,7 @@ import { TabView } from 'react-native-tab-view'
 import OrderTab from '@components/OrderTab'
 import ChartTab from '@components/ChartTab'
 import OrderHistoryTab from '@components/OrderHistoryTab'
+import Nexus from '@api/Nexus'
 
 const options = [
   { key: 'order', title: '주문' },
@@ -16,8 +17,23 @@ export default class CoinDetail extends Component {
     let exchangeKr = navigation.getParam('exchangeKr', '')
     let coin = navigation.getParam('coin', '')
     let base = navigation.getParam('base', '')
+    let coinKoName = Nexus.getCoinKoName(coin)
     return {
-      title: `${exchangeKr}/${coin}/${base}`
+      // title: `${exchangeKr}/${coin}(${coinKoName})/${base}`
+      headerTitle: (
+        <View>
+          <View>
+            <Text style={{ textAlign: 'center', fontSize: 20 }}>
+              {exchangeKr}
+            </Text>
+          </View>
+          <View>
+            <Text style={{ textAlign: 'center' }}>
+              {coin}{coinKoName ? '(' + coinKoName + ')' : ''}/{base}
+            </Text>
+          </View>
+        </View>
+      )
     }
   }
   constructor(props) {
@@ -47,7 +63,7 @@ export default class CoinDetail extends Component {
   }
   _renderScene = ({ route }) => {
     if (
-      this.state.routes.indexOf(route) !== this.state.index 
+      this.state.routes.indexOf(route) !== this.state.index
       // && !this.state.loaded.includes(route.key)
     ) {
       return <View></View>
@@ -61,7 +77,7 @@ export default class CoinDetail extends Component {
   }
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}

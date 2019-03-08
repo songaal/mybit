@@ -35,7 +35,8 @@ export default class Base {
     this.rest = {}
     this.markets = {
       priceInfo: {},
-      pairCoinList: {}
+      pairCoinList: {},
+      coinKoName: {}
     }
     this.marketKeyMap = {}
     this.revMarketKeyMap = {}
@@ -61,12 +62,17 @@ export default class Base {
       }, 1000)
       return false
     }
-
+    
     Object.values(markets)
       .forEach(market => {
         // quote == base
         // base == coin
         const { id, quote, base, symbol } = market
+        const { korean_name } = market['info']
+        if (korean_name) {
+          this.markets.coinKoName[base] = korean_name
+        }
+        
         if (paireCoinList[quote] === undefined) {
           paireCoinList[quote] = []
           priceInfo[quote] = {}
