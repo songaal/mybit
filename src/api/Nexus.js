@@ -10,6 +10,7 @@ import Upbit from '@api/Upbit'
 import Bithumb from '@api/Bithumb'
 import Binance from '@api/Binance'
 // import Bitmex from '@api/Bitmex'
+import coinName from '@constants/coinName'
 
 class Nexus {
   constructor() {
@@ -60,13 +61,19 @@ class Nexus {
     this.api[exchange].ticker(base)
   }
   getCoinKoName(coin) {
-    let coinKoName = ''
-    Object.keys(this.api).forEach(e => {
-      if (this.api[e].markets.coinKoName[coin]) {
-        coinKoName = this.api[e].markets.coinKoName[coin]
-        return false
-      }
-    })
+    let coinKoName = coinName[coin]
+    if (coinKoName === undefined) {
+      Object.keys(this.api).forEach(e => {
+        if (this.api[e].markets.coinKoName[coin]) {
+          coinKoName = this.api[e].markets.coinKoName[coin]
+          return false
+        }
+      })
+    }
+    // if (coinKoName === undefined) {
+    //   // console.log('>>>>>>>>>>>>>>>>>>', coin)
+    //   coinKoName = coin
+    // }
     return coinKoName
   }
   getPriceInfo(exchange, type = null) {
@@ -99,7 +106,7 @@ class Nexus {
           order = await exchange.createLimitSellOrder(params['symbol'], params['amount'], params['price'], params['params'] || {})
         }
       }
-      
+
       let orders = await AsyncStorage.getItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`)
       if (orders === null) {
         orders = []
@@ -112,12 +119,12 @@ class Nexus {
       params['price'] = order['price']
       orders.push(params)
       await AsyncStorage.setItem(`${accessKey}-${exchangeId}-${params['base']}-${params['coin']}`, JSON.stringify(orders))
-      
+
       result = {
         status: 'success',
         order: order
       }
-      
+
 
     } catch (error) {
       console.log(error)

@@ -81,7 +81,7 @@ export default class Ticker extends React.PureComponent {
                                 <Text style={{ width: width / 4 - 30, fontSize: 14, textAlign: 'left' }}>
                                     {item.ticker ? item.ticker.coin : null}
                                 </Text>
-                                <Text style={{ width: width / 4 - 30, fontSize: 10, textAlign: 'left', color: 'gray' }}>
+                                <Text style={{ width: width / 4 - 30, fontSize: 10, textAlign: 'left', color: 'gray', marginTop: 5 }}>
                                     {item.ticker ? Nexus.getCoinKoName(item.ticker.coin) : ''}
                                 </Text>
                             </View>
