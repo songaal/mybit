@@ -5,6 +5,7 @@ export const config = {
       tvExchangeId: 'upbit',
       isTvUDF: true,
       engName: 'Upbit',
+      companyName: '두나무',
       korName: '업비트',
       tether: 'KRW',
       ws: {
@@ -17,6 +18,7 @@ export const config = {
       isTvUDF: false,
       engName: 'Bithumb',
       korName: '빗썸',
+      companyName: '비티씨코리아',
       tether: 'KRW',
       rest: {
         url: 'https://api.bithumb.com'
@@ -27,6 +29,7 @@ export const config = {
       tvExchangeId: 'BINANCE',
       isTvUDF: false,
       engName: 'Binance',
+      companyName: 'binance',
       korName: '바이낸스',
       tether: 'USDT',
       ws: {
@@ -47,7 +50,7 @@ export const config = {
   },
   getExchangeLabels: () => {
     return Object.values(config.exchanges).map(exchange => {
-      return { key: exchange.id, title: exchange.korName }
+      return { key: exchange.id, title: exchange.korName, companyName: exchange.companyName }
     })
   }
 }

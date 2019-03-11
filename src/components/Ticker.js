@@ -23,6 +23,7 @@ export default class Ticker extends React.PureComponent {
         this.props.navigation.navigate('coinDetail', {
             exchangeKr: this.props.exchangeKr,
             exchange: exchange,
+            companyName: config.exchanges[exchange].companyName,
             base: base,
             coin: coin
         })

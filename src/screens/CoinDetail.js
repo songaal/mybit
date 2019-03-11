@@ -15,6 +15,7 @@ const options = [
 export default class CoinDetail extends Component {
   static navigationOptions = ({ navigation }) => {
     let exchangeKr = navigation.getParam('exchangeKr', '')
+    let companyName = navigation.getParam('companyName', '')
     let coin = navigation.getParam('coin', '')
     let base = navigation.getParam('base', '')
     let coinKoName = Nexus.getCoinKoName(coin)
@@ -25,6 +26,9 @@ export default class CoinDetail extends Component {
           <View>
             <Text style={{ textAlign: 'center', fontSize: 20 }}>
               {exchangeKr}
+              <Text style={{ textAlign: 'center', fontSize: 12, color: 'gray' }}>
+                {companyName}
+              </Text>
             </Text>
           </View>
           <View>
